@@ -7,3 +7,6 @@ web_deploy
 # NPM
 node_modules
 npm-debug.log
+
+# Environment
+.env

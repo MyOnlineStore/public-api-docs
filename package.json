@@ -1,14 +1,20 @@
 {
-  "name": "myonlinestore",
+  "name": "myonlinestore-public-api-docs",
   "version": "1.0.0",
   "dependencies": {
-    "swagger-repo": "^2.0.0-rc.10"
+    "deploy-to-gh-pages": "^1.1.0",
+    "shelljs": "^0.7.0",
+    "swagger-repo": "^2.0.0-rc.10",
+    "swagger-ui": "^2.1.4"
   },
   "private": true,
   "scripts": {
+    "deploy": "npm run build && deploy-to-gh-pages --update web_deploy",
+    "build": "swagger-repo build -o web_deploy && node ./scripts/build.js",
+    "clean": "rimraf web_deploy",
+    "recreate": "npm run clean && npm run build",
     "start": "swagger-repo serve",
-    "build": "swagger-repo build -o web_deploy",
-    "test": "swagger-repo validate",
-    "gh-pages": "swagger-repo gh-pages"
+    "swagger": "swagger-repo",
+    "test": "swagger-repo validate"
   }
 }
