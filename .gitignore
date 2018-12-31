@@ -1,0 +1,9 @@
+# Dir for API portal deploy
+web_deploy
+
+# IDE
+.idea
+
+# NPM
+node_modules
+npm-debug.log
