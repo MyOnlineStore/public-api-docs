@@ -1,0 +1,298 @@
+# Changelog
+
+## [2.0.11] & [1.1.22] 2018-12-12
+
+### Added
+* Optional property _amount_including_tax_ was added to the __TaxPrice__ object. 
+This may be used for an __OrderDetailPostable__ object with _type = custom_, to specify
+the _unit_price_ including tax. At least one of _amount_ or _amount_including_tax_ is required.    
+
+
+## [2.0.10] & [1.1.21] 2018-11-28
+
+### Added
+* It is now possible to use an address ID from a registered customer when placing an order, instead of providing the
+  complete address. The customers email _must_ match the email provided with the order.
+
+## [2.0.9] & [1.1.20] 2018-11-28
+
+### Added
+* It is now possible to specify a price for an orderline with type "article". 
+This will allow deviation from the article's "regular" price (as specified in the store). 
+This functionality requires additional rights as partner. 
+It can be used by specifying __OrderDetailPostable.price_override__. Note that this __must include VAT__ 
+
+## [2.0.8] & [1.1.19] 2018-11-27
+
+### Added
+* Added `debtor.link_to_account` which allows to link an account to an order.
+
+## [2.0.7] 2018-09-20
+
+### Fixed
+* Added correct validation error for invalid address specification in v2-beta
+
+## [2.0.6] & [1.1.18] 2018-09-10
+
+### Added
+* It is now possible to attach images to a `ArticleConfiguratorListOption` when updating or creating an article.
+  To add an image to an `ArticleConfiguratorListOption` add an `ArticleConfiguratorListPostable` object to `lists`.
+  Within this object, set `has_images` to true and add an options array containing
+  `ArticleConfiguratorListOptionPostable` objects. For each option you may add a `image_ids` array
+   containing `ArticleImage` uuid's strings.
+  
+  Be aware when patching an article that `ConfiguratorArticleList.article_images` should be a complete set.
+  It is interpreted like a PUT operation rather than PATCH
+  
+### Changed
+* Adding a `ArticleConfiguratorList` by defining a integer in the `lists` array has been deprecated and
+will be removed in version 2
+
+## [2.0.5] & [1.1.17] 2018-09-07
+
+### Fixed
+* Since v1.1.14 __Article.lists.options.id__ was returned as string instead of the specified int.
+
+## [2.0.4] & [1.1.16] 2018-09-06
+
+### Fixed
+* Since v1.1.14 __Article.lists.id__ was returned as string instead of the specified int. 
+
+## [2.0.3] & [1.1.15] 2018-09-04
+
+### Fixed
+* Since v1.1.14 __Article.lists__ could be indexed incorrectly (not starting at 0). 
+
+## [2.0.2] & [1.1.14] 2018-08-30
+
+### Added
+It is now possible in the backend to attach article images to a list option.
+
+* Changed definition of __Article.lists__ to ConfiguratorArticleList
+* Added id parameter to __ArticleImage__
+* Added image_ids to __Article.lists.options__
+* Added has_images to __Article.lists__
+
+## [2.0.1] & [1.1.13] 2018-08-23
+
+### Added
+* It is possible to add custom items, which are not available in the article catalog,
+to be added to an order. To add a custom article to an order, add an orderline with
+the following fields:
+```json
+{
+    "type": "custom",
+    "quantity": 2,
+    "description": "Omg I'm só special",
+    "unit_price": {
+        "amount": "8.9501",
+        "rate": "21.00"
+    },
+    "unit_weight": "2.2"
+}
+```
+Note that `type` must be `custom`, no `articles` field is needed, the price field
+is called `unit_price` and the weight must be given via `unit_weight`.
+
+## [2.0.0] 2018-07-10
+
+### Added
+* Released documentation for version 2-beta. Note that this version is still subject to change. 
+
+## [1.1.12] 2018-06-22
+
+### Fixed
+* Fixed an issue where __Order.debtor.delivery.country_code__ 
+ would be displayed incorrectly for some orders. This could occur in 
+ stores which calculate equal shipping costs for all countries, for orders 
+ where the invoice address was equal to the delivery address. 
+ This country_code is now displayed correctly again. 
+
+## [1.1.11] 2018-06-20
+
+### Changed
+* Improved resolving of country codes for addresses which
+ do not have an explicit country code (version 1.0.6 and earlier).
+ This process is now based on the order locale instead of the request locale.
+
+## [1.1.10] 2018-06-06
+
+### Added
+* Added an `override_minimum` to the **postOrder** operation.
+ This will allow you to ignore minimum order price limitations when creating and completing an order.
+ Example use case: an offline purchase, so fulfillment costs do not apply. 
+ Note: This option requires additional rights per partner.
+
+## [1.1.9] 2018-06-06
+
+### Added
+* __CreditOrderPostable.offline_location_id__ has been added
+
+## [1.1.8] 2018-06-06
+
+### Fixed
+* Fixed an issue where order-numbers would be assigned before validation.
+Since an invalid order is never actually created, 
+this would result in a non-sequential set of order-numbers. 
+
+## [1.1.7] 2018-06-06
+
+### Changed
+* Changed type of __Order.credited_order_number__ and __Order.credit_order_numbers__
+from string to integer, for consistency with __Order.number__ 
+
+## [1.1.6] 2018-06-05
+
+### Added
+* The following fields have been added: 
+  __Order.credited_order_number__, __Order.credit_order_numbers__
+
+### Changed
+* Performance of the __getOrders__ operation has been improved for larger limits.
+
+## [1.1.5] 2018-06-01
+
+### Fixed
+* Values for __CreditOrderPostable.payment_costs__ 
+and __CreditOrderPostable.shipping_costs__ were not processed,
+resulting in the full payment costs and shipping costs to be credited.
+This is now working as described again.
+
+## [1.1.4] 2018-05-18
+
+### Added
+* It is now possible to attach images when creating or updating an article. To add
+an image to an article, add an `images` object. The `images` object must be an array,
+that for each image contains an `url` field: a string with the location of the desired
+image; and a `position` field: an integer (1 - 15) marking the position of each image.
+
+## [1.1.3] 2018-05-15
+
+### Changed
+* Phone number of offline locations is now returned in E164 format
+
+## [1.1.2] 2018-05-14
+
+### Fixed
+* Fixed an issue where in some cases __Article.extra__ did not contain the
+complete set of field values. This specifically concerned custom select fields
+which apply to multiple articles. If the value for a specific article has been
+removed from the field as an available option, it will now fallback to the
+default or first available value 
+
+## [1.1.1] 2018-05-04
+
+### Added
+* Added sorting information for categories. A category now contains a `sorting` object.
+The sorting object contains:
+  * `first` Whether it is the first in it's branch.
+  * `last` Whether it is the last in it's branch.
+  * `previous` Previous category in the branch, if any.
+  * `next` Next category in the branch, if any.
+* Added a __postCategory__ operation for the creation of categories.
+It requires a `title`, and may contain `content`, `meta_title`, `parent_category_id`, `meta_content`, `hidden`, `article_order` and `sorting`.
+The `sorting` object may contain one of:
+  * `first` If the category should be the first in it's branch.
+  * `last` If the category should be the last in it's branch.
+  * `before` The ID of the category that the new created category should be in front of.
+  * `after` The ID of the category that the new created category should be after.
+* Added a __patchCategory__ operation for modification of categories.
+It may contain any of the __postCategory__ operation fields.
+
+## [1.1.0] 2018-03-21
+
+### Fixed
+* Incomplete orders (carts) are no longer available through any of the __Order__ operations.  
+* The `finished` attribute has been removed from the __OrderPostable__ and __OrderPatchable__ 
+objects, since it is overwritten during order processing anyway.     
+* The `finished` attribute has been deprecated on the __Order__ object and will be removed in version 2.
+
+## [1.0.8] 2018-02-26
+
+### Fixed
+* Fixed an issue were the ratelimit was not applied to partner AND store context,
+but to partner context only. This was broken since 2018-02-12.
+
+## [1.0.7] 2018-01-31
+
+### Changed
+* Added a `credit_order` property to the __OrderStatus__ object.
+This specifies whether the status is allowed for (and signifies) a credit order. 
+
+* Added a `mutate_stock` parameter to the __patchOrder__ operation. This parameter will only apply to credit orders.
+
+### Added
+* Added a __postCreditOrder__ operation, for the creation of credit orders. 
+It requires an ordernumber (of the order which should be credited), 
+a status (for the new credit order) and a set of orderlines. 
+These must be a (sub)set of the orderlines of the original order. 
+Stock mutation for credit orders is optional, and may be controlled by the `mutate_stock` parameter  
+
+## [1.0.6] 2018-01-03
+ 
+### Changed
+* The following properties of __OrderDebtor__ have been deprecated and will be removed in version 2.
+  The corresponding properties of __Address__ or __InvoiceAddress__ should be used instead.  
+
+  * `gender`
+  * `name`
+  * `company`
+  * `phone`
+  * `bankaccount`
+
+* A property `country_code` has been added to __Address__ and __InvoiceAddress__,
+  which will accept an ISO 3166-1 alpha-2 code.
+  The `country` property has been deprecated and will be removed in version 2.
+  
+* A property `shipping_method_id` has been added to __OrderPostable__. 
+  This will be the new method to determine the shipping destination. 
+  __Address__.`country_code` or __Address__.`country` will be used as fallback (in that order)
+  if no `shipping_method_id` is specified
+
+### Added
+
+* A listing of available shipping methods has been added at `/v{version}/shipping/methods`
+
+* Added an `override_stock` to **postOrder** and **patchOrder** operations.
+ This will allow you to ignore stock limitations when creating and completing an order. Mutations are still applied.
+ Example use case: an offline purchase of an article whose stock is not correctly synced.
+ Additional access is required for this option.
+
+## [1.0.5] 2017-11-01
+
+### Added
+* Added `default_language` to Store Model.
+* Added `active_languages` to Store Model.
+
+## [1.0.4] 2017-09-07
+ 
+### Changed
+* The format for NewsletterSubscriber parameters `created_start_date`, `created_end_date`, `changed_start_date` and
+ `changed_end_date` has been changed to `yyyy-mm-dd hh:mm:ss` to allow filtering by time. 
+ 
+  To ensure BC:
+  - values in the format `yyyy-mm-dd` are accepted until version 2
+  - `created_time` and `changed_time` values have been added to the NewsletterSubscriber object. These will be merged into `created_date` and `changed_date` in version 2.   
+
+## [1.0.3] 2017-09-04
+ 
+### Fixed
+* Fixed an issue where PATCH or POST article actions which specified a barcode would produce an error    
+* Fixed an issue where any article DELETE operation would produce an error
+
+## [1.0.2] 2017-09-01
+ 
+### Fixed
+* Fixed an issue where article stock could no longer be set to unlimited. 
+This is now also possible for variant stock. 
+
+## [1.0.1] 2017-08-25 
+ 
+### Fixed
+* Fixed an issue where shipping costs would be applied for orders from an offline location
+
+## [1.0.0] 2017-07-20 
+ 
+### Fixed
+* Fixed a bug where extra __articlefields__ were matched by their (translated) name only.
+This would lead to mismatches with the default __weight__, __width__, __height__ and __length__ fields
