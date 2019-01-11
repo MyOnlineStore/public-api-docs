@@ -1,6 +1,9 @@
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 MAKEFLAGS += --silent
 
+include .env
+export $(shell sed 's/=.*//' .env)
+
 generate-env:
 	echo "PORT=8080" >> .env
 
