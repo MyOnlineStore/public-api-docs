@@ -1,10 +1,9 @@
 api =
 {
     loadSwaggerUi: function() {
-        specFile = '../openapi.json';
-        window.swaggerUi = new SwaggerUi({
-            url: specFile,
-            dom_id: "swagger-ui-container",
+        window.swaggerUi = SwaggerUIBundle({
+            url: '../openapi.json',
+            dom_id: '#swagger-ui-container',
             validatorUrl: null,
             booleanValues: [0, 1],
             supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
@@ -13,14 +12,18 @@ api =
                     'The documentation could not be loaded</div>');
             },
             onComplete: function () {
-                window.swaggerUi.api.setHost(window.location.hostname);
+                // Remove the useless scheme-container, no one uses http anymore
+                $('.scheme-container').hide();
             },
             docExpansion: "list",
             apisSorter: "alpha",
-            showRequestHeaders: false
+            showRequestHeaders: false,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+            ],
+            layout: "BaseLayout",
+            defaultModelsExpandDepth: 0
         });
-
-        window.swaggerUi.load();
 
         this.updatePartnerToken();
         this.updateMerchantToken();

@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "dependencies": {
     "deploy-to-gh-pages": "^1.1.0",
+    "jquery": "^3.3.1",
     "shelljs": "^0.7.0",
     "swagger-repo": "^2.0.0-rc.10",
-    "swagger-ui": "^2.1.4"
+    "swagger-ui-dist": "^3.20.5"
   },
   "private": true,
   "scripts": {
     "deploy": "npm run build && deploy-to-gh-pages --update web_deploy",
     "build": "swagger-repo build -o web_deploy && node ./scripts/build.js",
+    "build-dev": "node ./scripts/build-dev.js",
     "clean": "rimraf web_deploy",
     "recreate": "npm run clean && npm run build",
     "start": "swagger-repo serve",
