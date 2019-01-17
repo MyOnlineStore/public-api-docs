@@ -3,8 +3,7 @@
     "info": {
         "title": "MyOnlineStore Connect | API",
         "contact": {
-            "name": "MyOnlineStore",
-            "url": "http://www.mijnwebwinkel.nl/contact"
+            "name": "MyOnlineStore"
         },
         "version": "1",
         description: "
@@ -12,13 +11,32 @@
             mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the
             opportunity to follow their dream. Today is the day!
 
-            Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)
+            </br></br>Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)
+            </br>Visit the <a href=\"/swagger-docs\">sandbox</a> to test your requests
         "
     },
     "host": "api.myonlinestore.com",
     "basePath": "/",
     "schemes": [
         "https"
+    ],
+    "securityDefinitions": {
+        "StoreToken": {
+            "type": "apiKey",
+            "in": "query",
+            "name": "token"
+        },
+        "PartnerToken": {
+            "type": "apiKey",
+            "in": "query",
+            "name": "partner_token"
+        }
+    },
+    "security": [
+        {
+            "StoreToken": [],
+            "PartnerToken": []
+        }
     ],
     "produces": [
         "application/json",
@@ -1695,6 +1713,11 @@
                 ],
                 "description": "Returns a listing of all available order statuses.",
                 "operationId": "getOrderStatuses",
+                "security": [
+                    {
+                        "StoreToken": []
+                    }
+                ],
                 "parameters": [
                     {
                         "$ref": "#/parameters/version"
@@ -1726,6 +1749,11 @@
                 ],
                 "description": "Returns a listing of all available payment types (methods)",
                 "operationId": "getPayTypes",
+                "security": [
+                    {
+                        "StoreToken": []
+                    }
+                ],
                 "parameters": [
                     {
                         "$ref": "#/parameters/version"
