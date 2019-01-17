@@ -9,7 +9,7 @@ deploy:
       branch: master
   - skip_cleanup: true
     provider: script
-    script: npm run deploy -- -p "$TRAVIS_BRANCH"
+    script: npm run test && npm run build
     on:
       all_branches: true
       condition: '"$TRAVIS_BRANCH" != "master" && "$TRAVIS_BRANCH" != "gh-pages"'
