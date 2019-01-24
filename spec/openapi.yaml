@@ -12,7 +12,12 @@ info:
     * A [sandbox UI](swagger-docs) is available to test your requests
     * The [changelog](swagger-docs/changelog.md) can be found [here](swagger/docs-changelog.md)
 
-    ## Versions
+    # Environments
+    Multiple (live) environments are available, with seperate datasets:
+    * api.myonlinestore.com - EMEA area
+    * api.myonlinestore.sg - APAC area
+
+    # Versions
     Currently available are versions **1** and **2-beta**.
     Both are stable, but backwards incompatible changes may be applied to v**-beta**
     and deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed
@@ -1397,6 +1402,7 @@ tags:
     description: Custom article fields
 servers:
   - url: https://api.myonlinestore.com/
+  - url: https://api.myonlinestore.sg/
 components:
   parameters:
     limit:
