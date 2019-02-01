@@ -22,11 +22,22 @@ api =
                 SwaggerUIBundle.presets.apis,
             ],
             layout: "BaseLayout",
-            defaultModelsExpandDepth: 0
-        });
+            defaultModelsExpandDepth: 0,
+            requestInterceptor:function(request){
+                const partnerToken = $('#input_partnerToken')[0].value;
+                const merchantToken = $('#input_merchantToken')[0].value;
 
-        this.updatePartnerToken();
-        this.updateMerchantToken();
+                if (partnerToken && '' !== partnerToken.trim()) {
+                    request.url = request.url + '&partner_token=' + partnerToken;
+                }
+
+                if (merchantToken && '' !== merchantToken.trim()) {
+                    request.url = request.url + '&token=' + merchantToken;
+                }
+
+                return request;
+            }
+        });
     },
 
     initSwaggerUi: function() {
@@ -37,9 +48,6 @@ api =
 
         this.loadSwaggerUi();
 
-        $('#input_partnerToken').change(this.updatePartnerToken);
-        $('#input_merchantToken').change(this.updateMerchantToken);
-
         $("#swagger-ui-container").on('keydown', '.parameter', function(event) {
             //Submit forms on enter
             if (event.which == 13) {
@@ -48,30 +56,6 @@ api =
             }
         });
     },
-
-    updatePartnerToken: function() {
-        //Include global partner token in all requests
-        var partnerToken = $('#input_partnerToken')[0].value;
-
-        if (partnerToken && partnerToken.trim() != '') {
-            swaggerUi.api.clientAuthorizations.add(
-                'partnerToken',
-                new SwaggerClient.ApiKeyAuthorization('partner_token', partnerToken, 'query')
-            );
-        }
-    },
-
-    updateMerchantToken: function() {
-        //Include merchant partner token in all requests
-        var merchantToken = $('#input_merchantToken')[0].value;
-        
-        if (merchantToken && merchantToken.trim() != '') {
-            swaggerUi.api.clientAuthorizations.add(
-                'merchantToken',
-                new SwaggerClient.ApiKeyAuthorization('token', merchantToken, 'query')
-            );
-        }
-    }
 };
 
 jQuery(document).ready(jQuery.proxy(api.initSwaggerUi, api));
