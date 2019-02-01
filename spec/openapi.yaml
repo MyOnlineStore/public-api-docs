@@ -3,7 +3,7 @@ info:
   title: MyOnlineStore Connect | API
   contact:
     name: MyOnlineStore
-  version: 1
+  version: '1'
   description: |
     # Introduction
     An online store should be within everyone’s reach. That’s why creating the best online platform is our mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the opportunity to follow their dream. Today is the day!
