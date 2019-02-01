@@ -2,7 +2,7 @@ api =
 {
     loadSwaggerUi: function() {
         window.swaggerUi = SwaggerUIBundle({
-            url: '../openapi.json',
+            url: '../openapi.yaml',
             dom_id: '#swagger-ui-container',
             validatorUrl: null,
             booleanValues: [0, 1],

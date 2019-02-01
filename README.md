@@ -5,7 +5,7 @@
 
 - [Documentation](https://myonlinestore.github.io/public-api-docs/)
 - [Sandbox](https://myonlinestore.github.io/public-api-docs/swagger-docs/)
-- Raw OpenAPI files: [JSON](https://myonlinestore.github.io/public-api-docs/openapi.json) [YAML](https://myonlinestore.github.io/public-api-docs/openapi.yaml)
+- [Raw OpenAPI file](https://myonlinestore.github.io/public-api-docs/openapi.yaml)
 
 ## Development
 
