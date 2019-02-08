@@ -10,7 +10,13 @@ info:
 
     * Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)
     * A [sandbox UI](/swagger-docs) is available to test your requests
-    * The [changelog](/swagger-docs-changelog.md) can be found [here](/swagger-docs-changelog.md)
+    * The [changelog](/swagger-docs/changelog.md) can be found [here](/swagger-docs-changelog.md)
+
+    ## Versions
+    Currently available are versions **1** and **2-beta**.
+    Both are stable, but backwards incompatible changes may be applied to v**-beta**
+    and deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed
+    between **1** and **2-beta**, though contents are the same
   x-logo:
     url: /images/mos-connect-logo.png
 security:
@@ -195,7 +201,7 @@ paths:
       tags:
         - ArticleFields
       summary: Create new StoreArticleFields
-      description: Add new custom article field(s)
+      description: Add new merchant specified article field(s)
       operationId: postArticleFields
       parameters:
         - $ref: "#/components/parameters/version"
@@ -210,7 +216,7 @@ paths:
             type: integer
         - name: visible
           in: query
-          description: Fields visible
+          description: Whether this field should be visibile or invisble to shop visitors
           required: true
           schema:
             type: boolean
@@ -239,8 +245,8 @@ paths:
     delete:
       tags:
         - ArticleFields
-      summary: Remove custom StoreArticleFields
-      description: Remove custom article field(s)
+      summary: Remove StoreArticleFields
+      description: Remove merchant specified article field(s)
       operationId: deleteArticleFields
       parameters:
         - $ref: "#/components/parameters/version"
@@ -255,7 +261,7 @@ paths:
             type: integer
         - name: visible
           in: query
-          description: Fields (in)visible
+          description: Whether this field should be visibile or invisble to shop visitors
           required: true
           schema:
             type: boolean
@@ -266,8 +272,8 @@ paths:
             schema:
               type: array
               items:
+                description: Name of a field to remove
                 type: string
-        description: Fieldnames
         required: true
       responses:
         "200":
@@ -640,7 +646,7 @@ paths:
   "/v{version}/categories/{category_id}":
     get:
       tags:
-        - Categories
+        - Categories (Pages)
       description: Returns a specific category
       operationId: getCategory
       parameters:
@@ -665,7 +671,7 @@ paths:
                 $ref: "#/components/schemas/Category"
     patch:
       tags:
-        - Categories
+        - Categories (Pages)
       description: Update category page
       operationId: patchCategory
       parameters:
@@ -698,7 +704,7 @@ paths:
   "/v{version}/categories":
     get:
       tags:
-        - Categories
+        - Categories (Pages)
       description: Returns a listing of pages for the store
       operationId: getCategories
       parameters:
@@ -743,7 +749,7 @@ paths:
                   $ref: "#/components/schemas/Category"
     post:
       tags:
-        - Categories
+        - Categories (Pages)
       description: Create a new category page
       operationId: postCategory
       parameters:
@@ -770,7 +776,7 @@ paths:
   "/v{version}/categories/count":
     get:
       tags:
-        - Categories
+        - Categories (Pages)
       description: Returns the number of available categories
       operationId: getCategoryCount
       parameters:
@@ -1244,7 +1250,7 @@ paths:
   "/v{version}/orderstatuses":
     get:
       tags:
-        - OrderStatuses
+        - Order statuses
       description: Returns a listing of all available order statuses.
       operationId: getOrderStatuses
       security:
@@ -1271,7 +1277,7 @@ paths:
   "/v{version}/paytypes":
     get:
       tags:
-        - PayTypes
+        - Payment methods
       description: Returns a listing of all available payment types (methods)
       operationId: getPayTypes
       security:
@@ -1298,7 +1304,7 @@ paths:
   "/v{version}/paytypes/store":
     get:
       tags:
-        - PayTypes
+        - Payment methods
       description: Returns a listing of active payment types (methods) for the store
       operationId: getPayTypesPerStore
       parameters:
@@ -1322,7 +1328,7 @@ paths:
   "/v{version}/shipping/methods":
     get:
       tags:
-        - ShippingMethods
+        - Shipping methods
       description: Returns a listing of available shipping methods for the store
       operationId: getShippingMethods
       parameters:
@@ -1345,7 +1351,7 @@ paths:
   "/v{version}/store":
     get:
       tags:
-        - Store
+        - Store information
       description: Returns details for the store (identified by token)
       operationId: getStore
       parameters:
@@ -1363,33 +1369,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/Store"
 tags:
-  - name: ArticleFields
-    description: Custom article fields
+  - name: Store information
+    description: General store details
+  - name: Orders
+    description: Order details
+  - name: Order statuses
+    description: Available order statuses
+  - name: Payment methods
+    description: Available payment methods
+  - name: Shipping methods
+    description: Available shipping methods
+  - name: OfflineLocations
+    description: Point of sale location details
+  - name: Discountcodes
+    description: Available discountcode details
+  - name: NewsletterSubscribers
+    description: Subscriber details for the store's newsletter
+  - name: Categories (Pages)
+    description: Page details
+  - name: Articles
+    description: Article details
   - name: ArticleListOptions
     description: Options for article lists
   - name: ArticleLists
     description: Article (option) list details
-  - name: Orders
-    description: Order details
-  - name: Articles
-    description: Article details
-  - name: PayTypes
-    description: Payment methods
-  - name: Categories
-    description: Page details
-  - name: OrderStatuses
-    description: Order statuses
-  - name: Discountcodes
-    description: Available discountcode details
-  - name: Store
-    description: General store details
-  - name: NewsletterSubscribers
-    description: Subscriber details for the store's newsletter
-  - name: OfflineLocations
-    description: Point of sale location details
+  - name: ArticleFields
+    description: Custom article fields
 servers:
   - url: https://api.myonlinestore.com/
-  - url: https://api.myonlinestore.sg/
 components:
   parameters:
     limit:
@@ -1427,18 +1434,17 @@ components:
     version:
       name: version
       in: path
-      description: Api version
       required: true
       schema:
         type: string
         enum:
           - "1"
-          - 2-beta
+          - "2-beta"
         default: "1"
     language:
       name: language
       in: query
-      description: Response language
+      description: Shop language to return content for
       required: false
       schema:
         type: string
@@ -1448,6 +1454,14 @@ components:
           - de_DE
           - fr_FR
           - es_ES
+          - en_US
+          - pt_PT
+          - it_IT
+          - da_DK
+          - sv_SE
+          - no_NO
+          - tr_TR
+          - pl_PL
         default: nl_NL
     format:
       name: format
@@ -1525,7 +1539,7 @@ components:
     use_url_id:
       name: use_url_id
       in: query
-      description: Enable when specifying the id used in article page URLs
+      description: Enable this when article_id equals the ID from article page URLs
       required: true
       schema:
         type: boolean
@@ -1620,8 +1634,8 @@ components:
         price:
           default: 12.5
           action: 9.95
-        created_date: 2016-07-04
-        updated_date: 2016-07-25
+        created_date: "2016-07-04"
+        updated_date: "2016-07-25"
         stock: 15
         delivery_days: 5
         meta_title: "Funny shop: Funny Cushion"
@@ -1671,21 +1685,23 @@ components:
               description: Internal article id
               type: integer
             created_date:
-              description: Article creation date
+              description: Creation date
               type: string
               format: date
             updated_date:
-              description: Article last updated date
+              description: Last updated date
               type: string
               format: date
             can_backorder:
-              description: Available for purchase, if sold out
+              description: Available for purchase if sold out (see also delivery_days)
               type: boolean
             categories:
+              description: Pages the article is shown on
               type: array
               items:
                 $ref: "#/components/schemas/CategoryArticle"
             lists:
+              description: Choices offered for the article
               type: array
               items:
                 $ref: "#/components/schemas/ConfiguratorArticleList"
@@ -1694,6 +1710,7 @@ components:
               items:
                 $ref: "#/components/schemas/ArticleImage"
             variants:
+              description: Versions of the article which have at least one diverging field value
               type: array
               items:
                 $ref: "#/components/schemas/ArticleVariant"
@@ -1813,16 +1830,16 @@ components:
     BaseArticle:
       properties:
         name:
-          description: Article name
+          description: Name of this article
           type: string
         description:
-          description: Article description
+          description: Description for this article
           type: string
         sku:
-          description: Article stock keeping unit
+          description: Stock keeping unit
           type: string
         badge_text:
-          description: Additional badge text
+          description: Additional text shown as badge
           type: string
         tax:
           description: Vat percentage
@@ -1830,10 +1847,10 @@ components:
         price:
           $ref: "#/components/schemas/ArticlePrice"
         stock:
-          description: Articles in stock (specify null for unlimited stock)
+          description: Number in stock (specify null for unlimited stock)
           type: integer
         delivery_days:
-          description: Delivery time (in days), if sold out
+          description: Delivery time (in days) if the article is sold out (see also can_backorder)
           type: integer
         meta_title:
           description: Metadata title
@@ -2247,8 +2264,8 @@ components:
             $ref: "#/components/schemas/OrderShipping"
       example:
         number: 27
-        date: 2015-11-03
-        time: 13:37:12
+        date: "2015-11-03"
+        time: "13:37:12"
         status: 1
         archived: true
         finished: false
@@ -2782,8 +2799,8 @@ components:
         applies_to_action_prices: false
         single_use: false
         active: true
-        valid_from: 2017-12-01
-        valid_until: 2017-12-26
+        valid_from: "2017-12-01"
+        valid_until: "2017-12-26"
         valid_article_ids:
           - "7494373"
           - "3760904"
@@ -2792,10 +2809,10 @@ components:
         email: alberto@studio100.be
         name: Alberto Vermicelli
         activated: false
-        created_date: 2016-07-04
-        created_time: 13:37:00
-        updated_date: 2016-07-25
-        updated_time: 13:37:00
+        created_date: "2016-07-04"
+        created_time: "13:37:00"
+        updated_date: "2016-07-25"
+        updated_time: "13:37:00"
       allOf:
         - $ref: "#/components/schemas/NewsletterSubscriberPatchable"
         - properties:
@@ -2924,7 +2941,7 @@ components:
           description: Ordernumber for which a credit order should be created
           type: string
         status:
-          description: Order status, see OrderStatuses GET for valid values
+          description: Order status, see Order statuses GET for valid values
           type: integer
         archived:
           description: Archived status

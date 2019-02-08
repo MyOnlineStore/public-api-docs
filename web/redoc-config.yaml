@@ -1,6 +1,6 @@
 hideDownloadButton: true
 requiredPropsFirst: true
-sortPropsAlphabetically: true
+sortPropsAlphabetically: false
 theme:
   colors:
     primary:
