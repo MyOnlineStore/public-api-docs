@@ -18,7 +18,7 @@ info:
     and deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed
     between **1** and **2-beta**, though contents are the same
   x-logo:
-    url: /images/mos-connect-logo.png
+    url: images/mos-connect-logo.png
 security:
   - StoreToken:
       []
@@ -3053,6 +3053,9 @@ components:
         email:
           description: Merchant email address (special access required)
           type: string
+        currency_format_locale:
+          description: Chosen currency format locale (ISO 3166-1 alpha-2 code)
+          type: string
       example:
         name: knickknacks
         primary_domain: https://www.knickknacks.be
@@ -3068,3 +3071,4 @@ components:
           - nl_NL
           - en_US
           - de_DE
+        currency_format_locale: nl_NL

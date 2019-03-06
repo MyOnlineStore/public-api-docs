@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.12] & [1.1.23] 2019-02-07
+
+### Fixed
+* Repaired an issue where _Order.price.tax_ reported incorrect data (double the actual tax amount). 
+ This issue affected orders placed from 2019-01-23 in stores where Paypal and/or Afterpay 
+ was available as payment provider (even if another payment method was used for the order itself).
+
 ## [2.0.11] & [1.1.22] 2018-12-12
 
 ### Added
