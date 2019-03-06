@@ -9,8 +9,8 @@ info:
     An online store should be within everyone’s reach. That’s why creating the best online platform is our mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the opportunity to follow their dream. Today is the day!
 
     * Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)
-    * A [sandbox UI](/swagger-docs) is available to test your requests
-    * The [changelog](/swagger-docs/changelog.md) can be found [here](/swagger-docs-changelog.md)
+    * A [sandbox UI](swagger-docs) is available to test your requests
+    * The [changelog](swagger-docs/changelog.md) can be found [here](swagger/docs-changelog.md)
 
     ## Versions
     Currently available are versions **1** and **2-beta**.
