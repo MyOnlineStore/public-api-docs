@@ -2241,6 +2241,9 @@ components:
         discountcode:
           description: Discountcode
           type: string
+        currency:
+          description: Chosen currency (ISO 4217 code)
+          type: string
         credited_order_number:
           description: Reference to the original order for which this is a credit order
           type: integer
@@ -2275,6 +2278,7 @@ components:
         comments:
           customer: Please send quickly!
         offline_location_id: 7127e08a-4af0-4fdf-ac7b-157be3345df0
+        currency: EUR
         credited_order_number: 28
         credit_order_numbers:
           - 99
@@ -2302,42 +2306,45 @@ components:
               bankaccount: NL39RABO0300065264
         price:
           tax:
-            amount: 6.61
-            rate: "21.00"
-          total: 34.83
+            amount: 8.174294
+            rate: 21.00
+          total: 45.85
         orderlines:
           - type: article
             quantity: 1
-            weight: "2"
+            weight: 2
             description: Wekker radio alarm klok.
             price:
-              amount: 27.68
-              rate: "21.00"
+              amount: 24.752066
+              rate: 21.00
+              amount_including_vat: 29.95
             articles:
               - id: 3327557
                 description: Wekker radio alarm klok.
                 price:
-                  amount: 27.68
-                  rate: "21.00"
+                  amount: 24.752066
+                  rate: 21.00
                 options:
                   - list_option_id: "330830"
                     description: "Ringtone: Far too happy for this early morning"
                     price:
-                      amount: "0.000000"
-                      rate: "19.00"
+                      amount: 0.000000
+                      rate: 19.00
           - type: shipping
             weight: 0
             description: Verzendkosten
             price:
-              amount: 7.14
-              rate: "21.00"
+              amount: 4.700500
+              rate: 21.00
+              amount_including_vat: 5.95
           - type: custom
             quantity: 2
             description: Omg I'm só special
             price:
-              amount: "8.9501"
-              rate: "21.00"
-            weight: "2.2"
+              amount: 8.223140
+              rate: 21.00
+              amount_including_vat: 9.95
+            weight: 2.2
         shipping:
           - country:
               description: Nederland
@@ -2714,9 +2721,9 @@ components:
           description: Amount (excluding tax), may have up to 6 decimals
           type: string
         amount_including_tax:
-          description: Amount (including tax), should have 2 decimals. This is currently
-            used for custom items only, where either amount or
-            amount_including_tax (or both) must be specified
+          description: Amount (including tax) with exactly 2 decimals.
+            May be used for POST operation with custom items,
+            where either amount or amount_including_tax must be specified
           type: string
     Price:
       description: Price (in decimal notation)

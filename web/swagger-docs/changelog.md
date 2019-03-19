@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.13] & [1.1.23] 2019-04-12
+
+### Added
+* __TaxPrice__._amount_including_tax_ is now also available in the output of OrderDetail object. 
+This will allow you to read the exact pre-calculated price including tax, rather than having to
+apply a client side calculation and rounding      
+
+* Exposed __Order__._currency_, which reflects the currency for which the order was placed. 
+Cannot be specified in POST, where it follows the current Store setting
+
 ## [2.0.12] & [1.1.23] 2019-02-07
 
 ### Fixed
@@ -13,7 +23,6 @@
 * Optional property _amount_including_tax_ was added to the __TaxPrice__ object. 
 This may be used for an __OrderDetailPostable__ object with _type = custom_, to specify
 the _unit_price_ including tax. At least one of _amount_ or _amount_including_tax_ is required.    
-
 
 ## [2.0.10] & [1.1.21] 2018-11-28
 
