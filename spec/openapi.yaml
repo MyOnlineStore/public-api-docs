@@ -2244,6 +2244,9 @@ components:
         currency:
           description: Chosen currency (ISO 4217 code)
           type: string
+        currency_format_locale:
+          description: Chosen currency format locale (ISO 3166-1 alpha-2 code)
+          type: string
         credited_order_number:
           description: Reference to the original order for which this is a credit order
           type: integer
