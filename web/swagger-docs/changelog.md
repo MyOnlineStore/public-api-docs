@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.14] & [1.1.24] 2019-05-10
+
+### Fixed 
+* (2019-05-08) For discount details, __OrderDetail__._price_ would be a single object and have an empty value
+ for _rate_. This has been corrected: because VAT for discount details is calculated by ratio 
+of VAT percentages of affected articles, this should always be an array of __TaxPrice__ objects 
+and contain an entry for all the relevant VAT percentages.        
+
+* (2019-05-03) In some cases __Article__._variants_ would contain entries without any corresponding entries in
+__Article__._lists_. These aberrant variants have been removed.
+
+* (2019-04-26) When creating an order with a discounts that applies to specific articles only, 
+prices for the relevant details and corresponding VAT amounts would not include the discount. 
+This has been corrected
+
+* (2019-04-24) Exposed __Order__._currency_locale_, which specifies the currency display locale at the time 
+that the order was placed. Cannot be specified in POST, since it follows the current Store setting
+
+* (2019-04-23) For some merchants, new article could not be created without a barcode, even if the
+barcode field was not enabled by default. This is now possible again. 
+
 ## [2.0.13] & [1.1.23] 2019-04-12
 
 ### Added
