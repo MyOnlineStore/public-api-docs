@@ -2265,7 +2265,18 @@ components:
         debtor:
           $ref: "#/components/schemas/OrderDebtor"
         price:
-          $ref: "#/components/schemas/OrderPrice"
+          type: object
+          properties:
+            tax:
+              description: Amount of applied VAT
+              oneOf:
+                - type: array
+                  items:
+                    $ref: "#/components/schemas/TaxPrice"
+                - $ref: "#/components/schemas/TaxPrice"
+            total:
+              description: Total price (including VAT)
+              type: string
         orderlines:
           type: array
           items:
@@ -2315,45 +2326,109 @@ components:
               bankaccount: NL39RABO0300065264
         price:
           tax:
-            amount: 8.174294
-            rate: 21.00
-          total: 45.85
-        orderlines:
-          - type: article
-            quantity: 1
-            weight: 2
-            description: Wekker radio alarm klok.
-            price:
-              amount: 24.752066
+            -
+              amount: 0.830000
+              rate: 9.00
+            -
+              amount: 6.500000
               rate: 21.00
-              amount_including_vat: 29.95
+          total: 47.450000
+        orderlines:
+          -
+            type: article
+            quantity: 1
+            weight: 0
+            description: Article A
+            price:
+              amount: 12.396694
+              amount_including_tax: 15.00
+              rate: 21.00
             articles:
-              - id: 3327557
-                description: Wekker radio alarm klok.
+              -
+                id: 1
+                description: Article A
                 price:
-                  amount: 24.752066
+                  amount: 24.793388
                   rate: 21.00
                 options:
-                  - list_option_id: "330830"
-                    description: "Ringtone: Far too happy for this early morning"
+                  -
+                    description: Action price
                     price:
-                      amount: 0.000000
-                      rate: 19.00
-          - type: shipping
-            weight: 0
-            description: Verzendkosten
-            price:
-              amount: 4.700500
-              rate: 21.00
-              amount_including_vat: 5.95
-          - type: custom
+                      amount: -12.396694
+                      rate: 21.00
+          -
+            type: article
             quantity: 2
-            description: Omg I'm só special
+            weight: 0
+            description: Article B
             price:
-              amount: 8.223140
+              amount: 8.181818
+              amount_including_tax: 9.90
               rate: 21.00
-              amount_including_vat: 9.95
-            weight: 2.2
+            articles:
+              -
+                id: 2
+                description: Article B
+                price:
+                  amount: 7.396694
+                  rate: 21.00
+                options:
+                  -
+                    description: Action price
+                    price:
+                      amount: -3.305785
+                      rate: 21.00
+          -
+            type: article
+            quantity: 3
+            weight: 0
+            description: Article C
+            price:
+              amount: 4.834710
+              amount_including_tax: 5.85
+              rate: 21.00
+              articles:
+                -
+                  id: 3
+                  description: Article C
+                  price:
+                    amount: 1.611570
+                    rate: 21.00
+          -
+            type: article
+            quantity: 5
+            weight: 0
+            description: Article D
+            price:
+              amount: 8.944950
+              amount_including_tax: 9.75
+              rate: 9.00
+            articles:
+              -
+                id: 4
+                description: Article D
+                price:
+                  amount: 1.788990
+                  rate: 9.00
+          -
+            type: payment
+            quantity: 1
+            price:
+              -
+                amount: 0.192571
+                rate: 9.00
+                amount_including_tax: 0.21
+              -
+                amount: 0.652972
+                rate: 21.00
+                amount_including_tax: 0.79
+          -
+            type: shipping
+            quantity: 1
+            price:
+              amount: 4.917355
+              amount_including_tax: 5.95
+              rate: 21.00
         shipping:
           - country:
               description: Nederland
@@ -2562,7 +2637,11 @@ components:
               description: Article description (including options)
               type: string
             price:
-              $ref: "#/components/schemas/TaxPrice"
+              oneOf:
+                - type: array
+                  items:
+                    $ref: "#/components/schemas/TaxPrice"
+                - $ref: "#/components/schemas/TaxPrice"
     OrderDetailPostable:
       required:
         - type
