@@ -12,6 +12,9 @@ initialize: generate-env rebuild
 install:
 	docker run --rm -it -v ${CURDIR}:/usr/app public-api-docs install ${ARGS}
 
+npm:
+	docker run --rm -it -v ${CURDIR}:/usr/app public-api-docs ${ARGS}
+
 rebuild:
 	docker build -t public-api-docs .
 
