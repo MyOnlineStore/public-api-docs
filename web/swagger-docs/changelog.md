@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.15] & [1.1.25]
+
+### Added
+* (2019-07-01) The list options attached to an article may now be a subset of the options available
+in the __ArticleList__ entity. Each attached option can also specify a specific price to override the default.
+When creating an __Article__ with the POST operation, each list must have at least one option specified.
+When patching an __Article__, the _lists_._options_ specification is interpreted as a PUT operation: 
+All specified options will be updated, any omitted options will be detached.
+ 
+### Fixed
+* (2019-07-02) Prices specified for options in __Article__._lists_ would always reflect the price
+of the generic list option, rather than an overridden price for the specific article. 
+This issue affected requests since the article specific list option feature release (2019-04-17).   
+
+* (2019-07-01) List options in __Article__._lists_ were not correctly processed for POST operations, 
+as no options would be attached for either operation. This issue affected requests since the article specific list 
+option feature release (2019-04-17). Specified options will now be attached
+
+* (2019-06-27) Data in __Article__._variants_ for PATCH and POST operations was erroneously ignored. 
+This issue affected requests since 2019-05-03.
+
 ## [2.0.14] & [1.1.24] 2019-05-10
 
 ### Fixed 
