@@ -2540,12 +2540,25 @@ components:
     OrderArticle:
       allOf:
         - $ref: "#/components/schemas/OrderArticlePostable"
+        - required:
+          - rate
+          - amount
         - properties:
             description:
               description: Article description
               type: string
             price:
-              $ref: "#/components/schemas/TaxPrice"
+              type: object
+              properties:
+                amount:
+                  description: Amount (excluding tax), may have up to 6 decimals
+                  type: string
+                rate:
+                  description: Tax percentage
+                  type: string
+                purchase_price:
+                  description: Cost of the article for the merchant, if specified
+                  type: string
             options:
               type: array
               items:
@@ -2628,8 +2641,13 @@ components:
           $ref: "#/components/schemas/OrderAddress"
     OrderDetail:
       allOf:
-        - $ref: "#/components/schemas/OrderDetailPostable"
+        - $ref: "#/components/schemas/BaseOrderDetail"
         - properties:
+            articles:
+              description: Required for the 'article' type
+              type: array
+              items:
+                $ref: "#/components/schemas/OrderArticle"
             weight:
               description: Total weight for all items in this orderline
               type: string
@@ -2642,7 +2660,7 @@ components:
                   items:
                     $ref: "#/components/schemas/TaxPrice"
                 - $ref: "#/components/schemas/TaxPrice"
-    OrderDetailPostable:
+    BaseOrderDetail:
       required:
         - type
         - quantity
@@ -2656,14 +2674,6 @@ components:
         quantity:
           description: Amount of items
           type: integer
-        articles:
-          description: Required for the 'article' type
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderArticlePostable"
-        description:
-          description: Item description; required for custom articles
-          type: string
         unit_price:
           $ref: "#/components/schemas/TaxPrice"
         unit_weight:
@@ -2671,6 +2681,15 @@ components:
           type: string
         price_override:
           $ref: "#/components/schemas/Price"
+    OrderDetailPostable:
+      allOf:
+        - $ref: "#/components/schemas/BaseOrderDetail"
+        - properties:
+            articles:
+              description: Required for the 'article' type
+              type: array
+              items:
+                $ref: "#/components/schemas/OrderArticlePostable"
     OrderPayment:
       description: Order payment details
       properties:

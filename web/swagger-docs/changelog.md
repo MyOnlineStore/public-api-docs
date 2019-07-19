@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.16] & [1.1.26]
+
+### Added
+* (2019-07-19) The purchase price of an ordered article has been added to the output. This may be an empty
+string if the merchant has not specified a purchase price, or it was not available at the time of order placement
+
+### Fixed
+* (2019-07-17) Corrected CORS headers to allow API requests from any domain 
+
 ## [2.0.15] & [1.1.25]
 
 ### Added
