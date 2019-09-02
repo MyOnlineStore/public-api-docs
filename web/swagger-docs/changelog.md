@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.17] & [1.1.27]
+
+### Added
+* (2019-09-03) __Store__._id_ as a unique store identification (name is subject to change)
+
 ## [2.0.16] & [1.1.26]
 
 ### Added
