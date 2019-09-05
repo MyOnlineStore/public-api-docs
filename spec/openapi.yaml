@@ -3132,6 +3132,10 @@ components:
         no_costs_above: "100.00"
     Store:
       properties:
+        id:
+          description: Unique identifier
+          type: string
+          format: uuid
         name:
           description: Store name
           type: string
@@ -3171,6 +3175,7 @@ components:
           description: Chosen currency format locale (ISO 3166-1 alpha-2 code)
           type: string
       example:
+        id: e5fc33df-b2bf-40ec-8d8d-56fc34b495cc
         name: knickknacks
         primary_domain: https://www.knickknacks.be
         description: Nice stuff of very high quality
