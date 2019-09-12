@@ -22,6 +22,37 @@ info:
     Both are stable, but backwards incompatible changes may be applied to v**-beta**
     and deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed
     between **1** and **2-beta**, though contents are the same
+
+    # Guides
+    ## Business models
+    For our purposes a business model reflects the type of sale made in an order. We currently distinguish "business to customer" (`B2C`) and
+    "business to business" (`B2B`) models. Each order is assigned a model, with B2C being the default. The merchant can specify which model(s)
+    may be used for new orders (pending package/version limitations)
+
+    For an order to qualify for the `B2B` model, the following requirements apply:
+
+    * The merchant must have allowed this model to be used (__Store__._available_business_models_ must be `ALL` or `B2B`)
+    * __OrderDebtor__._address_._invoice_._company_ must not be empty
+    * The selected payment method must allow `B2B` sales. Notably: `Klarna Checkout`, `Klarna Pay Later` and `Afterpay` do not support this model
+
+    If the B2B model applies to an order, some additional options are available:
+
+    * __Order__._reference_ may be set to an arbritary string
+    * __OrderDebtor__._address_._invoice_._taxnumber_ may be set to a valid VAT number
+      (this is not required, but recommended to allow the merchant to verify tax rule applicability)
+    * Vat reverse charging becomes available as a valid tax strategy (see Tax rules section)
+
+    ## Tax rules
+    Depending on the type of sale, country of origin and destination country, some special tax rules may apply to an order. This is reflected in a "tax strategy"
+
+    We currently distinguish the following cases:
+    * Sales within the domestic borders (origin and destination country are the same): regular tax applies
+    * Sales wholly outside EU borders (both origin and destination country not part of the EU): regular tax applies
+    * Sales crossing the EU border (origin country part of the EU and destination country not part of the EU, or vice versa): 0% tax is applied
+    * B2B Sales crossing domestic borders, but not the EU border (both origin and destination country are part of the EU, but not the same):
+      VAT is reverse charged, 0% tax is applied
+
+    The tax strategy is derived based on order and store information and cannot be specified as input
   x-logo:
     url: images/mos-connect-logo.png
 security:
@@ -2260,6 +2291,24 @@ components:
           description: Ordernumbers of any linked credit orders
         comments:
           $ref: "#/components/schemas/OrderComment"
+        business_model:
+          description: Which business model has been applied to the order.
+              In this case the `company` field will not be empty and the `reference` field is available
+          type: string
+          enum:
+            - B2C
+            - B2B
+        reference:
+          description: Order reference for business sales. Only available if business model is `B2B`
+          type: string
+          maxLength: 255
+        tax_strategy:
+          description: Which tax strategy (if any) has been applied to this order
+          type: string
+          enum:
+            - ''
+            - zero_percent
+            - reverse_charged_vat
         payment:
           $ref: "#/components/schemas/OrderPayment"
         debtor:
@@ -2297,6 +2346,8 @@ components:
         discountcode: korting123
         comments:
           customer: Please send quickly!
+        business_model: B2B
+        reference: MOS103271
         offline_location_id: 7127e08a-4af0-4fdf-ac7b-157be3345df0
         currency: EUR
         credited_order_number: 28
@@ -2315,7 +2366,7 @@ components:
             invoice:
               gender: V
               name: Truus voorbeeldig
-              company: ""
+              company: Voorbeeldig BV
               street: Molenstraat
               number: "62"
               zipcode: 5341GE
@@ -2443,6 +2494,10 @@ components:
           type: integer
         comments:
           $ref: "#/components/schemas/OrderCommentPatchable"
+        reference:
+          description: Order reference for business sales. Only available if business model is `B2B`
+          type: string
+          maxLength: 255
         offline_location_id:
           description: Point of Sale location identifier (Contains null for direct webshop
             orders)
@@ -2452,6 +2507,7 @@ components:
         archived: true
         comments:
           internal: Owner's commentary
+        reference: MOS1044712
         offline_location_id: 7127e08a-4af0-4fdf-ac7b-157be3345df0
     OrderPostable:
       required:
@@ -2464,6 +2520,7 @@ components:
         discountcode: korting123
         comments:
           customer: Please send quickly!
+        business_model: B2C
         offline_location_id: 7127e08a-4af0-4fdf-ac7b-157be3345df0
         payment:
           provider: 7
@@ -2518,6 +2575,21 @@ components:
             discountcode:
               description: Discountcode
               type: string
+            business_model:
+              description: Which business model should be applied to the order. For `B2B` the
+                `OrderDebtor.address.invoice.company` field must not be empty. For `B2C` the `reference` field is not
+                available. If this field is omitted the value of `Store.available_business_models` will be used,
+                defaulting to `B2C` if this setting is `ALL`. If `Store.available_business_models` equals `B2B`,
+                the `company` field must not be empty.
+              type: string
+              enum:
+                - B2C
+                - B2B
+              default: B2C
+            reference:
+              description: Order reference for business sales. Only available if business model is `B2B`
+              type: string
+              maxLength: 255
             debtor:
               $ref: "#/components/schemas/OrderDebtor"
             payment:
@@ -3174,6 +3246,13 @@ components:
         currency_format_locale:
           description: Chosen currency format locale (ISO 3166-1 alpha-2 code)
           type: string
+        available_business_models:
+          description: Which business models can be applied to orders in this store
+          type: string
+          enum:
+              - B2C
+              - B2B
+              - ALL
       example:
         id: e5fc33df-b2bf-40ec-8d8d-56fc34b495cc
         name: knickknacks
@@ -3191,3 +3270,4 @@ components:
           - en_US
           - de_DE
         currency_format_locale: nl_NL
+        available_business_models: B2C

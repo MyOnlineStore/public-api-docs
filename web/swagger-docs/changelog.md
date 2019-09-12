@@ -1,10 +1,27 @@
 # Changelog
 
+## [2.1.0] & [1.2.0] 2019-09-11
+
+### Added 
+* __Store__._available_business_models_: specifies which business models are available for orders
+* __Order__._business_model_: specifies which business model has been applied to the order. 
+Additional details can be found in the field documentation. Note that if this new feature is used for
+ a __B2B__ order the __OrderDebtor__._address_._invoice_._company_ field is no longer optional
+* __Order__._reference_: allows a business customer to specify a reference code. This field
+is only available for orders _where business_model_ is `B2B` 
+* __Order__._tax_strategy_: Reflects the tax strategy applied to an order. This field is read-only as 
+the strategy is automatically determined. A detailed explanation about rules and effects can be found in the
+new __Guides__ section  
+    
+### Changed
+* __OrderDebtor__._address_._invoice_._taxnumber_ is no longer available as input for orders with business model `B2C`
+* __OrderDebtor__._address_._invoice_._company_ is no longer available as input for orders if __Store__._version_ equals `GO`   
+    
 ## [2.0.17] & [1.1.27]
 
 ### Added
 * (2019-09-03) __Store__._id_ as a unique store identification (name is subject to change)
-
+    
 ## [2.0.16] & [1.1.26]
 
 ### Added
