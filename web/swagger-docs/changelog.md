@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.1] & [1.2.1] 2019-09-19
+
+### Added 
+* __Order__._payment_status_: Indication of the payment status of the order, derived
+from related payment transaction(s).
+    
+### Changed
+* __Order__._payment_._status_ is now deprecated. Expect this property to be removed in the future.     
+
 ## [2.1.0] & [1.2.0] 2019-09-11
 
 ### Added 
