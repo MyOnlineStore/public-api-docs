@@ -2309,6 +2309,11 @@ components:
             - ''
             - zero_percent
             - reverse_charged_vat
+        payment_status:
+            type: string
+            description: Current payment status (`new` |`pending` |
+                `authorized` | `captured` | `voided` | `refunded` |
+                `failed` | `incomplete` | `unknown`)
         payment:
           $ref: "#/components/schemas/OrderPayment"
         debtor:
@@ -2357,9 +2362,7 @@ components:
         payment:
           provider: 7
           method: 12
-          status:
-            id: 1
-            text: Payment successful
+        payment_status: captured
         debtor:
           email: support@mijnwebwinkel.nl
           address:
@@ -2774,7 +2777,7 @@ components:
         status:
           $ref: "#/components/schemas/OrderPaymentStatus"
     OrderPaymentStatus:
-      description: Order payment status details
+      description: Deprecated - Order payment status details
       properties:
         id:
           description: |-
