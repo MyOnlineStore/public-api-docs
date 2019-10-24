@@ -81,6 +81,12 @@ info:
     * `refunded`: The full order amount has been refunded
     * `voided`: The full order amount was reserved (authorized) but this reservation was subsequently cancelled
     * `unknown`: No payment status can be derived
+
+    ### Special cases
+    * Orders with a total price of 0.00: These do not require any payment information. They may be assigned a method,
+    but will never have any transactions attached.
+    * Credit orders: These do not have any direct payment information attached.
+    For an up-to-date status, transactions and mutations, the original order should be requested.
   x-logo:
     url: images/mos-connect-logo.png
 security:
