@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0] & [1.3.0] 2019-11-08
+    
+### Changed
+* For orders with no costs (__Order__._price_._total_ = '0.00') 
+__Order__._payment_ is no longer guaranteed to be available, 
+nor is __OrderPostable__._payment_ a required parameter     
+
 ## [2.1.1] & [1.2.1] 2019-09-19
 
 ### Added 

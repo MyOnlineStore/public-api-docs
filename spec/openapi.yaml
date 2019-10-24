@@ -53,6 +53,40 @@ info:
       VAT is reverse charged, 0% tax is applied
 
     The tax strategy is derived based on order and store information and cannot be specified as input
+
+    ## Payment information
+    MyOnlineStore orders may be paid using a number of payment methods, through various gateways (providers).
+    A payment choice is uniquely specified by the combination of gateway (provider) and method (paytype).
+    MyOnlineStore also offers one internal gateway (`basic`) which may be used for manually verifiable payments
+    (for example: cash or card at the counter)
+
+    Orders may follow one of two payment flows:
+
+    1. The order has zero or more transactions. At this time the transaction amount will always equal the
+    full order amount (including tax), but partial payments may be added in the future. To be considered finished,
+    at least one transaction must have reached pending, authorized or captured status.
+
+    2. The order has a directly linked singular payment. This option will be deprecated soon,
+    but may still be reflected in historical data and orders created through the API endpoint
+
+    Each order has a payment status (`payment_status`), which is derived from either the transactions from option 1
+    or the singular payment from option 2. This will be one of the following:
+
+    * `new`: The attached transaction has been created, but has not yet been confirmed by the gateway
+    * `pending`: The attached transaction has been updated with a reference to the corresponding transaction at the gateway
+    * `authorized`: The full order amount amount has been confirmed and reserved at the customer's account
+    * `captured`: The full order amount has been transferred to the merchant's account
+    * `incomplete`: This is an external gateway status which may occur if we fetch the status upstream, may be considered as `new`
+    * 'failed': The attached transaction has failed to complete
+    * `refunded`: The full order amount has been refunded
+    * `voided`: The full order amount was reserved (authorized) but this reservation was subsequently cancelled
+    * `unknown`: No payment status can be derived
+
+    ### Special cases
+    * Orders with a total price of 0.00: These do not require any payment information. They may be assigned a method,
+    but will never have any transactions attached.
+    * Credit orders: These do not have any direct payment information attached.
+    For an up-to-date status, transactions and mutations, the original order should be requested.
   x-logo:
     url: images/mos-connect-logo.png
 security:
@@ -2237,7 +2271,6 @@ components:
         - date
         - time
         - status
-        - payment
         - debtor
       properties:
         number:
@@ -2516,7 +2549,6 @@ components:
       required:
         - orderlines
         - debtor
-        - payment
       example:
         status: 1
         archived: false
@@ -2766,7 +2798,7 @@ components:
               items:
                 $ref: "#/components/schemas/OrderArticlePostable"
     OrderPayment:
-      description: Order payment details
+      description: Order payment details (available/required if Order.price.total <> 0.00)
       properties:
         provider:
           description: Payment provider id
