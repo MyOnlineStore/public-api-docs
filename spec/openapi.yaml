@@ -1466,7 +1466,6 @@ tags:
     description: Custom article fields
 servers:
   - url: https://api.myonlinestore.com/
-  - url: https://api.myonlinestore.sg/
 components:
   parameters:
     limit:
