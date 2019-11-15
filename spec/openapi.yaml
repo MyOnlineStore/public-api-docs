@@ -13,9 +13,8 @@ info:
     * The [changelog](swagger-docs/changelog.md) can be found [here](swagger/docs-changelog.md)
 
     # Environments
-    Multiple (live) environments are available, with seperate datasets:
+    A single (live) environment is available:
     * api.myonlinestore.com - EMEA area
-    * api.myonlinestore.sg - APAC area
 
     # Versions
     Currently available are versions **1** and **2-beta**.
