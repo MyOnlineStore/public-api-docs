@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.1] & [1.3.1] 2019-11-27
+
+### Changed
+* __Store__._avatar_url_ is now deprecated. Expect this property
+  to be removed in the future.
+
 ## [2.2.0] & [1.3.0] 2019-11-08
     
 ### Changed

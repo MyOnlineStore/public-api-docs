@@ -3254,7 +3254,7 @@ components:
           description: Store is open for visitors
           type: boolean
         avatar_url:
-          description: Url for the store avatar image
+          description: Url for the store avatar image (deprecated)
           type: string
         version:
           description: Store subscription type
