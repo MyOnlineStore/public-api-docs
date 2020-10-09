@@ -2393,6 +2393,8 @@ components:
         payment:
           provider: 7
           method: 12
+          gateway_name: "basic"
+          method_name: "advance"
         payment_status: captured
         debtor:
           email: support@mijnwebwinkel.nl
@@ -2799,11 +2801,61 @@ components:
       description: Order payment details (available/required if Order.price.total <> 0.00)
       properties:
         provider:
-          description: Payment provider id
+          description: Deprecated - Payment provider id - Use `gateway_name` instead
           type: integer
         method:
-          description: Payment method id
+          description: Deprecated - Payment method id - Use `method_name` instead
           type: integer
+        gateway_name:
+          enum:
+          - "afterpay"
+          - "basic"
+          - "igenco"
+          - "izettle"
+          - "klarna_checkout"
+          - "mollie"
+          - "mollieOld"
+          - "multisafepay"
+          - "paynl"
+          - "paypal"
+          - "paytor"
+          - "sisow"
+          - "sumup"
+          description: Payment gateway name
+          type: string
+        method_name:
+          enum:
+          - "advance"
+          - "afterpay"
+          - "apple_pay"
+          - "bancontact"
+          - "belfius"
+          - "bitcoin"
+          - "card"
+          - "cash"
+          - "creditcard"
+          - "directdebit"
+          - "external"
+          - "giropay"
+          - "ideal"
+          - "invoice"
+          - "in_arrears"
+          - "kbccbc"
+          - "klarna_checkout"
+          - "klarna_paylater"
+          - "maestro"
+          - "mastercard"
+          - "paypal"
+          - "paysafecard"
+          - "pickup"
+          - "podium_giftcard"
+          - "rembours"
+          - "singledebit"
+          - "sofortbanking"
+          - "visa"
+          - "webshop_giftcard"
+          description: Payment method name
+          type: string
         status:
           $ref: "#/components/schemas/OrderPaymentStatus"
     OrderPaymentStatus:
