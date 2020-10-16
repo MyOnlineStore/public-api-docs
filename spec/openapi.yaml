@@ -1347,7 +1347,8 @@ paths:
     get:
       tags:
         - Payment methods
-      description: Returns a listing of all available payment types (methods)
+      description: __Deprecated, use the Payment Gateways endpoints instead.__
+        Returns a listing of all available payment types (methods)
       operationId: getPayTypes
       security:
         - StoreToken:
@@ -1374,7 +1375,8 @@ paths:
     get:
       tags:
         - Payment methods
-      description: Returns a listing of active payment types (methods) for the store
+      description: __Deprecated, use the Payment Gateways endpoints instead.__
+        Returns a listing of active payment types (methods) for the store
       operationId: getPayTypesPerStore
       parameters:
         - $ref: "#/components/parameters/version"
@@ -1394,6 +1396,44 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/StorePayType"
+  "/v{version}/payment/gateways":
+    get:
+      tags:
+        - Payment Gateways
+      description: Retreive a listing of all available payment gateways and methods
+      operationId: getGateways
+      security:
+        - StoreToken:
+            []
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/language"
+        -   $ref: "#/components/parameters/format"
+      responses:
+        "200":
+          description: List of gateways
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentGateways"
+  "/v{version}/payment/stores/{store}/gateways":
+    get:
+      tags:
+        - Payment Gateways
+      description: Retreive a listing of all payment gateways and methods available in the given store
+      operationId: getStoreGateways
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/store"
+        -   $ref: "#/components/parameters/language"
+        -   $ref: "#/components/parameters/format"
+      responses:
+        "200":
+          description: List of gateways
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StorePaymentGateways"
   "/v{version}/shipping/methods":
     get:
       tags:
@@ -1444,6 +1484,8 @@ tags:
     description: Order details
   - name: Order statuses
     description: Available order statuses
+  - name: Payment Gateways
+    description: Available payment gateways
   - name: Payment methods
     description: Available payment methods
   - name: Shipping methods
@@ -1573,6 +1615,13 @@ components:
       schema:
         type: string
         format: date-time
+    store:
+      name: store
+      in: path
+      description: The store's UUID or `me` alias to retreive the store from the access token
+      required: true
+      schema:
+        type: string
     created_start_date:
       name: created_start_date
       in: query
@@ -2906,6 +2955,108 @@ components:
         status: 1
         description: Order Pending
         credit_order: false
+    PaymentGateways:
+      description: List of payment gateways and methods
+      properties:
+        gateways:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentGateway"
+      example:
+        gateways:
+          - name: mollie
+            displayName: Mollie
+            websiteUrl: https://www.mollie.com/
+            methods:
+              - name: ideal
+                displayName: iDEAL
+    PaymentGateway:
+      description: Payment Gateway
+      properties:
+        name:
+          description: Unique identifying name for the given gateway
+          type: string
+        displayName:
+          description: Gateway name for displaying
+          type: string
+        websiteUrl:
+          description: Link to the gateways website
+          type: string
+        methods:
+          description: List of available methods for the given gateway
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentMethod"
+    PaymentMethod:
+      description: Payment method
+      properties:
+        name:
+          description: Unique identifying name for the given method
+          type: string
+        displayName:
+          description: Localized name of the payment method
+          type: string
+    StorePaymentGateways:
+      description: List of payment gateways and methods
+      properties:
+        gateways:
+          type: array
+          items:
+            $ref: "#/components/schemas/StorePaymentGateway"
+      example:
+        gateways:
+          -   name: mollie
+              displayName: Mollie
+              websiteUrl: https://www.mollie.com/
+              methods:
+                -   name: ideal
+                    displayName: iDEAL
+                    settings:
+                      cost:
+                        amount: "0.05"
+                        percentage: "5.87"
+    StorePaymentGateway:
+      description: Payment Gateway
+      properties:
+        name:
+          description: Unique identifying name for the given gateway
+          type: string
+        displayName:
+          description: Gateway name for displaying
+          type: string
+        websiteUrl:
+          description: Link to the gateways website
+          type: string
+        methods:
+          description: List of available methods for the given gateway
+          type: array
+          items:
+            $ref: "#/components/schemas/StorePaymentMethod"
+    StorePaymentMethod:
+      description: Payment method
+      properties:
+        name:
+          description: Unique identifying name for the given method
+          type: string
+        displayName:
+          description: Localized name of the payment method
+          type: string
+        settings:
+          description: List of settings for the given method, specific for the
+            given store
+          type: object
+          properties:
+            cost:
+              description: Charge per transaction for the given method, can be
+                a combination of fixed and percentual
+              type: object
+              properties:
+                amount:
+                  description: Fixed charge per transaction
+                  type: string
+                percentage:
+                  description: Percentual charge per transaction
+                  type: string
     PaymentPayType:
       description: Payment type
       properties:
