@@ -1400,7 +1400,7 @@ paths:
     get:
       tags:
         - Payment Gateways
-      description: Retreive a listing of all available payment gateways and methods
+      description: Retrieve a listing of all available payment gateways and methods
       operationId: getGateways
       security:
         - StoreToken:
@@ -1420,7 +1420,7 @@ paths:
     get:
       tags:
         - Payment Gateways
-      description: Retreive a listing of all payment gateways and methods available in the given store
+      description: Retrieve a listing of all payment gateways and methods available in the given store
       operationId: getStoreGateways
       parameters:
         -   $ref: "#/components/parameters/version"
@@ -1618,7 +1618,7 @@ components:
     store:
       name: store
       in: path
-      description: The store's UUID or `me` alias to retreive the store from the access token
+      description: The store's UUID or `me` alias to retrieve the store from the access token
       required: true
       schema:
         type: string
