@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.2] & [1.3.2] 2020-10-27
+
+### Added
+* Added __getGateways__ and __getStoreGateways__ operations for retrieving available payment
+ gateways and methods. These deprecate the __getPayTypes__ and __getPayTypesPerStore__ operations
+  respectively, which will be removed on the 1st of February 2021.
+
+### Changed
+* __OrderPayment__._provider_ and __OrderPayment__._method_ are now deprecated and will be
+ removed on the 1st of February 2021. These fields have been replaced with __OrderPayment__
+ ._gateway_name_ and __OrderPayment__._method_name_ respectively.  
+
 ## [2.2.1] & [1.3.1] 2019-11-27
 
 ### Changed

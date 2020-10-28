@@ -2440,8 +2440,6 @@ components:
           - 99
           - 101
         payment:
-          provider: 7
-          method: 12
           gateway_name: "basic"
           method_name: "advance"
         payment_status: captured
@@ -2607,8 +2605,8 @@ components:
         business_model: B2C
         offline_location_id: 7127e08a-4af0-4fdf-ac7b-157be3345df0
         payment:
-          provider: 7
-          method: 12
+          gateway_name: mollie
+          method_name: ideal
           status:
             id: 1
         debtor:
