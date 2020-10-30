@@ -1323,7 +1323,7 @@ paths:
       description: Returns a listing of all available order statuses.
       operationId: getOrderStatuses
       security:
-        - StoreToken:
+        - PartnerToken:
             []
       parameters:
         - $ref: "#/components/parameters/version"
@@ -1351,7 +1351,7 @@ paths:
         Returns a listing of all available payment types (methods)
       operationId: getPayTypes
       security:
-        - StoreToken:
+        - PartnerToken:
             []
       parameters:
         - $ref: "#/components/parameters/version"
@@ -1403,7 +1403,7 @@ paths:
       description: Retrieve a listing of all available payment gateways and methods
       operationId: getGateways
       security:
-        - StoreToken:
+        - PartnerToken:
             []
       parameters:
         -   $ref: "#/components/parameters/version"
