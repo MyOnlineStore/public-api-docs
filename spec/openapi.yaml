@@ -1025,34 +1025,10 @@ paths:
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/offset"
         - $ref: "#/components/parameters/activated"
-        - name: created_start_date
-          in: query
-          description: "Minimum for created datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: created_end_date
-          in: query
-          description: "Maximum for created datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: changed_start_date
-          in: query
-          description: "Mimimum for changed datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: changed_end_date
-          in: query
-          description: "Maximum for changed datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
+        - $ref: "#/components/parameters/created_start_date"
+        - $ref: "#/components/parameters/created_end_date"
+        - $ref: "#/components/parameters/changed_start_date"
+        - $ref: "#/components/parameters/changed_end_date"
       responses:
         "200":
           description: List of newsletter subscribers
@@ -1189,34 +1165,10 @@ paths:
         - $ref: "#/components/parameters/language"
         - $ref: "#/components/parameters/format"
         - $ref: "#/components/parameters/activated"
-        - name: created_start_date
-          in: query
-          description: "Minimum for created datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: created_end_date
-          in: query
-          description: "Maximum for created datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: changed_start_date
-          in: query
-          description: "Mimimum for changed datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: changed_end_date
-          in: query
-          description: "Maximum for changed datetime (format: yyyy-mm-dd hh:mm:ss)"
-          required: false
-          schema:
-            type: string
-            format: date-time
+        - $ref: "#/components/parameters/created_start_date"
+        - $ref: "#/components/parameters/created_end_date"
+        - $ref: "#/components/parameters/changed_start_date"
+        - $ref: "#/components/parameters/changed_end_date"
       responses:
         "200":
           description: Number of available newsletter subscribers
@@ -1625,35 +1577,35 @@ components:
     created_start_date:
       name: created_start_date
       in: query
-      description: "Minimum for created date (format: yyyy-mm-dd)"
+      description: "Minimum for created datetime (format: yyyy-mm-dd hh:mm:ss)"
       required: false
       schema:
         type: string
-        format: date
+        format: date-time
     created_end_date:
       name: created_end_date
       in: query
-      description: "Maximum for created date (format: yyyy-mm-dd)"
+      description: "Maximum for created datetime (format: yyyy-mm-dd hh:mm:ss)"
       required: false
       schema:
         type: string
-        format: date
+        format: date-time
     changed_start_date:
       name: changed_start_date
       in: query
-      description: "Minimum for changed date (format: yyyy-mm-dd)"
+      description: "Mimimum for changed datetime (format: yyyy-mm-dd hh:mm:ss)"
       required: false
       schema:
         type: string
-        format: date
+        format: date-time
     changed_end_date:
       name: changed_end_date
       in: query
-      description: "Maximum for changed date (format: yyyy-mm-dd)"
+      description: "Maximum for changed datetime (format: yyyy-mm-dd hh:mm:ss)"
       required: false
       schema:
         type: string
-        format: date
+        format: date-time
     use_url_id:
       name: use_url_id
       in: query
