@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.3] & [1.3.3] 2020-11-11
+
+### Changed
+* all __Article__ and __Category__ will accept dateTime formatted time strings for the fields
+ _created_start_date_, _created_end_date_, _changed_start_date_ and _changed_end_date_, date formatted strings are
+ still supported but will be converted to dd-MM-YY 00:00:00 internally. Support for date format for these endpoints
+ is now deprecated and will removed in the future.
+
+
 ## [2.2.2] & [1.3.2] 2020-10-27
 
 ### Added
