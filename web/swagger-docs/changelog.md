@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.4] & [1.3.4] 2020-11-16
+
+### Added
+* Added `created_time` to __Article__ entity.
+* Added `updated_time` to __Article__ entity.
+
 ## [2.2.3] & [1.3.3] 2020-11-11
 
 ### Changed

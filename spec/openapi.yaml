@@ -1705,7 +1705,9 @@ components:
           default: 12.5
           action: 9.95
         created_date: "2016-07-04"
+        created_time: "09:11:25"
         updated_date: "2016-07-25"
+        updated_time: "11:16:59"
         stock: 15
         delivery_days: 5
         meta_title: "Funny shop: Funny Cushion"
@@ -1758,10 +1760,18 @@ components:
               description: Creation date
               type: string
               format: date
+            created_time:
+              description: Creation time
+              type: string
+              format: time
             updated_date:
               description: Last updated date
               type: string
               format: date
+            updated_time:
+              description: Last updated time
+              type: string
+              format: time
             can_backorder:
               description: Available for purchase if sold out (see also delivery_days)
               type: boolean
