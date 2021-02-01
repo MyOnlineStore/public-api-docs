@@ -1,28 +1,35 @@
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 MAKEFLAGS += --silent
 
-include .env
-export $(shell sed 's/=.*//' .env)
-
 generate-env:
-	echo "PORT=8080" >> .env
+	echo "PORT=9080" > .env
+ifeq ($(OS),Darwin)
+	echo "APP_VOLUME=.:/usr/app:delegated" >> .env
+else
+	echo "APP_VOLUME=.:/usr/app" >> .env
+endif
 
-initialize: generate-env rebuild
+initialize: generate-env pull start
 
 install:
-	docker run --rm -it -v ${CURDIR}:/usr/app public-api-docs install ${ARGS}
+	docker-compose exec connect-documentation npm install ${ARGS}
 
 npm:
-	docker run --rm -it -v ${CURDIR}:/usr/app public-api-docs ${ARGS}
-
-rebuild:
-	docker build -t public-api-docs .
+	docker-compose exec connect-documentation npm ${ARGS}
 
 run:
-	docker run --rm -it -v ${CURDIR}:/usr/app public-api-docs run ${ARGS}
+	docker-compose exec connect-documentation npm run ${ARGS}
+
+pull:
+	docker-compose pull --parallel
+
+restart: stop start
 
 start:
-	docker run --rm -v ${CURDIR}:/usr/app -p ${PORT}:8080 public-api-docs run start
+	docker-compose up --build -d
+
+stop:
+	docker-compose stop -t1
 
 %:
 	@:
