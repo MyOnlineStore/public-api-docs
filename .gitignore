@@ -12,3 +12,6 @@ npm-debug.log
 
 # Environment
 .env
+
+# docker
+/docker-compose.yml
