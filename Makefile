@@ -2,11 +2,10 @@ ARGS = $(filter-out $@,$(MAKECMDGOALS))
 MAKEFLAGS += --silent
 
 generate-env:
-	echo "PORT=9080" > .env
 ifeq ($(OS),Darwin)
-	echo "APP_VOLUME=.:/usr/app:delegated" >> .env
+	echo "APP_VOLUME=.:/usr/app:delegated" > .env
 else
-	echo "APP_VOLUME=.:/usr/app" >> .env
+	echo "APP_VOLUME=.:/usr/app" > .env
 endif
 
 initialize: generate-env pull start

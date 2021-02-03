@@ -6,14 +6,13 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     ports:
-      - '${PORT}:8080'
+      - '8080'
     volumes:
       - '${APP_VOLUME}'
     environment:
       TZ: ${TZ-Europe/Amsterdam}
     networks:
       - default
-      - connect
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.connect.tls=true'
@@ -24,5 +23,3 @@ networks:
   default:
     external:
       name: gateway
-  connect:
-    internal: true
