@@ -1,4 +1,6 @@
 # Changelog
+## [2.2.5] & [1.3.5] 2021-02-01
+* __Article__._lists_._options_ are now required.
 
 ## [2.2.4] & [1.3.4] 2020-11-16
 

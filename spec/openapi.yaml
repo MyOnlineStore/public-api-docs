@@ -1820,7 +1820,6 @@ components:
             is_main: true
             is_active: true
         lists:
-          - id: 193177
           - id: 293822
             has_images: true
             options:
@@ -1874,7 +1873,6 @@ components:
             is_main: true
             is_active: true
         lists:
-          - id: 193177
           - id: 293822
             has_images: true
             options:
@@ -2028,6 +2026,7 @@ components:
     ConfiguratorArticleListPostable:
       required:
         - id
+        - options
       properties:
         id:
           type: integer
