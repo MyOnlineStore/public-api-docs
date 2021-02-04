@@ -1,4 +1,7 @@
 # Changelog
+## [2.2.6] & [1.3.6] 2021-02-04
+* Added __postUploadImage__ operation for uploading and attaching an image to an article.
+
 ## [2.2.5] & [1.3.5] 2021-02-01
 * __Article__._lists_._options_ are now required.
 
