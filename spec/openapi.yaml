@@ -240,6 +240,40 @@ paths:
             text/xml:
               schema:
                 $ref: "#/components/schemas/Article"
+  "/v{version}/articles/uploadImage/{article_id}":
+    post:
+      tags:
+        - Articles
+      summary: Upload a new image for article
+      description: Upload and attach an image to an article without interim storage
+      operationId: postUploadImage
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/format"
+        - name: article_id
+          in: path
+          description: Article id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleUploadImagePostable"
+        description: Image data
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
   "/v{version}/articles/count":
     get:
       tags:
@@ -1905,6 +1939,15 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/ArticleImagePostable"
+    ArticleUploadImagePostable:
+      properties:
+        filename:
+          type: string
+        position:
+          type: integer
+        content:
+          type: string
+          format: base64
     BaseArticle:
       properties:
         name:
