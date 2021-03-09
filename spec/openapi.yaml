@@ -54,8 +54,8 @@ info:
     The tax strategy is derived based on order and store information and cannot be specified as input
 
     ## Payment information
-    MyOnlineStore orders may be paid using a number of payment methods, through various gateways (providers).
-    A payment choice is uniquely specified by the combination of gateway (provider) and method (paytype).
+    MyOnlineStore orders may be paid using a number of payment methods, through various gateways.
+    A payment choice is uniquely specified by the combination of gateway_name and method_name.
     MyOnlineStore also offers one internal gateway (`basic`) which may be used for manually verifiable payments
     (for example: cash or card at the counter)
 
@@ -1329,59 +1329,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/OrderStatus"
-  "/v{version}/paytypes":
-    get:
-      tags:
-        - Payment methods
-      description: __Deprecated, use the Payment Gateways endpoints instead.__
-        Returns a listing of all available payment types (methods)
-      operationId: getPayTypes
-      security:
-        - PartnerToken:
-            []
-      parameters:
-        - $ref: "#/components/parameters/version"
-        - $ref: "#/components/parameters/language"
-        - $ref: "#/components/parameters/format"
-      responses:
-        "200":
-          description: Payment type list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ProviderPayType"
-            text/xml:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ProviderPayType"
-  "/v{version}/paytypes/store":
-    get:
-      tags:
-        - Payment methods
-      description: __Deprecated, use the Payment Gateways endpoints instead.__
-        Returns a listing of active payment types (methods) for the store
-      operationId: getPayTypesPerStore
-      parameters:
-        - $ref: "#/components/parameters/version"
-        - $ref: "#/components/parameters/language"
-        - $ref: "#/components/parameters/format"
-      responses:
-        "200":
-          description: Payment type list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StorePayType"
-            text/xml:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StorePayType"
   "/v{version}/payment/gateways":
     get:
       tags:
@@ -1472,8 +1419,6 @@ tags:
     description: Available order statuses
   - name: Payment Gateways
     description: Available payment gateways
-  - name: Payment methods
-    description: Available payment methods
   - name: Shipping methods
     description: Available shipping methods
   - name: OfflineLocations
@@ -2851,12 +2796,6 @@ components:
     OrderPayment:
       description: Order payment details (available/required if Order.price.total <> 0.00)
       properties:
-        provider:
-          description: Deprecated - Payment provider id - Use `gateway_name` instead
-          type: integer
-        method:
-          description: Deprecated - Payment method id - Use `method_name` instead
-          type: integer
         gateway_name:
           enum:
           - "afterpay"
@@ -3059,41 +2998,6 @@ components:
                 percentage:
                   description: Percentual charge per transaction
                   type: string
-    PaymentPayType:
-      description: Payment type
-      properties:
-        id:
-          description: Identifier for the payment type
-          type: integer
-        identifier:
-          description: Description of the payment type
-          type: string
-    PaymentProvider:
-      description: Payment provider
-      properties:
-        id:
-          description: Identifier for the payment provider
-          type: integer
-        name:
-          description: Name of the payment provider
-          type: string
-        website:
-          description: Details about the payment provider
-          type: string
-    ProviderPayType:
-      properties:
-        type:
-          $ref: "#/components/schemas/PaymentPayType"
-        provider:
-          $ref: "#/components/schemas/PaymentProvider"
-      example:
-        type:
-          id: 20
-          identifier: bitcoin
-        provider:
-          id: 9
-          name: Mollie
-          website: http://www.mollie.nl/
     OrderShippingCountry:
       description: Order shipping country settings
       properties:
@@ -3103,30 +3007,6 @@ components:
         isocode:
           description: Country iso code
           type: string
-    StorePayType:
-      example:
-        amount: "0.25"
-        percentage: "0.00"
-        minimum: "0.00"
-        type:
-          id: 20
-          identifier: bitcoin
-        provider:
-          id: 9
-          name: Mollie
-          website: http://www.mollie.nl/
-      allOf:
-        - properties:
-            amount:
-              description: Fixed charge per transaction
-              type: number
-            percentage:
-              description: Percentual charge per transaction
-              type: number
-            minimum:
-              description: Minimal order amount to activate
-              type: number
-        - $ref: "#/components/schemas/ProviderPayType"
     TaxPrice:
       required:
         - rate

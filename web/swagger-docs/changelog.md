@@ -1,4 +1,8 @@
 # Changelog
+## [2.3] & [1.4] 2021-02-04
+* Removed payment endpoints that were deprecated in [2.2.2] and [1.3.2].
+* Removed __OrderPayment__ properties that were deprecated in [2.2.2] and [1.3.2].
+
 ## [2.2.6] & [1.3.6] 2021-02-04
 * Added __postUploadImage__ operation for uploading and attaching an image to an article.
 
