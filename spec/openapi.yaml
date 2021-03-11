@@ -1667,7 +1667,7 @@ components:
     ids:
       name: ids
       in: query
-      description: Only include products with specefic ids
+      description: Only include products with specific ids
       required: false
       schema:
         type: array
