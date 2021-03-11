@@ -111,6 +111,7 @@ paths:
         - $ref: "#/components/parameters/created_end_date"
         - $ref: "#/components/parameters/changed_start_date"
         - $ref: "#/components/parameters/changed_end_date"
+        - $ref: "#/components/parameters/ids"
       responses:
         "200":
           description: Article list
@@ -1608,6 +1609,15 @@ components:
       schema:
         type: boolean
         default: false
+    ids:
+      name: ids
+      in: query
+      description: Only include products with specific ids
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
   requestBodies:
     postArticleListsLists:
       content:
