@@ -3348,9 +3348,6 @@ components:
         open:
           description: Store is open for visitors
           type: boolean
-        avatar_url:
-          description: Url for the store avatar image (deprecated)
-          type: string
         version:
           description: Store subscription type
           type: string
@@ -3387,7 +3384,6 @@ components:
         primary_domain: https://www.knickknacks.be
         description: Nice stuff of very high quality
         open: true
-        avatar_url: https://static.mijnwebwinkel.nl/thumbs_stores/53747.jpg?1491382668
         version: Pro
         administration_language: nl_NL
         currency: EUR
