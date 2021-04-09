@@ -545,6 +545,29 @@ paths:
             text/xml:
               schema:
                 $ref: "#/components/schemas/Article"
+  "/v{version}/customers/{id}":
+    get:
+      tags:
+        - Customers
+      summary: Return a single customer
+      description: Returns a specific customer
+      operationId: getCustomer
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   name: id
+            in: path
+            description: Customer identifier
+            required: true
+            schema:
+              type: string
+              format: uuid
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
   "/v{version}/orders":
     get:
       tags:
@@ -1430,6 +1453,12 @@ tags:
     description: Subscriber details for the store's newsletter
   - name: Categories (Pages)
     description: Page details
+  - name: Customers
+    description: |
+      Store customer accounts.
+      ### Access
+      Due to informational sensitivity, access to these endpoints is restricted. Contact us if you'd like to make use of
+      them in your integration.
   - name: Articles
     description: Article details
   - name: ArticleListOptions
