@@ -1,3 +1,5 @@
+.DS_Store
+
 # Dir for API portal deploy
 web_deploy
 web/swagger-ui-dist
