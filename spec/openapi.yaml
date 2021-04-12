@@ -604,6 +604,41 @@ paths:
                 properties:
                   customer:
                     $ref: "#/components/schemas/Customer"
+    patch:
+      tags:
+        - Customers
+      summary: Update
+      description: Update a specific customer by its identifier.
+      operationId: patchCustomer
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   name: id
+            in: path
+            description: Customer identifier
+            required: true
+            schema:
+              type: string
+              format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerPatchable"
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema:
+                properties:
+                  customer:
+                    $ref: "#/components/schemas/Customer"
+        "422":
+          description: Invalid Payload (RFC7807 Problem Details)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
     delete:
       tags:
         - Customers
@@ -2380,6 +2415,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CustomerAddress'
+    CustomerPatchable:
+      description: Customer Update Body
+      properties:
+        firstName:
+          description: First name
+          type: string
+          nullable: true
+        lastName:
+          description: Last name
+          type: string
+          nullable: true
+        dateOfBirth:
+          description: Date of birth (yyyy-mm-dd)
+          type: string
+          nullable: true
+          format: date
+        description:
+          description: Information about the customer added by the merchant
+          type: string
+          nullable: true
     CustomerAddress:
       description: Customer Address
       properties:
@@ -3572,3 +3627,17 @@ components:
           - de_DE
         currency_format_locale: nl_NL
         available_business_models: B2C
+    ApiProblem:
+      properties:
+        type:
+          description: Type of error
+          type: string
+        title:
+          description: Title of the error
+          type: string
+        detail:
+          description: Description of the error
+          type: string
+        status:
+          description: Statuscode
+          type: integer
