@@ -604,6 +604,24 @@ paths:
                 properties:
                   customer:
                     $ref: "#/components/schemas/Customer"
+    delete:
+      tags:
+        - Customers
+      summary: Remove
+      description: Remove a specific customer by its identifier.
+      operationId: deleteCustomer
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   name: id
+            in: path
+            description: Customer identifier
+            required: true
+            schema:
+              type: string
+              format: uuid
+      responses:
+        "200":
+          description: Empty Response
   "/v{version}/orders":
     get:
       tags:
