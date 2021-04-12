@@ -1,4 +1,4 @@
-FROM node:10.15.0-alpine
+FROM node:15-alpine
 
 # Required for gh-pages deployment
 RUN apk add --no-cache git openssh
