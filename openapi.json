@@ -810,6 +810,43 @@
         }
       }
     },
+    "/v{version}/customers/{id}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Return a single customer",
+        "description": "Returns a specific customer",
+        "operationId": "getCustomer",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v{version}/orders": {
       "get": {
         "tags": [
@@ -2373,6 +2410,10 @@
       "description": "Page details"
     },
     {
+      "name": "Customers",
+      "description": "Store customer accounts.\n### Access\nDue to informational sensitivity, access to these endpoints is restricted. Contact us if you'd like to make use of\nthem in your integration.\n"
+    },
+    {
       "name": "Articles",
       "description": "Article details"
     },
@@ -3541,6 +3582,128 @@
           "count": {
             "description": "The number of matching items",
             "type": "integer"
+          }
+        }
+      },
+      "Customer": {
+        "description": "Customer",
+        "properties": {
+          "id": {
+            "description": "Customer identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "storeId": {
+            "description": "Store identifier that this customer belongs to",
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "description": "Email address",
+            "type": "string",
+            "format": "email"
+          },
+          "firstName": {
+            "description": "First name",
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "description": "Last name",
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "description": "Date of birth (yyyy-mm-dd)",
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "description": {
+            "description": "Information about the customer added by the merchant",
+            "type": "string",
+            "nullable": true
+          },
+          "addresses": {
+            "description": "Addresses for this customers",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerAddress"
+            }
+          }
+        }
+      },
+      "CustomerAddress": {
+        "description": "Customer Address",
+        "properties": {
+          "id": {
+            "description": "Address identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
+            "description": "First name",
+            "type": "string"
+          },
+          "lastName": {
+            "description": "Last name",
+            "type": "string"
+          },
+          "street": {
+            "description": "Street name",
+            "type": "string"
+          },
+          "streetNumber": {
+            "description": "Street number (may include suffix)",
+            "type": "string"
+          },
+          "zipCode": {
+            "description": "Zip code",
+            "type": "string"
+          },
+          "city": {
+            "description": "City",
+            "type": "string"
+          },
+          "countryCode": {
+            "description": "ISO 3166-1 alpha-2 country code",
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "company": {
+            "description": "Company name",
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "description": "Gender",
+            "type": "string",
+            "nullable": true,
+            "pattern": "^M|F$"
+          },
+          "phone": {
+            "description": "Phone number",
+            "type": "string",
+            "nullable": true
+          },
+          "taxNumber": {
+            "description": "Vat reference number",
+            "type": "string",
+            "nullable": true
+          },
+          "iban": {
+            "description": "International Bank Account Number",
+            "type": "string",
+            "format": "iban",
+            "nullable": true
+          },
+          "isDefaultForDelivery": {
+            "description": "Whether this address should be used as delivery address by default",
+            "type": "boolean"
+          },
+          "isDefaultForInvoice": {
+            "description": "Whether this address should be used as invoice address by default",
+            "type": "boolean"
           }
         }
       },
