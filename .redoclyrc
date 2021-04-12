@@ -1,8 +1,0 @@
-specFileName: /usr/app/spec.json
-apiTitle: MyOnlineStore
-splitSpec: false
-codeSamples: false
-swaggerUI: true
-travis: true
-repo: MyOnlineStore/public-api-docs
-oasVersion: '2.0'

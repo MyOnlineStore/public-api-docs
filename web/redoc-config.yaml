@@ -1,7 +1,0 @@
-hideDownloadButton: true
-requiredPropsFirst: true
-sortPropsAlphabetically: false
-theme:
-  colors:
-    primary:
-      main: '#32329f'

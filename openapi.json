@@ -1,0 +1,5288 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MyOnlineStore Connect | API",
+    "contact": {
+      "name": "MyOnlineStore"
+    },
+    "version": "1",
+    "description": "# Introduction\nAn online store should be within everyone’s reach. That’s why creating the best online platform is our mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the opportunity to follow their dream. Today is the day!\n\n* Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)\n* A [sandbox UI](swagger-docs) is available to test your requests\n* The [changelog](swagger-docs/changelog.md) can be found [here](swagger/docs-changelog.md)\n\n# Environments\nA single (live) environment is available:\n* api.myonlinestore.com - EMEA area\n\n# Versions\nCurrently available are versions **1** and **2-beta**.\nBoth are stable, but backwards incompatible changes may be applied to v**-beta**\nand deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed\nbetween **1** and **2-beta**, though contents are the same\n\n# Guides\n## Business models\nFor our purposes a business model reflects the type of sale made in an order. We currently distinguish \"business to customer\" (`B2C`) and\n\"business to business\" (`B2B`) models. Each order is assigned a model, with B2C being the default. The merchant can specify which model(s)\nmay be used for new orders (pending package/version limitations)\n\nFor an order to qualify for the `B2B` model, the following requirements apply:\n\n* The merchant must have allowed this model to be used (__Store__._available_business_models_ must be `ALL` or `B2B`)\n* __OrderDebtor__._address_._invoice_._company_ must not be empty\n* The selected payment method must allow `B2B` sales. Notably: `Klarna Checkout`, `Klarna Pay Later` and `Afterpay` do not support this model\n\nIf the B2B model applies to an order, some additional options are available:\n\n* __Order__._reference_ may be set to an arbritary string\n* __OrderDebtor__._address_._invoice_._taxnumber_ may be set to a valid VAT number\n  (this is not required, but recommended to allow the merchant to verify tax rule applicability)\n* Vat reverse charging becomes available as a valid tax strategy (see Tax rules section)\n\n## Tax rules\nDepending on the type of sale, country of origin and destination country, some special tax rules may apply to an order. This is reflected in a \"tax strategy\"\n\nWe currently distinguish the following cases:\n* Sales within the domestic borders (origin and destination country are the same): regular tax applies\n* Sales wholly outside EU borders (both origin and destination country not part of the EU): regular tax applies\n* Sales crossing the EU border (origin country part of the EU and destination country not part of the EU, or vice versa): 0% tax is applied\n* B2B Sales crossing domestic borders, but not the EU border (both origin and destination country are part of the EU, but not the same):\n  VAT is reverse charged, 0% tax is applied\n\nThe tax strategy is derived based on order and store information and cannot be specified as input\n\n## Payment information\nMyOnlineStore orders may be paid using a number of payment methods, through various gateways.\nA payment choice is uniquely specified by the combination of gateway_name and method_name.\nMyOnlineStore also offers one internal gateway (`basic`) which may be used for manually verifiable payments\n(for example: cash or card at the counter)\n\nOrders may follow one of two payment flows:\n\n1. The order has zero or more transactions. At this time the transaction amount will always equal the\nfull order amount (including tax), but partial payments may be added in the future. To be considered finished,\nat least one transaction must have reached pending, authorized or captured status.\n\n2. The order has a directly linked singular payment. This option will be deprecated soon,\nbut may still be reflected in historical data and orders created through the API endpoint\n\nEach order has a payment status (`payment_status`), which is derived from either the transactions from option 1\nor the singular payment from option 2. This will be one of the following:\n\n* `new`: The attached transaction has been created, but has not yet been confirmed by the gateway\n* `pending`: The attached transaction has been updated with a reference to the corresponding transaction at the gateway\n* `authorized`: The full order amount amount has been confirmed and reserved at the customer's account\n* `captured`: The full order amount has been transferred to the merchant's account\n* `incomplete`: This is an external gateway status which may occur if we fetch the status upstream, may be considered as `new`\n* 'failed': The attached transaction has failed to complete\n* `refunded`: The full order amount has been refunded\n* `voided`: The full order amount was reserved (authorized) but this reservation was subsequently cancelled\n* `unknown`: No payment status can be derived\n\n### Special cases\n* Orders with a total price of 0.00: These do not require any payment information. They may be assigned a method,\nbut will never have any transactions attached.\n* Credit orders: These do not have any direct payment information attached.\nFor an up-to-date status, transactions and mutations, the original order should be requested.\n",
+    "x-logo": {
+      "url": "images/mos-connect-logo.png"
+    }
+  },
+  "security": [
+    {
+      "StoreToken": [],
+      "PartnerToken": []
+    }
+  ],
+  "paths": {
+    "/v{version}/articles": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Return a collection of articles",
+        "description": "Returns a listing of articles for the store",
+        "operationId": "getArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/created_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/created_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/ids"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Article"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Article"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Create a new article",
+        "description": "Create a new article",
+        "operationId": "postArticle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticlePostable"
+              }
+            }
+          },
+          "description": "Article data",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Article details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/articles/{article_id}": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Return a single article",
+        "description": "Returns a specific article",
+        "operationId": "getArticle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/use_url_id"
+          },
+          {
+            "name": "article_id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Remove Article",
+        "description": "Remove article",
+        "operationId": "deleteArticle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/use_url_id"
+          },
+          {
+            "name": "article_id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Change a single article",
+        "description": "Change a specific article",
+        "operationId": "patchArticle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/use_url_id"
+          },
+          {
+            "name": "article_id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleChangeable"
+              }
+            }
+          },
+          "description": "Article with attributes to change",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Article details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/articles/uploadImage/{article_id}": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Upload a new image for article",
+        "description": "Upload and attach an image to an article without interim storage",
+        "operationId": "postUploadImage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "article_id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleUploadImagePostable"
+              }
+            }
+          },
+          "description": "Image data",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/articles/count": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Return the number of available articles",
+        "description": "Returns the number of available articles",
+        "operationId": "getArticleCount",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/created_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/created_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_end_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number of available articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/articlefields/{article_id}": {
+      "post": {
+        "tags": [
+          "ArticleFields"
+        ],
+        "summary": "Create new StoreArticleFields",
+        "description": "Add new merchant specified article field(s)",
+        "operationId": "postArticleFields",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/use_url_id"
+          },
+          {
+            "name": "article_id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "visible",
+            "in": "query",
+            "description": "Whether this field should be visibile or invisble to shop visitors",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "fieldname": "value"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "description": "Name => value pairs",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Article details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ArticleFields"
+        ],
+        "summary": "Remove StoreArticleFields",
+        "description": "Remove merchant specified article field(s)",
+        "operationId": "deleteArticleFields",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/use_url_id"
+          },
+          {
+            "name": "article_id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "visible",
+            "in": "query",
+            "description": "Whether this field should be visibile or invisble to shop visitors",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "description": "Name of a field to remove",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Article details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/articlelistoptions/{articlelist_id}": {
+      "post": {
+        "tags": [
+          "ArticleListOptions"
+        ],
+        "summary": "Create new ArticleListOptions",
+        "description": "Add new options to an articlelist",
+        "operationId": "postArticleListOptions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "articlelist_id",
+            "in": "path",
+            "description": "Articlelist id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ArticleListOption"
+                }
+              }
+            }
+          },
+          "description": "Set of list options",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Articlelist details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ArticleListOptions"
+        ],
+        "summary": "Remove options from an ArticleList",
+        "description": "Remove options from an articlelist",
+        "operationId": "deleteArticleListOptions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "articlelist_id",
+            "in": "path",
+            "description": "Articlelist id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "description": "Option names",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Articlelist details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/articlelists/{id}": {
+      "get": {
+        "tags": [
+          "ArticleLists"
+        ],
+        "summary": "Get a specific article list",
+        "description": "Get a specific article list",
+        "operationId": "getArticleList",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Articlelist id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Articlelist details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ArticleLists"
+        ],
+        "summary": "Add articleLists to an Article",
+        "description": "Add lists to an Article",
+        "operationId": "postArticleLists",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/use_url_id"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postArticleListsLists"
+        },
+        "responses": {
+          "200": {
+            "description": "Article details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ArticleLists"
+        ],
+        "summary": "Remove articleLists from an Article",
+        "description": "Remove lists from an Article",
+        "operationId": "deleteArticleLists",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/use_url_id"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Article id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/postArticleListsLists"
+        },
+        "responses": {
+          "200": {
+            "description": "Article details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/customers/{id}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Return a single customer",
+        "description": "Returns a specific customer",
+        "operationId": "getCustomer",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Return a collection of orders",
+        "description": "Returns a listing of orders for the store",
+        "operationId": "getOrders",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/start_date"
+          },
+          {
+            "$ref": "#/components/parameters/end_date"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/archived"
+          },
+          {
+            "$ref": "#/components/parameters/status_id"
+          },
+          {
+            "$ref": "#/components/parameters/status_changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/status_changed_end_date"
+          },
+          {
+            "name": "ordering",
+            "in": "query",
+            "description": "Ordering (by ordernumber)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Create a new order",
+        "description": "Create a new order",
+        "operationId": "postOrder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "name": "send_customer_notification",
+            "in": "query",
+            "description": "Send an order confirmation to the customer",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "send_merchant_notification",
+            "in": "query",
+            "description": "Send a new order notification to the merchant (if enabled in notification settings)",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "override_stock",
+            "in": "query",
+            "description": "Ignore stock limitations on articles, mutations are still applied. (special access required)",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderPostable"
+              }
+            }
+          },
+          "description": "Order details",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Order details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/orders/count": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Return the number of available orders",
+        "description": "Returns the number of available orders",
+        "operationId": "getOrderCount",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/start_date"
+          },
+          {
+            "$ref": "#/components/parameters/end_date"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/archived"
+          },
+          {
+            "$ref": "#/components/parameters/status_id"
+          },
+          {
+            "$ref": "#/components/parameters/status_changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/status_changed_end_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "number of available orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/orders/{order_number}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Return a single order",
+        "description": "Returns a specific order",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "description": "Order number",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Change a single order",
+        "description": "Change a specific order",
+        "operationId": "patchOrder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "description": "Order number",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "override_minimum",
+            "in": "query",
+            "description": "Ignore minimum order total limitations (special access required)",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "override_stock",
+            "in": "query",
+            "description": "Ignore stock limitations on articles, mutations are still applied. (special access required)",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "mutate_stock",
+            "in": "query",
+            "description": "Perform stock mutations (applies to credit orders only!)",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderPatchable"
+              }
+            }
+          },
+          "description": "Order attributes to change",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Order details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/categories/{category_id}": {
+      "get": {
+        "tags": [
+          "Categories (Pages)"
+        ],
+        "description": "Returns a specific category",
+        "operationId": "getCategory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "category_id",
+            "in": "path",
+            "description": "Category id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Categories (Pages)"
+        ],
+        "description": "Update category page",
+        "operationId": "patchCategory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "category_id",
+            "in": "path",
+            "description": "Category id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryPatchable"
+              }
+            }
+          },
+          "description": "Category",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/categories": {
+      "get": {
+        "tags": [
+          "Categories (Pages)"
+        ],
+        "description": "Returns a listing of pages for the store",
+        "operationId": "getCategories",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/created_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/created_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_end_date"
+          },
+          {
+            "name": "as_tree",
+            "in": "query",
+            "description": "Display as an ordered tree structure, as used in the store.\n(note: limit & offset have no effect in this mode)",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "max_depth",
+            "in": "query",
+            "description": "Maximum depth for tree structure",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories (Pages)"
+        ],
+        "description": "Create a new category page",
+        "operationId": "postCategory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryPostable"
+              }
+            }
+          },
+          "description": "Category",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/categories/count": {
+      "get": {
+        "tags": [
+          "Categories (Pages)"
+        ],
+        "description": "Returns the number of available categories",
+        "operationId": "getCategoryCount",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/created_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/created_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_end_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number of available categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/discountcodes": {
+      "get": {
+        "tags": [
+          "Discountcodes"
+        ],
+        "description": "Returns a listing of discountcodes for the store",
+        "operationId": "getDiscountcodes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "description": "Only (in)active discountcodes",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "valid_start_date",
+            "in": "query",
+            "description": "Filter on discountcodes which are valid from the specified date(format: yyyy-mm-dd). May also return discountcodes without validity limits",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "valid_end_date",
+            "in": "query",
+            "description": "Filter on discountcodes which are valid until the specified date(format: yyyy-mm-dd). May also return discountcodes without validity limits",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of discountcodes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Discountcode"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Discountcode"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Discountcodes"
+        ],
+        "description": "Create a new discountcode",
+        "operationId": "postDiscountcode",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Discountcode"
+              }
+            }
+          },
+          "description": "Discountcode with attributes to set",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Discountcode details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discountcode"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discountcode"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Discountcodes"
+        ],
+        "description": "Change a specific discountcode",
+        "operationId": "patchDiscountcode",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Discountcode"
+              }
+            }
+          },
+          "description": "Discountcode with attributes to change",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Discountcode details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discountcode"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discountcode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/discountcodes/{code}": {
+      "get": {
+        "tags": [
+          "Discountcodes"
+        ],
+        "description": "Returns a specific discountcode",
+        "operationId": "getDiscountcode",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Unique discountcode identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Discountcode details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discountcode"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discountcode"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Discountcodes"
+        ],
+        "description": "Remove a specific discountcode",
+        "operationId": "deleteDiscountcode",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Unique discountcode identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Discountcode successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/newsletter/subscribers": {
+      "get": {
+        "tags": [
+          "NewsletterSubscribers"
+        ],
+        "description": "Returns a listing of newsletter subscribers for the store",
+        "operationId": "getNewsletterSubscribers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/activated"
+          },
+          {
+            "$ref": "#/components/parameters/created_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/created_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_end_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of newsletter subscribers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewsletterSubscriber"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewsletterSubscriber"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NewsletterSubscribers"
+        ],
+        "description": "Create a new newsletter subscriber",
+        "operationId": "postNewsletterSubscriber",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/activate"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsletterSubscriberPostable"
+              }
+            }
+          },
+          "description": "Newsletter subscriber with attributes to change",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Newsletter subscriber details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsletterSubscriber"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsletterSubscriber"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/newsletter/subscribers/{email}": {
+      "get": {
+        "tags": [
+          "NewsletterSubscribers"
+        ],
+        "description": "Returns a specific newsletter subscriber",
+        "operationId": "getNewsletterSubscriber",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "Newsletter subscriber email address",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Newsletter subscriber details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsletterSubscriber"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsletterSubscriber"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NewsletterSubscribers"
+        ],
+        "description": "Remove a specific newsletter subscriber",
+        "operationId": "deleteNewsletterSubscriber",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "Newsletter subscriber email address",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Newsletter subscriber succesfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "NewsletterSubscribers"
+        ],
+        "description": "Change a specific newsletter subscribers",
+        "operationId": "patchNewsletterSubscriber",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/activate"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "Newsletter subscriber email address",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsletterSubscriberPatchable"
+              }
+            }
+          },
+          "description": "Newsletter subscriber with attributes to change",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Newsletter subscriber details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsletterSubscriber"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsletterSubscriber"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/newsletter/subscribers/count": {
+      "get": {
+        "tags": [
+          "NewsletterSubscribers"
+        ],
+        "description": "Returns the number of available newsletter subscribers",
+        "operationId": "countNewsletterSubscribers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/activated"
+          },
+          {
+            "$ref": "#/components/parameters/created_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/created_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_start_date"
+          },
+          {
+            "$ref": "#/components/parameters/changed_end_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number of available newsletter subscribers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/offlinelocations": {
+      "get": {
+        "tags": [
+          "OfflineLocations"
+        ],
+        "description": "Returns a listing of offline (POS) locations for the store",
+        "operationId": "getOfflineLocations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "deleted",
+            "in": "query",
+            "description": "Filter (soft) deleted locations",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of offline (POS) locations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OfflineLocation"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OfflineLocation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/offlinelocations/{id}": {
+      "get": {
+        "tags": [
+          "OfflineLocations"
+        ],
+        "description": "Returns a specific offline (POS) location",
+        "operationId": "getOfflineLocation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique location identifier (UUID string)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offline location details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineLocation"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineLocation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/orders/credit": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "description": "Create a credit order for an existing order",
+        "operationId": "postCreditOrder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "name": "mutate_stock",
+            "in": "query",
+            "description": "Perform stock mutations, reverting (specified) mutations of the original order",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreditOrderPostable"
+              }
+            }
+          },
+          "description": "Credit order specification",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Order details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/orderstatuses": {
+      "get": {
+        "tags": [
+          "Order statuses"
+        ],
+        "description": "Returns a listing of all available order statuses.",
+        "operationId": "getOrderStatuses",
+        "security": [
+          {
+            "PartnerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order status list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderStatus"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderStatus"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/payment/gateways": {
+      "get": {
+        "tags": [
+          "Payment Gateways"
+        ],
+        "description": "Retrieve a listing of all available payment gateways and methods",
+        "operationId": "getGateways",
+        "security": [
+          {
+            "PartnerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of gateways",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentGateways"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/payment/stores/{store}/gateways": {
+      "get": {
+        "tags": [
+          "Payment Gateways"
+        ],
+        "description": "Retrieve a listing of all payment gateways and methods available in the given store",
+        "operationId": "getStoreGateways",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/store"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of gateways",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorePaymentGateways"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/shipping/methods": {
+      "get": {
+        "tags": [
+          "Shipping methods"
+        ],
+        "description": "Returns a listing of available shipping methods for the store",
+        "operationId": "getShippingMethods",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of shipping methods",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShippingMethod"
+                  }
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShippingMethod"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/store": {
+      "get": {
+        "tags": [
+          "Store information"
+        ],
+        "description": "Returns details for the store (identified by token)",
+        "operationId": "getStore",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Store"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Store"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Store information",
+      "description": "General store details"
+    },
+    {
+      "name": "Orders",
+      "description": "Order details"
+    },
+    {
+      "name": "Order statuses",
+      "description": "Available order statuses"
+    },
+    {
+      "name": "Payment Gateways",
+      "description": "Available payment gateways"
+    },
+    {
+      "name": "Shipping methods",
+      "description": "Available shipping methods"
+    },
+    {
+      "name": "OfflineLocations",
+      "description": "Point of sale location details"
+    },
+    {
+      "name": "Discountcodes",
+      "description": "Available discountcode details"
+    },
+    {
+      "name": "NewsletterSubscribers",
+      "description": "Subscriber details for the store's newsletter"
+    },
+    {
+      "name": "Categories (Pages)",
+      "description": "Page details"
+    },
+    {
+      "name": "Customers",
+      "description": "Store customer accounts.\n### Access\nDue to informational sensitivity, access to these endpoints is restricted. Contact us if you'd like to make use of\nthem in your integration.\n"
+    },
+    {
+      "name": "Articles",
+      "description": "Article details"
+    },
+    {
+      "name": "ArticleListOptions",
+      "description": "Options for article lists"
+    },
+    {
+      "name": "ArticleLists",
+      "description": "Article (option) list details"
+    },
+    {
+      "name": "ArticleFields",
+      "description": "Custom article fields"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.myonlinestore.com/"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Maximum number of items to return (max: 100)",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "maximum": 100,
+          "default": 10
+        }
+      },
+      "offset": {
+        "name": "offset",
+        "in": "query",
+        "description": "Number of items to skip",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "start_date": {
+        "name": "start_date",
+        "in": "query",
+        "description": "Minimum date value",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "end_date": {
+        "name": "end_date",
+        "in": "query",
+        "description": "Maximum date value",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "version": {
+        "name": "version",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2-beta"
+          ],
+          "default": "1"
+        }
+      },
+      "language": {
+        "name": "language",
+        "in": "query",
+        "description": "Shop language to return content for",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "nl_NL",
+            "en_GB",
+            "de_DE",
+            "fr_FR",
+            "es_ES",
+            "en_US",
+            "pt_PT",
+            "it_IT",
+            "da_DK",
+            "sv_SE",
+            "no_NO",
+            "tr_TR",
+            "pl_PL"
+          ],
+          "default": "nl_NL"
+        }
+      },
+      "format": {
+        "name": "format",
+        "in": "query",
+        "description": "Response format",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "json",
+            "xml"
+          ],
+          "default": "json"
+        }
+      },
+      "archived": {
+        "name": "archived",
+        "in": "query",
+        "description": "Archived status",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "status_id": {
+        "name": "status_id",
+        "in": "query",
+        "description": "Only include orders with specific status",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "status_changed_start_date": {
+        "name": "status_changed_start_date",
+        "in": "query",
+        "description": "Minimum for status changed datetime (format: yyyy-mm-dd hh:mm:ss)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "status_changed_end_date": {
+        "name": "status_changed_end_date",
+        "in": "query",
+        "description": "Maximum for status changed datetime (format: yyyy-mm-dd hh:mm:ss)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "store": {
+        "name": "store",
+        "in": "path",
+        "description": "The store's UUID or `me` alias to retrieve the store from the access token",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "created_start_date": {
+        "name": "created_start_date",
+        "in": "query",
+        "description": "Minimum for created datetime (format: yyyy-mm-dd hh:mm:ss)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "created_end_date": {
+        "name": "created_end_date",
+        "in": "query",
+        "description": "Maximum for created datetime (format: yyyy-mm-dd hh:mm:ss)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "changed_start_date": {
+        "name": "changed_start_date",
+        "in": "query",
+        "description": "Mimimum for changed datetime (format: yyyy-mm-dd hh:mm:ss)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "changed_end_date": {
+        "name": "changed_end_date",
+        "in": "query",
+        "description": "Maximum for changed datetime (format: yyyy-mm-dd hh:mm:ss)",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "use_url_id": {
+        "name": "use_url_id",
+        "in": "query",
+        "description": "Enable this when article_id equals the ID from article page URLs",
+        "required": true,
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "activated": {
+        "name": "activated",
+        "in": "query",
+        "description": "Filter on activated (confirmed) subscriptions",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "activate": {
+        "name": "activate",
+        "in": "query",
+        "description": "Activation email should be send to subscriber (if not already activated)",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "ids": {
+        "name": "ids",
+        "in": "query",
+        "description": "Only include products with specific ids",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "postArticleListsLists": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "description": "List Ids",
+        "required": true
+      }
+    },
+    "securitySchemes": {
+      "StoreToken": {
+        "description": "The merchant may create a token to give your application access to their data. This can be done from the shop backend through **Settings --> API --> Add new token**. This token should be kept secret.",
+        "type": "apiKey",
+        "in": "query",
+        "name": "token"
+      },
+      "PartnerToken": {
+        "description": "This token can be obtained by [registering](https://www.mijnwebwinkel.nl/contact) your (intended) application. This token should be kept secret.",
+        "type": "apiKey",
+        "in": "query",
+        "name": "partner_token"
+      }
+    },
+    "schemas": {
+      "Address": {
+        "description": "Generic address",
+        "required": [
+          "name",
+          "zipcode"
+        ],
+        "properties": {
+          "id": {
+            "description": "Address UUID. No other address field is required if an ID is provided.",
+            "type": "string"
+          },
+          "gender": {
+            "description": "Gender description",
+            "type": "string"
+          },
+          "name": {
+            "description": "Full name",
+            "type": "string"
+          },
+          "company": {
+            "description": "Company name",
+            "type": "string"
+          },
+          "phone": {
+            "description": "Phone number",
+            "type": "string"
+          },
+          "street": {
+            "description": "Street name",
+            "type": "string"
+          },
+          "number": {
+            "description": "Housenumber",
+            "type": "string"
+          },
+          "zipcode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "country": {
+            "description": "(Localized) country name (deprecated)",
+            "type": "string"
+          },
+          "country_code": {
+            "description": "ISO 3166-1 alpha-2 country code",
+            "type": "string"
+          }
+        }
+      },
+      "Article": {
+        "required": [
+          "categories",
+          "name"
+        ],
+        "example": {
+          "name": "Funny cushion",
+          "description": "Endless fun",
+          "sku": "ART758379-L",
+          "badge_text": "van - voor",
+          "tax": 21,
+          "price": {
+            "default": 12.5,
+            "action": 9.95
+          },
+          "created_date": "2016-07-04",
+          "created_time": "09:11:25",
+          "updated_date": "2016-07-25",
+          "updated_time": "11:16:59",
+          "stock": 15,
+          "delivery_days": 5,
+          "meta_title": "Funny shop: Funny Cushion",
+          "meta_description": "Awesome description here",
+          "can_backorder": false,
+          "extra": {
+            "invisible": {
+              "weight": "0.25",
+              "barcode": "8712345678906"
+            },
+            "visible": {
+              "Fart power (Beaufort)": "5"
+            }
+          },
+          "categories": [
+            {
+              "category_id": 748020,
+              "article_url_id": 245,
+              "is_active": true,
+              "is_main": true
+            }
+          ],
+          "lists": [
+            {
+              "id": 193177,
+              "name": "Sounds",
+              "description": "Special laugh sounds",
+              "has_images": true,
+              "options": [
+                {
+                  "id": 71362,
+                  "name": "Jim Carrey",
+                  "price": "99.00",
+                  "image_ids": [
+                    "7e2009bf-f4a6-4f6d-9874-14ed1341229b"
+                  ]
+                },
+                {
+                  "id": 71363,
+                  "name": "Clown",
+                  "price": "5.00"
+                }
+              ]
+            }
+          ],
+          "variants": [
+            {
+              "id": 1362,
+              "options": {
+                "193177": "Jim Carrey"
+              },
+              "stock": 3
+            }
+          ],
+          "images": [
+            {
+              "position": 2,
+              "id": "7e2009bf-f4a6-4f6d-9874-14ed1341229b",
+              "urls": {
+                "full": "http://asset.myonlinestore.com/winkel/winkelnaam/images/full/b1787d2f15742a7d9c869f186b948ddbc2faecb87",
+                "article": "http://asset.myonlinestore.com/winkel/winkelnaam/images/article/b1787d2f15742a7d9c869f186b948ddbc2faecb87",
+                "thumb": "http://asset.myonlinestore.com/winkel/winkelnaam/images/thumb/b1787d2f15742a7d9c869f186b948ddbc2faecb87"
+              }
+            }
+          ]
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseArticle"
+          },
+          {
+            "properties": {
+              "id": {
+                "description": "Internal article id",
+                "type": "integer"
+              },
+              "created_date": {
+                "description": "Creation date",
+                "type": "string",
+                "format": "date"
+              },
+              "created_time": {
+                "description": "Creation time",
+                "type": "string",
+                "format": "time"
+              },
+              "updated_date": {
+                "description": "Last updated date",
+                "type": "string",
+                "format": "date"
+              },
+              "updated_time": {
+                "description": "Last updated time",
+                "type": "string",
+                "format": "time"
+              },
+              "can_backorder": {
+                "description": "Available for purchase if sold out (see also delivery_days)",
+                "type": "boolean"
+              },
+              "categories": {
+                "description": "Pages the article is shown on",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CategoryArticle"
+                }
+              },
+              "lists": {
+                "description": "Choices offered for the article",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ConfiguratorArticleList"
+                }
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ArticleImage"
+                }
+              },
+              "variants": {
+                "description": "Versions of the article which have at least one diverging field value",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ArticleVariant"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ArticleChangeable": {
+        "example": {
+          "name": "Funny cushion",
+          "description": "Endless fun",
+          "sku": "ART758379-L",
+          "badge_text": "van - voor",
+          "tax": 21,
+          "price": {
+            "default": 12.5,
+            "action": 9.95
+          },
+          "stock": 15,
+          "delivery_days": 5,
+          "meta_title": "Funny shop: Funny Cushion",
+          "meta_description": "Awesome description here",
+          "can_backorder": false,
+          "extra": {
+            "invisible": {
+              "weight": "0.25",
+              "barcode": "8712345678906"
+            },
+            "visible": {
+              "Fart power (Beaufort)": "5"
+            }
+          },
+          "categories": [
+            {
+              "category_id": 748020,
+              "is_main": true,
+              "is_active": true
+            }
+          ],
+          "lists": [
+            {
+              "id": 293822,
+              "has_images": true,
+              "options": [
+                {
+                  "id": 1690460,
+                  "image_ids": [
+                    "8fc37dbc-3704-4807-bb75-3e1917b5326d"
+                  ]
+                },
+                {
+                  "id": 1991624,
+                  "image_ids": [
+                    "8fc37dbc-3704-4807-bb75-3e1917b5326d",
+                    "7e2009bf-f4a6-4f6d-9874-14ed1341229b"
+                  ]
+                }
+              ]
+            }
+          ],
+          "variants": [
+            {
+              "id": 1362,
+              "stock": 27
+            }
+          ],
+          "images": [
+            {
+              "id": "7e2009bf-f4a6-4f6d-9874-14ed1341229b",
+              "url": "https://myonlineimage.com/my-image-1.jpg",
+              "position": 1
+            },
+            {
+              "id": "8fc37dbc-3704-4807-bb75-3e1917b5326d",
+              "url": "https://myonlineimage.com/my-image-2.jpg",
+              "position": 2
+            }
+          ]
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ArticlePostable"
+          },
+          {
+            "properties": {
+              "variants": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ArticleVariant"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ArticlePostable": {
+        "example": {
+          "name": "Funny cushion",
+          "description": "Endless fun",
+          "sku": "ART758379-L",
+          "badge_text": "van - voor",
+          "tax": 21,
+          "price": {
+            "default": 12.5,
+            "action": 9.95
+          },
+          "stock": 15,
+          "delivery_days": 5,
+          "meta_title": "Funny shop: Funny Cushion",
+          "meta_description": "Awesome description here",
+          "can_backorder": false,
+          "extra": {
+            "invisible": {
+              "weight": "0.25",
+              "barcode": "8712345678906"
+            },
+            "visible": {
+              "Fart power (Beaufort)": "5"
+            }
+          },
+          "categories": [
+            {
+              "category_id": 748020,
+              "is_main": true,
+              "is_active": true
+            }
+          ],
+          "lists": [
+            {
+              "id": 293822,
+              "has_images": true,
+              "options": [
+                {
+                  "id": 1690460,
+                  "image_ids": [
+                    "8fc37dbc-3704-4807-bb75-3e1917b5326d"
+                  ]
+                },
+                {
+                  "id": 1991624,
+                  "image_ids": [
+                    "8fc37dbc-3704-4807-bb75-3e1917b5326d",
+                    "7e2009bf-f4a6-4f6d-9874-14ed1341229b"
+                  ]
+                }
+              ]
+            }
+          ],
+          "images": [
+            {
+              "id": "7e2009bf-f4a6-4f6d-9874-14ed1341229b",
+              "url": "https://myonlineimage.com/my-image-1.jpg",
+              "position": 1
+            },
+            {
+              "id": "8fc37dbc-3704-4807-bb75-3e1917b5326d",
+              "url": "https://myonlineimage.com/my-image-2.jpg",
+              "position": 2
+            }
+          ]
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseArticle"
+          },
+          {
+            "properties": {
+              "categories": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CategoryArticle"
+                }
+              },
+              "lists": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ConfiguratorArticleListPostable"
+                }
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ArticleImagePostable"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ArticleUploadImagePostable": {
+        "properties": {
+          "filename": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "content": {
+            "type": "string",
+            "format": "base64"
+          }
+        }
+      },
+      "BaseArticle": {
+        "properties": {
+          "name": {
+            "description": "Name of this article",
+            "type": "string"
+          },
+          "description": {
+            "description": "Description for this article",
+            "type": "string"
+          },
+          "sku": {
+            "description": "Stock keeping unit",
+            "type": "string"
+          },
+          "badge_text": {
+            "description": "Additional text shown as badge",
+            "type": "string"
+          },
+          "tax": {
+            "description": "Vat percentage",
+            "type": "string"
+          },
+          "price": {
+            "$ref": "#/components/schemas/ArticlePrice"
+          },
+          "stock": {
+            "description": "Number in stock (specify null for unlimited stock)",
+            "type": "integer"
+          },
+          "delivery_days": {
+            "description": "Delivery time (in days) if the article is sold out (see also can_backorder)",
+            "type": "integer"
+          },
+          "meta_title": {
+            "description": "Metadata title",
+            "type": "string"
+          },
+          "meta_description": {
+            "description": "Metadata description",
+            "type": "string"
+          },
+          "extra": {
+            "$ref": "#/components/schemas/ArticleExtraFieldSet"
+          }
+        }
+      },
+      "ArticleExtraFieldSet": {
+        "properties": {
+          "visible": {},
+          "invisible": {}
+        }
+      },
+      "ArticleImage": {
+        "properties": {
+          "position": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "description": "deprecated",
+            "type": "string"
+          },
+          "urls": {
+            "description": "image url's for all formats",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleImageUrl"
+            }
+          }
+        }
+      },
+      "ArticleImageUrl": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "ArticleImagePostable": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "ArticleList": {
+        "properties": {
+          "id": {
+            "description": "Internal article list id",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleListOption"
+            }
+          }
+        },
+        "example": {
+          "name": "Sounds",
+          "description": "Special laugh sounds",
+          "options": [
+            {
+              "name": "Jim Carrey",
+              "price": "99.00"
+            },
+            {
+              "name": "Clown",
+              "price": "5.00"
+            }
+          ]
+        }
+      },
+      "ArticleListOption": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          }
+        }
+      },
+      "ConfiguratorArticleList": {
+        "example": {
+          "name": "Sounds",
+          "description": "Special laugh sounds",
+          "has_images": true,
+          "options": [
+            {
+              "name": "Jim Carrey",
+              "price": "99.00",
+              "image_ids": [
+                "1d29d35a-f8ef-404f-923a-cd08d8578909"
+              ]
+            },
+            {
+              "name": "Clown",
+              "price": "5.00"
+            }
+          ]
+        },
+        "properties": {
+          "has_images": {
+            "type": "boolean",
+            "description": "Whether the ConfiguratorArticleList has images enabled"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfiguratorArticleListOption"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ArticleList"
+          }
+        ]
+      },
+      "ConfiguratorArticleListPostable": {
+        "required": [
+          "id",
+          "options"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ArticleList id"
+          },
+          "has_images": {
+            "type": "boolean",
+            "description": "Whether the ConfiguratorArticleList has images enabled. This may be true for only 1 entry per article"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfiguratorArticleListOptionPostable"
+            }
+          }
+        }
+      },
+      "ConfiguratorArticleListOption": {
+        "properties": {
+          "image_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ArticleImage"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ArticleListOption"
+          }
+        ]
+      },
+      "ConfiguratorArticleListOptionPostable": {
+        "required": [
+          "id",
+          "image_ids"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ArticleListOption id"
+          },
+          "image_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ArticleImage"
+            }
+          }
+        }
+      },
+      "ArticlePrice": {
+        "properties": {
+          "default": {
+            "description": "Default price",
+            "type": "string"
+          },
+          "action": {
+            "description": "Action price",
+            "type": "string"
+          }
+        }
+      },
+      "ArticleVariant": {
+        "properties": {
+          "id": {
+            "description": "Internal article variant id",
+            "type": "integer"
+          },
+          "options": {
+            "description": "Selected options",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleVariantOption"
+            }
+          },
+          "stock": {
+            "type": "integer"
+          },
+          "can_backorder": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ArticleVariantOption": {
+        "properties": {
+          "list_id": {
+            "type": "integer"
+          },
+          "option_id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Category": {
+        "properties": {
+          "id": {
+            "description": "Category identifier",
+            "type": "integer"
+          },
+          "parent_category_id": {
+            "description": "ID of the parent category",
+            "type": "integer"
+          },
+          "hidden": {
+            "description": "Is the page hidden in the store",
+            "type": "boolean"
+          },
+          "title": {
+            "description": "Category page title",
+            "type": "string"
+          },
+          "content": {
+            "description": "Category page content",
+            "type": "string"
+          },
+          "meta_title": {
+            "description": "Metadata page title",
+            "type": "string"
+          },
+          "meta_description": {
+            "description": "Metadata page description",
+            "type": "string"
+          },
+          "article_order": {
+            "description": "Order in which products are shown on this page:\n1: price, ascending\n2: name, ascending\n3: last edited date, descending\n4: created date, descending\n5: manually defined",
+            "type": "integer"
+          },
+          "leafs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "sorting": {
+            "$ref": "#/components/schemas/CategorySorting"
+          }
+        },
+        "example": {
+          "id": 78909,
+          "parent_category_id": 8569,
+          "hidden": false,
+          "title": "The best balloon animals for your party",
+          "content": "Balloon animals are great, don't you think?",
+          "meta_title": "Balloon animals",
+          "meta_description": "The best balloon animals for your party",
+          "article_order": 5,
+          "leafs": [
+            {
+              "id": 78910,
+              "parent_id": 78909,
+              "hidden": true,
+              "title": "New collection"
+            }
+          ],
+          "sorting": {
+            "first": false,
+            "last": false,
+            "previous": 78908,
+            "next": 78910
+          }
+        }
+      },
+      "CategoryPostable": {
+        "required": [
+          "title"
+        ],
+        "example": {
+          "parent_category_id": 8569,
+          "hidden": false,
+          "title": "The best balloon animals for your party",
+          "content": "Balloon animals are great, don't you think?",
+          "meta_title": "Balloon animals",
+          "meta_description": "The best balloon animals for your party",
+          "article_order": 5,
+          "sorting": {
+            "before": 78908
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CategoryPatchable"
+          }
+        ]
+      },
+      "CategoryPatchable": {
+        "properties": {
+          "parent_category_id": {
+            "description": "ID of the parent category",
+            "type": "integer"
+          },
+          "hidden": {
+            "description": "Is the page hidden in the store",
+            "type": "boolean"
+          },
+          "title": {
+            "description": "Category page title",
+            "type": "string"
+          },
+          "content": {
+            "description": "Category page content",
+            "type": "string"
+          },
+          "meta_title": {
+            "description": "Metadata page title",
+            "type": "string"
+          },
+          "meta_description": {
+            "description": "Metadata page description",
+            "type": "string"
+          },
+          "article_order": {
+            "description": "Order in which products are shown on this page:\n1: price, ascending\n2: name, ascending\n3: last edited date, descending\n4: created date, descending\n5: manually defined",
+            "type": "integer"
+          },
+          "sorting": {
+            "$ref": "#/components/schemas/CategorySortingPostable"
+          }
+        },
+        "example": {
+          "parent_category_id": 8569,
+          "hidden": false,
+          "title": "The best balloon animals for your party",
+          "content": "Balloon animals are great, don't you think?",
+          "meta_title": "Balloon animals",
+          "meta_description": "The best balloon animals for your party",
+          "article_order": 5,
+          "sorting": {
+            "before": 78908
+          }
+        }
+      },
+      "CategoryArticle": {
+        "required": [
+          "category_id"
+        ],
+        "properties": {
+          "category_id": {
+            "description": "Internal category id",
+            "type": "integer"
+          },
+          "article_url_id": {
+            "description": "Article page URL Id",
+            "type": "integer"
+          },
+          "is_active": {
+            "description": "Whether the article is visible in the store on this page",
+            "type": "boolean"
+          },
+          "is_main": {
+            "description": "Whether this is the primary category linked to the article",
+            "type": "boolean"
+          },
+          "position": {
+            "description": "Relative position of the article on the page",
+            "type": "integer"
+          }
+        }
+      },
+      "CategorySorting": {
+        "description": "Category sorting details",
+        "properties": {
+          "first": {
+            "description": "Is this category the first of it's branch?",
+            "type": "boolean"
+          },
+          "last": {
+            "description": "Is this category the last of it's branch?",
+            "type": "boolean"
+          },
+          "previous": {
+            "description": "ID of the previous category, if any",
+            "type": "integer"
+          },
+          "next": {
+            "description": "ID of the next category, if any",
+            "type": "integer"
+          }
+        }
+      },
+      "CategorySortingPostable": {
+        "description": "Category sorting details",
+        "properties": {
+          "first": {
+            "description": "True if this category should be the first of it's branch",
+            "type": "boolean"
+          },
+          "last": {
+            "description": "True if this category should be the last of it's branch (default behavior)",
+            "type": "boolean"
+          },
+          "before": {
+            "description": "ID of the category this category should be placed after",
+            "type": "integer"
+          },
+          "after": {
+            "description": "ID of the category this category should be placed before",
+            "type": "integer"
+          }
+        }
+      },
+      "CountResponse": {
+        "description": "Response of a count operation",
+        "properties": {
+          "count": {
+            "description": "The number of matching items",
+            "type": "integer"
+          }
+        }
+      },
+      "Customer": {
+        "description": "Customer",
+        "properties": {
+          "id": {
+            "description": "Customer identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "storeId": {
+            "description": "Store identifier that this customer belongs to",
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "description": "Email address",
+            "type": "string",
+            "format": "email"
+          },
+          "firstName": {
+            "description": "First name",
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "description": "Last name",
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "description": "Date of birth (yyyy-mm-dd)",
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "description": {
+            "description": "Information about the customer added by the merchant",
+            "type": "string",
+            "nullable": true
+          },
+          "addresses": {
+            "description": "Addresses for this customers",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerAddress"
+            }
+          }
+        }
+      },
+      "CustomerAddress": {
+        "description": "Customer Address",
+        "properties": {
+          "id": {
+            "description": "Address identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
+            "description": "First name",
+            "type": "string"
+          },
+          "lastName": {
+            "description": "Last name",
+            "type": "string"
+          },
+          "street": {
+            "description": "Street name",
+            "type": "string"
+          },
+          "streetNumber": {
+            "description": "Street number (may include suffix)",
+            "type": "string"
+          },
+          "zipCode": {
+            "description": "Zip code",
+            "type": "string"
+          },
+          "city": {
+            "description": "City",
+            "type": "string"
+          },
+          "countryCode": {
+            "description": "ISO 3166-1 alpha-2 country code",
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "company": {
+            "description": "Company name",
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "description": "Gender",
+            "type": "string",
+            "nullable": true,
+            "pattern": "^M|F$"
+          },
+          "phone": {
+            "description": "Phone number",
+            "type": "string",
+            "nullable": true
+          },
+          "taxNumber": {
+            "description": "Vat reference number",
+            "type": "string",
+            "nullable": true
+          },
+          "iban": {
+            "description": "International Bank Account Number",
+            "type": "string",
+            "format": "iban",
+            "nullable": true
+          },
+          "isDefaultForDelivery": {
+            "description": "Whether this address should be used as delivery address by default",
+            "type": "boolean"
+          },
+          "isDefaultForInvoice": {
+            "description": "Whether this address should be used as invoice address by default",
+            "type": "boolean"
+          }
+        }
+      },
+      "InvoiceAddress": {
+        "description": "Invoice address",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Address"
+          },
+          {
+            "properties": {
+              "taxnumber": {
+                "description": "Vat reference number",
+                "type": "string"
+              },
+              "bankaccount": {
+                "description": "Bankaccount number",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "Order": {
+        "required": [
+          "number",
+          "date",
+          "time",
+          "status",
+          "debtor"
+        ],
+        "properties": {
+          "number": {
+            "description": "Ordernumber",
+            "type": "integer"
+          },
+          "date": {
+            "description": "Order date",
+            "type": "string",
+            "format": "date"
+          },
+          "time": {
+            "description": "Order time",
+            "type": "string"
+          },
+          "status": {
+            "description": "Order status",
+            "type": "integer"
+          },
+          "status_changed_date": {
+            "description": "Date of last status change",
+            "type": "string",
+            "format": "date"
+          },
+          "status_changed_time": {
+            "description": "Time of last status change",
+            "type": "string"
+          },
+          "weight": {
+            "description": "Total order weight",
+            "type": "string"
+          },
+          "archived": {
+            "description": "Archived status",
+            "type": "boolean"
+          },
+          "finished": {
+            "description": "Finished status (deprecated: always true)",
+            "type": "boolean"
+          },
+          "taxed": {
+            "description": "VAT added",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Order localisation",
+            "type": "string"
+          },
+          "discountcode": {
+            "description": "Discountcode",
+            "type": "string"
+          },
+          "currency": {
+            "description": "Chosen currency (ISO 4217 code)",
+            "type": "string"
+          },
+          "currency_format_locale": {
+            "description": "Chosen currency format locale (ISO 3166-1 alpha-2 code)",
+            "type": "string"
+          },
+          "credited_order_number": {
+            "description": "Reference to the original order for which this is a credit order",
+            "type": "integer"
+          },
+          "credit_order_numbers": {
+            "description": "Ordernumbers of any linked credit orders"
+          },
+          "comments": {
+            "$ref": "#/components/schemas/OrderComment"
+          },
+          "business_model": {
+            "description": "Which business model has been applied to the order. In this case the `company` field will not be empty and the `reference` field is available",
+            "type": "string",
+            "enum": [
+              "B2C",
+              "B2B"
+            ]
+          },
+          "reference": {
+            "description": "Order reference for business sales. Only available if business model is `B2B`",
+            "type": "string",
+            "maxLength": 255
+          },
+          "tax_strategy": {
+            "description": "Which tax strategy (if any) has been applied to this order",
+            "type": "string",
+            "enum": [
+              "",
+              "zero_percent",
+              "reverse_charged_vat"
+            ]
+          },
+          "payment_status": {
+            "type": "string",
+            "description": "Current payment status (`new` |`pending` | `authorized` | `captured` | `voided` | `refunded` | `failed` | `incomplete` | `unknown`)"
+          },
+          "payment": {
+            "$ref": "#/components/schemas/OrderPayment"
+          },
+          "debtor": {
+            "$ref": "#/components/schemas/OrderDebtor"
+          },
+          "price": {
+            "type": "object",
+            "properties": {
+              "tax": {
+                "description": "Amount of applied VAT",
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/TaxPrice"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/TaxPrice"
+                  }
+                ]
+              },
+              "total": {
+                "description": "Total price (including VAT)",
+                "type": "string"
+              }
+            }
+          },
+          "orderlines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetail"
+            }
+          },
+          "shipping": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderShipping"
+            }
+          }
+        },
+        "example": {
+          "number": 27,
+          "date": "2015-11-03",
+          "time": "13:37:12",
+          "status": 1,
+          "archived": true,
+          "finished": false,
+          "taxed": "include",
+          "locale": "en_GB",
+          "discountcode": "korting123",
+          "comments": {
+            "customer": "Please send quickly!"
+          },
+          "business_model": "B2B",
+          "reference": "MOS103271",
+          "offline_location_id": "7127e08a-4af0-4fdf-ac7b-157be3345df0",
+          "currency": "EUR",
+          "credited_order_number": 28,
+          "credit_order_numbers": [
+            99,
+            101
+          ],
+          "payment": {
+            "gateway_name": "basic",
+            "method_name": "advance"
+          },
+          "payment_status": "captured",
+          "debtor": {
+            "email": "support@mijnwebwinkel.nl",
+            "address": {
+              "invoice": {
+                "gender": "V",
+                "name": "Truus voorbeeldig",
+                "company": "Voorbeeldig BV",
+                "street": "Molenstraat",
+                "number": "62",
+                "zipcode": "5341GE",
+                "city": "Oss",
+                "country": "Nederland",
+                "country_code": "NL",
+                "phone": "06-12345678",
+                "bankaccount": "NL39RABO0300065264"
+              }
+            }
+          },
+          "price": {
+            "tax": [
+              {
+                "amount": 0.83,
+                "rate": 9
+              },
+              {
+                "amount": 6.5,
+                "rate": 21
+              }
+            ],
+            "total": 47.45
+          },
+          "orderlines": [
+            {
+              "type": "article",
+              "quantity": 1,
+              "weight": 0,
+              "description": "Article A",
+              "price": {
+                "amount": 12.396694,
+                "amount_including_tax": 15,
+                "rate": 21
+              },
+              "articles": [
+                {
+                  "id": 1,
+                  "description": "Article A",
+                  "price": {
+                    "amount": 24.793388,
+                    "rate": 21
+                  },
+                  "options": [
+                    {
+                      "description": "Action price",
+                      "price": {
+                        "amount": -12.396694,
+                        "rate": 21
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "article",
+              "quantity": 2,
+              "weight": 0,
+              "description": "Article B",
+              "price": {
+                "amount": 8.181818,
+                "amount_including_tax": 9.9,
+                "rate": 21
+              },
+              "articles": [
+                {
+                  "id": 2,
+                  "description": "Article B",
+                  "price": {
+                    "amount": 7.396694,
+                    "rate": 21
+                  },
+                  "options": [
+                    {
+                      "description": "Action price",
+                      "price": {
+                        "amount": -3.305785,
+                        "rate": 21
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "article",
+              "quantity": 3,
+              "weight": 0,
+              "description": "Article C",
+              "price": {
+                "amount": 4.83471,
+                "amount_including_tax": 5.85,
+                "rate": 21,
+                "articles": [
+                  {
+                    "id": 3,
+                    "description": "Article C",
+                    "price": {
+                      "amount": 1.61157,
+                      "rate": 21
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "article",
+              "quantity": 5,
+              "weight": 0,
+              "description": "Article D",
+              "price": {
+                "amount": 8.94495,
+                "amount_including_tax": 9.75,
+                "rate": 9
+              },
+              "articles": [
+                {
+                  "id": 4,
+                  "description": "Article D",
+                  "price": {
+                    "amount": 1.78899,
+                    "rate": 9
+                  }
+                }
+              ]
+            },
+            {
+              "type": "payment",
+              "quantity": 1,
+              "price": [
+                {
+                  "amount": 0.192571,
+                  "rate": 9,
+                  "amount_including_tax": 0.21
+                },
+                {
+                  "amount": 0.652972,
+                  "rate": 21,
+                  "amount_including_tax": 0.79
+                }
+              ]
+            },
+            {
+              "type": "shipping",
+              "quantity": 1,
+              "price": {
+                "amount": 4.917355,
+                "amount_including_tax": 5.95,
+                "rate": 21
+              }
+            }
+          ],
+          "shipping": [
+            {
+              "country": {
+                "description": "Nederland",
+                "isocode": "NL"
+              }
+            }
+          ]
+        }
+      },
+      "OrderPatchable": {
+        "properties": {
+          "archived": {
+            "description": "Archived status",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Order status",
+            "type": "integer"
+          },
+          "comments": {
+            "$ref": "#/components/schemas/OrderCommentPatchable"
+          },
+          "reference": {
+            "description": "Order reference for business sales. Only available if business model is `B2B`",
+            "type": "string",
+            "maxLength": 255
+          },
+          "offline_location_id": {
+            "description": "Point of Sale location identifier (Contains null for direct webshop orders)",
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 1,
+          "archived": true,
+          "comments": {
+            "internal": "Owner's commentary"
+          },
+          "reference": "MOS1044712",
+          "offline_location_id": "7127e08a-4af0-4fdf-ac7b-157be3345df0"
+        }
+      },
+      "OrderPostable": {
+        "required": [
+          "orderlines",
+          "debtor"
+        ],
+        "example": {
+          "status": 1,
+          "archived": false,
+          "discountcode": "korting123",
+          "comments": {
+            "customer": "Please send quickly!"
+          },
+          "business_model": "B2C",
+          "offline_location_id": "7127e08a-4af0-4fdf-ac7b-157be3345df0",
+          "payment": {
+            "gateway_name": "mollie",
+            "method_name": "ideal",
+            "status": {
+              "id": 1
+            }
+          },
+          "debtor": {
+            "email": "support@mijnwebwinkel.nl",
+            "address": {
+              "invoice": {
+                "gender": "V",
+                "name": "Truus voorbeeldig",
+                "company": "",
+                "street": "Molenstraat",
+                "number": "62",
+                "zipcode": "5341GE",
+                "city": "Oss",
+                "country_code": "NL",
+                "phone": "06-12345678",
+                "bankaccount": "NL39RABO0300065264"
+              }
+            }
+          },
+          "orderlines": [
+            {
+              "type": "article",
+              "quantity": 3,
+              "articles": [
+                {
+                  "id": 3327557,
+                  "options": [
+                    {
+                      "list_option_id": "1537892"
+                    },
+                    {
+                      "list_option_id": "1538895"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "article",
+              "quantity": 1,
+              "articles": [
+                {
+                  "id": 3327558
+                }
+              ],
+              "price_override": "13.99"
+            },
+            {
+              "type": "custom",
+              "quantity": 2,
+              "description": "Omg I'm só special",
+              "unit_price": {
+                "amount": "8.223140",
+                "rate": "21.00"
+              },
+              "unit_weight": "2.2"
+            },
+            {
+              "type": "custom",
+              "quantity": 1,
+              "description": "I'm special and have a unit price specified including vat",
+              "unit_price": {
+                "amount_including_tax": "5.95",
+                "rate": "21.00"
+              },
+              "unit_weight": "2.2"
+            }
+          ],
+          "shipping_method_id": "2273"
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OrderPatchable"
+          },
+          {
+            "properties": {
+              "discountcode": {
+                "description": "Discountcode",
+                "type": "string"
+              },
+              "business_model": {
+                "description": "Which business model should be applied to the order. For `B2B` the `OrderDebtor.address.invoice.company` field must not be empty. For `B2C` the `reference` field is not available. If this field is omitted the value of `Store.available_business_models` will be used, defaulting to `B2C` if this setting is `ALL`. If `Store.available_business_models` equals `B2B`, the `company` field must not be empty.",
+                "type": "string",
+                "enum": [
+                  "B2C",
+                  "B2B"
+                ],
+                "default": "B2C"
+              },
+              "reference": {
+                "description": "Order reference for business sales. Only available if business model is `B2B`",
+                "type": "string",
+                "maxLength": 255
+              },
+              "debtor": {
+                "$ref": "#/components/schemas/OrderDebtor"
+              },
+              "payment": {
+                "$ref": "#/components/schemas/OrderPayment"
+              },
+              "orderlines": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderDetailPostable"
+                }
+              },
+              "shipping_method_id": {
+                "description": "Shipping method reference",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "OrderAddress": {
+        "required": [
+          "invoice"
+        ],
+        "properties": {
+          "invoice": {
+            "$ref": "#/components/schemas/InvoiceAddress"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/Address"
+          }
+        }
+      },
+      "OrderArticle": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OrderArticlePostable"
+          },
+          {
+            "required": [
+              "rate",
+              "amount"
+            ]
+          },
+          {
+            "properties": {
+              "description": {
+                "description": "Article description",
+                "type": "string"
+              },
+              "price": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "description": "Amount (excluding tax), may have up to 6 decimals",
+                    "type": "string"
+                  },
+                  "rate": {
+                    "description": "Tax percentage",
+                    "type": "string"
+                  },
+                  "purchase_price": {
+                    "description": "Cost of the article for the merchant, if specified",
+                    "type": "string"
+                  }
+                }
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderArticleListOption"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OrderArticlePostable": {
+        "required": [
+          "id"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseOrderArticle"
+          },
+          {
+            "properties": {
+              "options": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderArticleListOptionPostable"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "BaseOrderArticle": {
+        "properties": {
+          "id": {
+            "description": "Internal article id",
+            "type": "integer"
+          }
+        }
+      },
+      "OrderArticleDetail": {
+        "properties": {
+          "description": {
+            "description": "Option description",
+            "type": "string"
+          },
+          "price": {
+            "$ref": "#/components/schemas/TaxPrice"
+          }
+        }
+      },
+      "OrderArticleListOption": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OrderArticleListOptionPostable"
+          },
+          {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "price": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "OrderArticleListOptionPostable": {
+        "required": [
+          "list_option_id"
+        ],
+        "properties": {
+          "list_option_id": {
+            "type": "integer"
+          }
+        }
+      },
+      "OrderComment": {
+        "properties": {
+          "customer": {
+            "description": "Comment as added by customer",
+            "type": "string",
+            "readOnly": true
+          },
+          "internal": {
+            "description": "Comment as added by merchant",
+            "type": "string"
+          }
+        }
+      },
+      "OrderCommentPatchable": {
+        "properties": {
+          "internal": {
+            "description": "Comment as added by merchant",
+            "type": "string"
+          }
+        }
+      },
+      "OrderDebtor": {
+        "description": "Order debitor details",
+        "properties": {
+          "gender": {
+            "description": "Gender description (deprecated: use [Invoice]Address.gender)",
+            "type": "string"
+          },
+          "name": {
+            "description": "Full name (deprecated: use [Invoice]Address.name)",
+            "type": "string"
+          },
+          "company": {
+            "description": "Company name (deprecated: use [Invoice]Address.company)",
+            "type": "string"
+          },
+          "email": {
+            "description": "Email address",
+            "type": "string"
+          },
+          "phone": {
+            "description": "Phone number (deprecated: use [Invoice]Address.phone)",
+            "type": "string"
+          },
+          "bankaccount": {
+            "description": "Bankaccount number (deprecated: use InvoiceAddress.bankaccount)",
+            "type": "string"
+          },
+          "link_to_account": {
+            "description": "Link to debitor account",
+            "type": "boolean"
+          },
+          "address": {
+            "$ref": "#/components/schemas/OrderAddress"
+          }
+        }
+      },
+      "OrderDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseOrderDetail"
+          },
+          {
+            "properties": {
+              "articles": {
+                "description": "Required for the 'article' type",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderArticle"
+                }
+              },
+              "weight": {
+                "description": "Total weight for all items in this orderline",
+                "type": "string"
+              },
+              "description": {
+                "description": "Article description (including options)",
+                "type": "string"
+              },
+              "price": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/TaxPrice"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/TaxPrice"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "BaseOrderDetail": {
+        "required": [
+          "type",
+          "quantity"
+        ],
+        "properties": {
+          "type": {
+            "description": "OrderDetail type, one of:\n- article\n- custom",
+            "type": "string"
+          },
+          "quantity": {
+            "description": "Amount of items",
+            "type": "integer"
+          },
+          "unit_price": {
+            "$ref": "#/components/schemas/TaxPrice"
+          },
+          "unit_weight": {
+            "description": "Custom item weight per unit; required for custom articles",
+            "type": "string"
+          },
+          "price_override": {
+            "$ref": "#/components/schemas/Price"
+          }
+        }
+      },
+      "OrderDetailPostable": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseOrderDetail"
+          },
+          {
+            "properties": {
+              "articles": {
+                "description": "Required for the 'article' type",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderArticlePostable"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OrderPayment": {
+        "description": "Order payment details (available/required if Order.price.total <> 0.00)",
+        "properties": {
+          "gateway_name": {
+            "enum": [
+              "afterpay",
+              "basic",
+              "igenco",
+              "izettle",
+              "klarna_checkout",
+              "mollie",
+              "mollieOld",
+              "multisafepay",
+              "paynl",
+              "paypal",
+              "paytor",
+              "sisow",
+              "sumup"
+            ],
+            "description": "Payment gateway name",
+            "type": "string"
+          },
+          "method_name": {
+            "enum": [
+              "advance",
+              "afterpay",
+              "apple_pay",
+              "bancontact",
+              "belfius",
+              "bitcoin",
+              "card",
+              "cash",
+              "creditcard",
+              "directdebit",
+              "external",
+              "giropay",
+              "ideal",
+              "invoice",
+              "in_arrears",
+              "kbccbc",
+              "klarna_checkout",
+              "klarna_paylater",
+              "maestro",
+              "mastercard",
+              "paypal",
+              "paysafecard",
+              "pickup",
+              "podium_giftcard",
+              "rembours",
+              "singledebit",
+              "sofortbanking",
+              "visa",
+              "webshop_giftcard"
+            ],
+            "description": "Payment method name",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderPaymentStatus"
+          }
+        }
+      },
+      "OrderPaymentStatus": {
+        "description": "Deprecated - Order payment status details",
+        "properties": {
+          "id": {
+            "description": "\n0: Status unknown\n1: Successful\n2: Cancelled\n3: Failed\n4: Expired\n5: Pending\n6: Refused\n7: Refunded",
+            "type": "integer"
+          },
+          "text": {
+            "description": "Payment status description",
+            "type": "string"
+          }
+        }
+      },
+      "OrderPrice": {
+        "properties": {
+          "tax": {
+            "description": "Vat charge(s)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxPrice"
+            }
+          },
+          "total": {
+            "description": "Total order price",
+            "type": "string"
+          }
+        }
+      },
+      "OrderShipping": {
+        "properties": {
+          "country": {
+            "$ref": "#/components/schemas/OrderShippingCountry"
+          }
+        }
+      },
+      "OrderStatus": {
+        "description": "Order status details",
+        "properties": {
+          "status": {
+            "description": "Identifier for the order status",
+            "type": "integer"
+          },
+          "description": {
+            "description": "Description of the order status",
+            "type": "string"
+          },
+          "credit_order": {
+            "description": "True if the status is allowed for (and signifies) a credit order",
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "status": 1,
+          "description": "Order Pending",
+          "credit_order": false
+        }
+      },
+      "PaymentGateways": {
+        "description": "List of payment gateways and methods",
+        "properties": {
+          "gateways": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentGateway"
+            }
+          }
+        },
+        "example": {
+          "gateways": [
+            {
+              "name": "mollie",
+              "displayName": "Mollie",
+              "websiteUrl": "https://www.mollie.com/",
+              "methods": [
+                {
+                  "name": "ideal",
+                  "displayName": "iDEAL"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "PaymentGateway": {
+        "description": "Payment Gateway",
+        "properties": {
+          "name": {
+            "description": "Unique identifying name for the given gateway",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Gateway name for displaying",
+            "type": "string"
+          },
+          "websiteUrl": {
+            "description": "Link to the gateways website",
+            "type": "string"
+          },
+          "methods": {
+            "description": "List of available methods for the given gateway",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentMethod"
+            }
+          }
+        }
+      },
+      "PaymentMethod": {
+        "description": "Payment method",
+        "properties": {
+          "name": {
+            "description": "Unique identifying name for the given method",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Localized name of the payment method",
+            "type": "string"
+          }
+        }
+      },
+      "StorePaymentGateways": {
+        "description": "List of payment gateways and methods",
+        "properties": {
+          "gateways": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StorePaymentGateway"
+            }
+          }
+        },
+        "example": {
+          "gateways": [
+            {
+              "name": "mollie",
+              "displayName": "Mollie",
+              "websiteUrl": "https://www.mollie.com/",
+              "methods": [
+                {
+                  "name": "ideal",
+                  "displayName": "iDEAL",
+                  "settings": {
+                    "cost": {
+                      "amount": "0.05",
+                      "percentage": "5.87"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "StorePaymentGateway": {
+        "description": "Payment Gateway",
+        "properties": {
+          "name": {
+            "description": "Unique identifying name for the given gateway",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Gateway name for displaying",
+            "type": "string"
+          },
+          "websiteUrl": {
+            "description": "Link to the gateways website",
+            "type": "string"
+          },
+          "methods": {
+            "description": "List of available methods for the given gateway",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StorePaymentMethod"
+            }
+          }
+        }
+      },
+      "StorePaymentMethod": {
+        "description": "Payment method",
+        "properties": {
+          "name": {
+            "description": "Unique identifying name for the given method",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Localized name of the payment method",
+            "type": "string"
+          },
+          "settings": {
+            "description": "List of settings for the given method, specific for the given store",
+            "type": "object",
+            "properties": {
+              "cost": {
+                "description": "Charge per transaction for the given method, can be a combination of fixed and percentual",
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "description": "Fixed charge per transaction",
+                    "type": "string"
+                  },
+                  "percentage": {
+                    "description": "Percentual charge per transaction",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrderShippingCountry": {
+        "description": "Order shipping country settings",
+        "properties": {
+          "description": {
+            "description": "Country description",
+            "type": "string"
+          },
+          "isocode": {
+            "description": "Country iso code",
+            "type": "string"
+          }
+        }
+      },
+      "TaxPrice": {
+        "required": [
+          "rate"
+        ],
+        "properties": {
+          "rate": {
+            "description": "Vat percentage",
+            "type": "string"
+          },
+          "amount": {
+            "description": "Amount (excluding tax), may have up to 6 decimals",
+            "type": "string"
+          },
+          "amount_including_tax": {
+            "description": "Amount (including tax) with exactly 2 decimals. May be used for POST operation with custom items, where either amount or amount_including_tax must be specified",
+            "type": "string"
+          }
+        }
+      },
+      "Price": {
+        "description": "Price (in decimal notation)",
+        "type": "string"
+      },
+      "Error": {
+        "description": "Error response",
+        "properties": {
+          "code": {
+            "description": "Unique error code",
+            "type": "integer"
+          },
+          "message": {
+            "description": "Short error message",
+            "type": "string"
+          },
+          "description": {
+            "description": "Extended error information",
+            "type": "string"
+          }
+        }
+      },
+      "Discountcode": {
+        "properties": {
+          "code": {
+            "description": "Unique identifying code for the discountcode",
+            "type": "string",
+            "maxLength": 20
+          },
+          "description": {
+            "description": "Description of the discountcode (internal)",
+            "type": "string"
+          },
+          "percentage_discount": {
+            "description": "Percentual discount which is applied",
+            "type": "string"
+          },
+          "fixed_discount": {
+            "description": "Fixed amount of discount which is applied",
+            "type": "string"
+          },
+          "minimum_order_price": {
+            "description": "Minimum total price of valid articles in the order for the discountcode to be valid",
+            "type": "string"
+          },
+          "minimum_products": {
+            "description": "Minimum number of products in the order for the discountcode to be valid",
+            "type": "integer"
+          },
+          "applies_to_shipping": {
+            "description": "Fixed discount may also apply to shipping costs",
+            "type": "boolean"
+          },
+          "free_shipping": {
+            "description": "All shipping costs are discounted",
+            "type": "boolean"
+          },
+          "applies_to_action_prices": {
+            "description": "Discountcode is valid for articles with an action price",
+            "type": "boolean"
+          },
+          "single_use": {
+            "description": "Discountcode can be used only once",
+            "type": "boolean"
+          },
+          "active": {
+            "description": "Discountcode is active",
+            "type": "boolean"
+          },
+          "valid_from": {
+            "description": "Date the discountcode is valid from",
+            "type": "string",
+            "format": "date"
+          },
+          "valid_until": {
+            "description": "Date the discountcode is valid until",
+            "type": "string",
+            "format": "date"
+          },
+          "valid_article_ids": {
+            "description": "Specific article ids the discountcode is valid for"
+          },
+          "invalid_article_ids": {
+            "description": "Specific article ids the discountcode is not valid for"
+          },
+          "valid_category_ids": {
+            "description": "Specific category ids the discountcode is valid for"
+          },
+          "invalid_category_ids": {
+            "description": "Specific category ids the discountcode is not valid for"
+          }
+        },
+        "example": {
+          "code": "christmas-sale-1337",
+          "description": "Christmas 2017",
+          "percentage_discount": "10.00",
+          "fixed_discount": "2.50",
+          "minimum_order_price": "100.00",
+          "minimum_products": 3,
+          "applies_to_shipping": false,
+          "free_shipping": false,
+          "applies_to_action_prices": false,
+          "single_use": false,
+          "active": true,
+          "valid_from": "2017-12-01",
+          "valid_until": "2017-12-26",
+          "valid_article_ids": [
+            "7494373",
+            "3760904"
+          ]
+        }
+      },
+      "NewsletterSubscriber": {
+        "example": {
+          "email": "alberto@studio100.be",
+          "name": "Alberto Vermicelli",
+          "activated": false,
+          "created_date": "2016-07-04",
+          "created_time": "13:37:00",
+          "updated_date": "2016-07-25",
+          "updated_time": "13:37:00"
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewsletterSubscriberPatchable"
+          },
+          {
+            "properties": {
+              "email": {
+                "description": "Subscriber email-address",
+                "type": "string"
+              },
+              "activated": {
+                "description": "Subscriber has been activated (confirmed)",
+                "type": "boolean"
+              },
+              "created_date": {
+                "description": "Subscriber creation date",
+                "type": "string",
+                "format": "date"
+              },
+              "created_time": {
+                "description": "Subscriber creation time. Will be merged in `created_date` in future version",
+                "type": "string",
+                "format": "time"
+              },
+              "updated_date": {
+                "description": "Subscriber last updated date",
+                "type": "string",
+                "format": "date"
+              },
+              "updated_time": {
+                "description": "Subscriber last updated time. Will be merged in `updated_date` in future version",
+                "type": "string",
+                "format": "time"
+              }
+            }
+          }
+        ]
+      },
+      "NewsletterSubscriberPostable": {
+        "example": {
+          "name": "Alberto Vermicelli",
+          "email": "alberto@studio100.be"
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewsletterSubscriberPatchable"
+          },
+          {
+            "properties": {
+              "email": {
+                "description": "Subscriber email-address",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "NewsletterSubscriberPatchable": {
+        "properties": {
+          "name": {
+            "description": "Subscriber name",
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "Alberto Vermicelli"
+        }
+      },
+      "OfflineLocation": {
+        "example": {
+          "id": "7127e08a-4af0-4fdf-ac7b-157be3345df0",
+          "name": "Store location Oss: Register 2",
+          "street": "Molenstraat",
+          "street_number": "62",
+          "zipcode": "5341GE",
+          "city": "Oss",
+          "country": "Netherlands",
+          "country_code": "NL",
+          "phone": "06-12345678",
+          "email": "support@mijnwebwinkel.nl",
+          "note": "Open from 09:00 till 17:00",
+          "deleted": false
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OfflineLocationPatchable"
+          },
+          {
+            "properties": {
+              "id": {
+                "description": "Offline location identifier (UUID string)",
+                "type": "string"
+              },
+              "country": {
+                "description": "Country name",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "OfflineLocationPatchable": {
+        "properties": {
+          "name": {
+            "description": "Point of sale name",
+            "type": "string",
+            "maxLength": 80
+          },
+          "street": {
+            "description": "Point of sale address (street)",
+            "type": "string",
+            "maxLength": 255
+          },
+          "street_number": {
+            "description": "Point of sale address (street number)",
+            "type": "string",
+            "maxLength": 20
+          },
+          "zipcode": {
+            "description": "Point of sale zipcode",
+            "type": "string",
+            "maxLength": 10
+          },
+          "city": {
+            "description": "Point of sale city",
+            "type": "string",
+            "maxLength": 100
+          },
+          "country_code": {
+            "description": "ISO 3166-1 alpha-2 code",
+            "type": "string"
+          },
+          "phone": {
+            "description": "Point of sale phonenumber (E164 format)",
+            "type": "string",
+            "maxLength": 15
+          },
+          "email": {
+            "description": "Point of sale emailaddress",
+            "type": "string",
+            "maxLength": 255
+          },
+          "note": {
+            "description": "Additional notes for merchant",
+            "type": "string",
+            "maxLength": 255
+          },
+          "deleted": {
+            "description": "Point of sale location is inactive (soft deleted)",
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "name": "Store location Oss: Register 2",
+          "street": "Molenstraat",
+          "street_number": "62",
+          "zipcode": "5341GE",
+          "city": "Oss",
+          "country_code": "NL",
+          "phone": "06-12345678",
+          "email": "support@mijnwebwinkel.nl",
+          "note": "Open from 09:00 till 17:00",
+          "deleted": false
+        }
+      },
+      "CreditOrderPostable": {
+        "required": [
+          "credited_order_number",
+          "status",
+          "orderlines"
+        ],
+        "properties": {
+          "credited_order_number": {
+            "description": "Ordernumber for which a credit order should be created",
+            "type": "string"
+          },
+          "status": {
+            "description": "Order status, see Order statuses GET for valid values",
+            "type": "integer"
+          },
+          "archived": {
+            "description": "Archived status",
+            "type": "boolean"
+          },
+          "comments": {
+            "$ref": "#/components/schemas/OrderComment"
+          },
+          "orderlines": {
+            "description": "Items to be returned. Quantities should be specified positive",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetailPostable"
+            }
+          },
+          "payment_costs": {
+            "description": "Payment costs (excluding VAT) to be returned.\n * If omitted, payment costs of the original order will be credited. To credit no payment costs, specify 0.\n * Payments costs may not be higher than the original costs.\n * If all items in the original order are credited, payment costs must be fully credited.",
+            "type": "string"
+          },
+          "shipping_costs": {
+            "description": "Shipping costs (excluding VAT) to be returned.\n * If omitted, shipping costs of the original order will be credited. To credit no shipping costs, specify 0.\n * Shipping costs may not be higher than the original costs.\n * If all items in the original order are credited, shipping costs must be fully credited.",
+            "type": "string"
+          },
+          "offline_location_id": {
+            "description": "Point of Sale location identifier",
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "example": {
+          "credited_order_number": "272",
+          "status": 10,
+          "archived": false,
+          "comments": {
+            "customer": "The dress did not fit me after all",
+            "internal": "Returned in physical store"
+          },
+          "orderlines": [
+            {
+              "type": "article",
+              "quantity": 1,
+              "articles": [
+                {
+                  "id": 3327557,
+                  "options": [
+                    {
+                      "list_option_id": "330830"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "custom",
+              "quantity": 1,
+              "description": "Special weekly cash register offer",
+              "unit_price": {
+                "amount": "1.95",
+                "rate": "21.00"
+              }
+            }
+          ],
+          "shipping_costs": "3.14",
+          "payment_costs": "0.31",
+          "offline_location_id": "7127e08a-4af0-4fdf-ac7b-157be3345df0"
+        }
+      },
+      "ShippingMethod": {
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "type": "string"
+          },
+          "display_name": {
+            "description": "Shipping method name as shown in checkout",
+            "type": "string"
+          },
+          "countries": {
+            "description": "List of possible country codes (ISO 3166-1 alpha-2)"
+          },
+          "default": {
+            "description": "Default shipping method for the store",
+            "type": "boolean"
+          },
+          "no_costs_above": {
+            "description": "No shipping costs if order subtotal is above this threshold",
+            "type": "boolean"
+          }
+        },
+        "example": {
+          "display name": "Nederland pakketpost",
+          "countries": [
+            "NL"
+          ],
+          "default": true,
+          "no_costs_above": "100.00"
+        }
+      },
+      "Store": {
+        "properties": {
+          "id": {
+            "description": "Unique identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "description": "Store name",
+            "type": "string"
+          },
+          "primary_domain": {
+            "description": "Primary store domain (for the given language)",
+            "type": "string"
+          },
+          "description": {
+            "description": "Store description",
+            "type": "string"
+          },
+          "open": {
+            "description": "Store is open for visitors",
+            "type": "boolean"
+          },
+          "version": {
+            "description": "Store subscription type",
+            "type": "string"
+          },
+          "administration_language": {
+            "description": "Language used in the store backend",
+            "type": "string"
+          },
+          "currency": {
+            "description": "Chosen currency (ISO 4217 code)",
+            "type": "string"
+          },
+          "prices_include_tax": {
+            "description": "Prices are shown including tax",
+            "type": "boolean"
+          },
+          "default_language": {
+            "description": "The default language for the store visitors",
+            "type": "string"
+          },
+          "active_languages": {
+            "description": "Active languages visitors can choose from"
+          },
+          "email": {
+            "description": "Merchant email address (special access required)",
+            "type": "string"
+          },
+          "currency_format_locale": {
+            "description": "Chosen currency format locale (ISO 3166-1 alpha-2 code)",
+            "type": "string"
+          },
+          "available_business_models": {
+            "description": "Which business models can be applied to orders in this store",
+            "type": "string",
+            "enum": [
+              "B2C",
+              "B2B",
+              "ALL"
+            ]
+          }
+        },
+        "example": {
+          "id": "e5fc33df-b2bf-40ec-8d8d-56fc34b495cc",
+          "name": "knickknacks",
+          "primary_domain": "https://www.knickknacks.be",
+          "description": "Nice stuff of very high quality",
+          "open": true,
+          "version": "Pro",
+          "administration_language": "nl_NL",
+          "currency": "EUR",
+          "prices_include_tax": false,
+          "default_language": "nl_NL",
+          "active_languages": [
+            "nl_NL",
+            "en_US",
+            "de_DE"
+          ],
+          "currency_format_locale": "nl_NL",
+          "available_business_models": "B2C"
+        }
+      }
+    }
+  }
+}
