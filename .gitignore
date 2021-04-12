@@ -1,0 +1,19 @@
+.DS_Store
+
+# Dir for API portal deploy
+web_deploy
+web/swagger-ui-dist
+web/openapi.yaml
+
+# IDE
+.idea
+
+# NPM
+node_modules
+npm-debug.log
+
+# Environment
+.env
+
+# docker
+/docker-compose.yml
