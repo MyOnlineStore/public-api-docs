@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    deploy:
+        name: Deploy
+
+        runs-on: ubuntu-20.04
+
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   uses: actions/setup-node@v1
+                with:
+                    node-version: 15.x
+
+            -   name: Build
+                run: |
+                    npm install
+                    npm run build
+
+            -   name: Deploy 🚀
+                uses: JamesIves/github-pages-deploy-action@4.1.1
+                with:
+                    branch: gh-pages
+                    folder: web_deploy

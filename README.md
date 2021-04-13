@@ -1,5 +1,6 @@
 # MyOnlineStore API Specification
-[![Build Status](https://travis-ci.org/MyOnlineStore/public-api-docs.svg?branch=master)](https://travis-ci.org/MyOnlineStore/public-api-docs)
+[![Test](https://github.com/MyOnlineStore/public-api-docs/actions/workflows/ci.yaml/badge.svg)](https://github.com/MyOnlineStore/public-api-docs/actions/workflows/ci.yaml)
+[![Deploy](https://github.com/MyOnlineStore/public-api-docs/actions/workflows/deploy.yaml/badge.svg)](https://github.com/MyOnlineStore/public-api-docs/actions/workflows/deploy.yaml)
 
 ## Links
 
