@@ -579,7 +579,7 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Customer"
-  "/v{version}/customers/{id}":
+  "/v{version}/customers/{customerId}":
     get:
       tags:
         - Customers
@@ -588,13 +588,7 @@ paths:
       operationId: getCustomer
       parameters:
         -   $ref: "#/components/parameters/version"
-        -   name: id
-            in: path
-            description: Customer identifier
-            required: true
-            schema:
-              type: string
-              format: uuid
+        -   $ref: "#/components/parameters/customer_id_path"
       responses:
         "200":
           description: Customer
@@ -612,13 +606,7 @@ paths:
       operationId: patchCustomer
       parameters:
         -   $ref: "#/components/parameters/version"
-        -   name: id
-            in: path
-            description: Customer identifier
-            required: true
-            schema:
-              type: string
-              format: uuid
+        -   $ref: "#/components/parameters/customer_id_path"
       requestBody:
         content:
           application/json:
@@ -647,13 +635,120 @@ paths:
       operationId: deleteCustomer
       parameters:
         -   $ref: "#/components/parameters/version"
-        -   name: id
-            in: path
-            description: Customer identifier
-            required: true
+        -   $ref: "#/components/parameters/customer_id_path"
+      responses:
+        "200":
+          description: Empty Response
+  "/v{version}/customers/{customerId}/addresses":
+    get:
+      tags:
+        - Customers
+      summary: Address Listing
+      description: Returns a listing of addresses for the given customer.
+      operationId: getCustomersAddresses
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/customer_id_path"
+      responses:
+        "200":
+          description: Addresses
+          content:
+            application/json:
+              schema:
+                properties:
+                  addresses:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CustomerAddress"
+    post:
+      tags:
+        - Customers
+      summary: Address Create
+      description: Add a new address for given customer.
+      operationId: postCustomersAddress
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/customer_id_path"
+      requestBody:
+        content:
+          application/json:
             schema:
-              type: string
-              format: uuid
+              $ref: "#/components/schemas/CustomerAddressPostable"
+      responses:
+        "200":
+          description: Address
+          content:
+            application/json:
+              schema:
+                properties:
+                  address:
+                    $ref: "#/components/schemas/CustomerAddress"
+        "422":
+          description: Invalid Payload (RFC7807 Problem Details)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
+  "/v{version}/customers/{customerId}/addresses/{addressId}":
+    get:
+      tags:
+        - Customers
+      summary: Address Single
+      description: Returns a specific address by its identifier.
+      operationId: getCustomersAddress
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/customer_id_path"
+        -   $ref: "#/components/parameters/customer_address_id_path"
+      responses:
+        "200":
+          description: Address
+          content:
+            application/json:
+              schema:
+                properties:
+                  address:
+                    $ref: "#/components/schemas/CustomerAddress"
+    patch:
+      tags:
+        - Customers
+      summary: Address Update
+      description: Update a specific address by its identifier.
+      operationId: patchCustomersAddress
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/customer_id_path"
+        -   $ref: "#/components/parameters/customer_address_id_path"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerAddressPatchable"
+      responses:
+        "200":
+          description: Address
+          content:
+            application/json:
+              schema:
+                properties:
+                  address:
+                    $ref: "#/components/schemas/CustomerAddress"
+        "422":
+          description: Invalid Payload (RFC7807 Problem Details)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
+    delete:
+      tags:
+        - Customers
+      summary: Address Remove
+      description: Remove a specific address by its identifier.
+      operationId: deleteCustomersAddress
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/customer_id_path"
+        -   $ref: "#/components/parameters/customer_address_id_path"
       responses:
         "200":
           description: Empty Response
@@ -1560,6 +1655,22 @@ servers:
   - url: https://api.myonlinestore.com/
 components:
   parameters:
+    customer_id_path:
+      name: customerId
+      in: path
+      description: Customer Identifier
+      required: true
+      schema:
+        type: string
+        format: uuid
+    customer_address_id_path:
+      name: addressId
+      in: path
+      description: Address Identifier
+      required: true
+      schema:
+        type: string
+        format: uuid
     limit:
       name: limit
       in: query
@@ -2472,7 +2583,9 @@ components:
           description: Gender
           type: string
           nullable: true
-          pattern: '^M|F$'
+          enum:
+            - F
+            - M
         phone:
           description: Phone number
           type: string
@@ -2492,6 +2605,110 @@ components:
         isDefaultForInvoice:
           description: Whether this address should be used as invoice address by default
           type: boolean
+    CustomerAddressPatchable:
+      description: Customer Address
+      properties:
+        firstName:
+          description: First name
+          type: string
+        lastName:
+          description: Last name
+          type: string
+        street:
+          description: Street name
+          type: string
+        streetNumber:
+          description: Street number (may include suffix)
+          type: string
+        zipCode:
+          description: Zip code
+          type: string
+        city:
+          description: City
+          type: string
+        countryCode:
+          description: ISO 3166-1 alpha-2 country code
+          type: string
+          pattern: '^[A-Z]{2}$'
+        company:
+          description: Company name
+          type: string
+          nullable: true
+        gender:
+          description: Gender
+          type: string
+          nullable: true
+          enum:
+            - F
+            - M
+        phone:
+          description: Phone number
+          type: string
+          nullable: true
+        taxNumber:
+          description: Vat reference number
+          type: string
+          nullable: true
+        iban:
+          description: International Bank Account Number
+          type: string
+          format: iban
+          nullable: true
+        isDefaultForDelivery:
+          description: Whether this address should be used as delivery address by default
+          type: boolean
+        isDefaultForInvoice:
+          description: Whether this address should be used as invoice address by default
+          type: boolean
+    CustomerAddressPostable:
+      description: Customer Address
+      properties:
+        firstName:
+          description: First name
+          type: string
+        lastName:
+          description: Last name
+          type: string
+        street:
+          description: Street name
+          type: string
+        streetNumber:
+          description: Street number (may include suffix)
+          type: string
+        zipCode:
+          description: Zip code
+          type: string
+        city:
+          description: City
+          type: string
+        countryCode:
+          description: ISO 3166-1 alpha-2 country code
+          type: string
+          pattern: '^[A-Z]{2}$'
+        company:
+          description: Company name
+          type: string
+          nullable: true
+        gender:
+          description: Gender
+          type: string
+          nullable: true
+          enum:
+            - F
+            - M
+        phone:
+          description: Phone number
+          type: string
+          nullable: true
+        taxNumber:
+          description: Vat reference number
+          type: string
+          nullable: true
+        iban:
+          description: International Bank Account Number
+          type: string
+          format: iban
+          nullable: true
     InvoiceAddress:
       description: Invoice address
       allOf:
