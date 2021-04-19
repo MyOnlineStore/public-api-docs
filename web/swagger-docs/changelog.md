@@ -1,4 +1,7 @@
 # Changelog
+## [2.3.1] & [1.4.1] 2021-04-19
+* __Article__._tax_ is now deprecated. Expect this property to be removed in the future.
+
 ## [2.3] & [1.4] 2021-02-04
 * Removed payment endpoints that were deprecated in [2.2.2] and [1.3.2].
 * Removed __OrderPayment__ properties that were deprecated in [2.2.2] and [1.3.2].
