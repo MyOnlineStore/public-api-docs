@@ -3453,7 +3453,8 @@
           },
           "tax": {
             "description": "Vat percentage",
-            "type": "string"
+            "type": "string",
+            "deprecated": true
           },
           "price": {
             "$ref": "#/components/schemas/ArticlePrice"

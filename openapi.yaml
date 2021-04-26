@@ -2149,6 +2149,7 @@ components:
         tax:
           description: Vat percentage
           type: string
+          deprecated: true
         price:
           $ref: "#/components/schemas/ArticlePrice"
         stock:
