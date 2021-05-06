@@ -90,9 +90,9 @@ info:
     url: images/mos-connect-logo.png
 security:
   - StoreToken:
-      []
+      [ ]
     PartnerToken:
-      []
+      [ ]
 paths:
   "/v{version}/articles":
     get:
@@ -587,8 +587,8 @@ paths:
       description: Returns a specific customer by its identifier.
       operationId: getCustomer
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
       responses:
         "200":
           description: Customer
@@ -605,8 +605,8 @@ paths:
       description: Update a specific customer by its identifier.
       operationId: patchCustomer
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
       requestBody:
         content:
           application/json:
@@ -634,8 +634,8 @@ paths:
       description: Remove a specific customer by its identifier.
       operationId: deleteCustomer
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
       responses:
         "200":
           description: Empty Response
@@ -647,8 +647,8 @@ paths:
       description: Returns a listing of addresses for the given customer.
       operationId: getCustomersAddresses
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
       responses:
         "200":
           description: Addresses
@@ -667,8 +667,8 @@ paths:
       description: Add a new address for given customer.
       operationId: postCustomersAddress
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
       requestBody:
         content:
           application/json:
@@ -697,9 +697,9 @@ paths:
       description: Returns a specific address by its identifier.
       operationId: getCustomersAddress
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
-        -   $ref: "#/components/parameters/customer_address_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/customer_address_id_path"
       responses:
         "200":
           description: Address
@@ -716,9 +716,9 @@ paths:
       description: Update a specific address by its identifier.
       operationId: patchCustomersAddress
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
-        -   $ref: "#/components/parameters/customer_address_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/customer_address_id_path"
       requestBody:
         content:
           application/json:
@@ -746,9 +746,9 @@ paths:
       description: Remove a specific address by its identifier.
       operationId: deleteCustomersAddress
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/customer_id_path"
-        -   $ref: "#/components/parameters/customer_address_id_path"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/customer_id_path"
+        - $ref: "#/components/parameters/customer_address_id_path"
       responses:
         "200":
           description: Empty Response
@@ -1084,6 +1084,34 @@ paths:
             text/xml:
               schema:
                 $ref: "#/components/schemas/Category"
+  "/v{version}/categories/{category_id}/articles":
+    get:
+      tags:
+        - Categories (Pages)
+      description: Returns a listing of articles from a category
+      operationId: getCategoryArticles
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - name: category_id
+          in: path
+          description: Category id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Articles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleName"
+            text/xml:
+              schema:
+                $ref: "#/components/schemas/ArticleName"
   "/v{version}/categories/count":
     get:
       tags:
@@ -1518,7 +1546,7 @@ paths:
       operationId: getOrderStatuses
       security:
         - PartnerToken:
-            []
+            [ ]
       parameters:
         - $ref: "#/components/parameters/version"
         - $ref: "#/components/parameters/language"
@@ -1545,11 +1573,11 @@ paths:
       operationId: getGateways
       security:
         - PartnerToken:
-            []
+            [ ]
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/language"
-        -   $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/format"
       responses:
         "200":
           description: List of gateways
@@ -1564,10 +1592,10 @@ paths:
       description: Retrieve a listing of all payment gateways and methods available in the given store
       operationId: getStoreGateways
       parameters:
-        -   $ref: "#/components/parameters/version"
-        -   $ref: "#/components/parameters/store"
-        -   $ref: "#/components/parameters/language"
-        -   $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/store"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/format"
       responses:
         "200":
           description: List of gateways
@@ -2166,12 +2194,20 @@ components:
           type: string
         extra:
           $ref: "#/components/schemas/ArticleExtraFieldSet"
+    ArticleName:
+      properties:
+        id:
+          description: Internal article id
+          type: integer
+        name:
+          description: Name of this article
+          type: string
     ArticleExtraFieldSet:
       properties:
         visible:
-          {}
+          { }
         invisible:
-          {}
+          { }
     ArticleImage:
       properties:
         position:
@@ -2782,7 +2818,7 @@ components:
           $ref: "#/components/schemas/OrderComment"
         business_model:
           description: Which business model has been applied to the order.
-              In this case the `company` field will not be empty and the `reference` field is available
+            In this case the `company` field will not be empty and the `reference` field is available
           type: string
           enum:
             - B2C
@@ -2799,10 +2835,10 @@ components:
             - zero_percent
             - reverse_charged_vat
         payment_status:
-            type: string
-            description: Current payment status (`new` |`pending` |
-                `authorized` | `captured` | `voided` | `refunded` |
-                `failed` | `incomplete` | `unknown`)
+          type: string
+          description: Current payment status (`new` |`pending` |
+            `authorized` | `captured` | `voided` | `refunded` |
+            `failed` | `incomplete` | `unknown`)
         payment:
           $ref: "#/components/schemas/OrderPayment"
         debtor:
@@ -2869,16 +2905,13 @@ components:
               bankaccount: NL39RABO0300065264
         price:
           tax:
-            -
-              amount: 0.830000
+            - amount: 0.830000
               rate: 9.00
-            -
-              amount: 6.500000
+            - amount: 6.500000
               rate: 21.00
           total: 47.450000
         orderlines:
-          -
-            type: article
+          - type: article
             quantity: 1
             weight: 0
             description: Article A
@@ -2887,20 +2920,17 @@ components:
               amount_including_tax: 15.00
               rate: 21.00
             articles:
-              -
-                id: 1
+              - id: 1
                 description: Article A
                 price:
                   amount: 24.793388
                   rate: 21.00
                 options:
-                  -
-                    description: Action price
+                  - description: Action price
                     price:
                       amount: -12.396694
                       rate: 21.00
-          -
-            type: article
+          - type: article
             quantity: 2
             weight: 0
             description: Article B
@@ -2909,20 +2939,17 @@ components:
               amount_including_tax: 9.90
               rate: 21.00
             articles:
-              -
-                id: 2
+              - id: 2
                 description: Article B
                 price:
                   amount: 7.396694
                   rate: 21.00
                 options:
-                  -
-                    description: Action price
+                  - description: Action price
                     price:
                       amount: -3.305785
                       rate: 21.00
-          -
-            type: article
+          - type: article
             quantity: 3
             weight: 0
             description: Article C
@@ -2931,14 +2958,12 @@ components:
               amount_including_tax: 5.85
               rate: 21.00
               articles:
-                -
-                  id: 3
+                - id: 3
                   description: Article C
                   price:
                     amount: 1.611570
                     rate: 21.00
-          -
-            type: article
+          - type: article
             quantity: 5
             weight: 0
             description: Article D
@@ -2947,26 +2972,21 @@ components:
               amount_including_tax: 9.75
               rate: 9.00
             articles:
-              -
-                id: 4
+              - id: 4
                 description: Article D
                 price:
                   amount: 1.788990
                   rate: 9.00
-          -
-            type: payment
+          - type: payment
             quantity: 1
             price:
-              -
-                amount: 0.192571
+              - amount: 0.192571
                 rate: 9.00
                 amount_including_tax: 0.21
-              -
-                amount: 0.652972
+              - amount: 0.652972
                 rate: 21.00
                 amount_including_tax: 0.79
-          -
-            type: shipping
+          - type: shipping
             quantity: 1
             price:
               amount: 4.917355
@@ -3104,8 +3124,8 @@ components:
       allOf:
         - $ref: "#/components/schemas/OrderArticlePostable"
         - required:
-          - rate
-          - amount
+            - rate
+            - amount
         - properties:
             description:
               description: Article description
@@ -3258,52 +3278,52 @@ components:
       properties:
         gateway_name:
           enum:
-          - "afterpay"
-          - "basic"
-          - "igenco"
-          - "izettle"
-          - "klarna_checkout"
-          - "mollie"
-          - "mollieOld"
-          - "multisafepay"
-          - "paynl"
-          - "paypal"
-          - "paytor"
-          - "sisow"
-          - "sumup"
+            - "afterpay"
+            - "basic"
+            - "igenco"
+            - "izettle"
+            - "klarna_checkout"
+            - "mollie"
+            - "mollieOld"
+            - "multisafepay"
+            - "paynl"
+            - "paypal"
+            - "paytor"
+            - "sisow"
+            - "sumup"
           description: Payment gateway name
           type: string
         method_name:
           enum:
-          - "advance"
-          - "afterpay"
-          - "apple_pay"
-          - "bancontact"
-          - "belfius"
-          - "bitcoin"
-          - "card"
-          - "cash"
-          - "creditcard"
-          - "directdebit"
-          - "external"
-          - "giropay"
-          - "ideal"
-          - "invoice"
-          - "in_arrears"
-          - "kbccbc"
-          - "klarna_checkout"
-          - "klarna_paylater"
-          - "maestro"
-          - "mastercard"
-          - "paypal"
-          - "paysafecard"
-          - "pickup"
-          - "podium_giftcard"
-          - "rembours"
-          - "singledebit"
-          - "sofortbanking"
-          - "visa"
-          - "webshop_giftcard"
+            - "advance"
+            - "afterpay"
+            - "apple_pay"
+            - "bancontact"
+            - "belfius"
+            - "bitcoin"
+            - "card"
+            - "cash"
+            - "creditcard"
+            - "directdebit"
+            - "external"
+            - "giropay"
+            - "ideal"
+            - "invoice"
+            - "in_arrears"
+            - "kbccbc"
+            - "klarna_checkout"
+            - "klarna_paylater"
+            - "maestro"
+            - "mastercard"
+            - "paypal"
+            - "paysafecard"
+            - "pickup"
+            - "podium_giftcard"
+            - "rembours"
+            - "singledebit"
+            - "sofortbanking"
+            - "visa"
+            - "webshop_giftcard"
           description: Payment method name
           type: string
         status:
@@ -3406,16 +3426,16 @@ components:
             $ref: "#/components/schemas/StorePaymentGateway"
       example:
         gateways:
-          -   name: mollie
-              displayName: Mollie
-              websiteUrl: https://www.mollie.com/
-              methods:
-                -   name: ideal
-                    displayName: iDEAL
-                    settings:
-                      cost:
-                        amount: "0.05"
-                        percentage: "5.87"
+          - name: mollie
+            displayName: Mollie
+            websiteUrl: https://www.mollie.com/
+            methods:
+              - name: ideal
+                displayName: iDEAL
+                settings:
+                  cost:
+                    amount: "0.05"
+                    percentage: "5.87"
     StorePaymentGateway:
       description: Payment Gateway
       properties:
@@ -3825,9 +3845,9 @@ components:
           description: Which business models can be applied to orders in this store
           type: string
           enum:
-              - B2C
-              - B2B
-              - ALL
+            - B2C
+            - B2B
+            - ALL
       example:
         id: e5fc33df-b2bf-40ec-8d8d-56fc34b495cc
         name: knickknacks
