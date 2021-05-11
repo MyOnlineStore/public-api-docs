@@ -1750,6 +1750,58 @@
         }
       }
     },
+    "/v{version}/categories/{category_id}/articles": {
+      "get": {
+        "tags": [
+          "Categories (Pages)"
+        ],
+        "description": "Returns a listing of articles from a category",
+        "operationId": "getCategoryArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "name": "category_id",
+            "in": "path",
+            "description": "Category id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleLimited"
+                }
+              },
+              "text/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleLimited"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v{version}/categories/count": {
       "get": {
         "tags": [
@@ -3436,7 +3488,7 @@
       "BaseArticle": {
         "properties": {
           "name": {
-            "description": "Name of this article",
+            "description": "Name of the article",
             "type": "string"
           },
           "description": {
@@ -3477,6 +3529,18 @@
           },
           "extra": {
             "$ref": "#/components/schemas/ArticleExtraFieldSet"
+          }
+        }
+      },
+      "ArticleLimited": {
+        "properties": {
+          "id": {
+            "description": "Internal article id",
+            "type": "integer"
+          },
+          "name": {
+            "description": "Name of the article",
+            "type": "string"
           }
         }
       },
