@@ -1108,10 +1108,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ArticleName"
+                $ref: "#/components/schemas/ArticleLimited"
             text/xml:
               schema:
-                $ref: "#/components/schemas/ArticleName"
+                $ref: "#/components/schemas/ArticleLimited"
   "/v{version}/categories/count":
     get:
       tags:
@@ -2163,7 +2163,7 @@ components:
     BaseArticle:
       properties:
         name:
-          description: Name of this article
+          description: Name of the article
           type: string
         description:
           description: Description for this article
@@ -2194,13 +2194,13 @@ components:
           type: string
         extra:
           $ref: "#/components/schemas/ArticleExtraFieldSet"
-    ArticleName:
+    ArticleLimited:
       properties:
         id:
           description: Internal article id
           type: integer
         name:
-          description: Name of this article
+          description: Name of the article
           type: string
     ArticleExtraFieldSet:
       properties:
