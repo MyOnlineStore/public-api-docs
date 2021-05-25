@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.3.3] & [1.4.3] 2021-05-25
+* Added `uuid` to __Article__ entity.
+
 ## [2.3.2] & [1.4.2] 2021-05-06
 * Added __getCategoryArticles__ operation for retrieving available articles from a category.
 
