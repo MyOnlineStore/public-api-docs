@@ -3145,6 +3145,8 @@
           "name"
         ],
         "example": {
+          "id": 123,
+          "uuid": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f",
           "name": "Funny cushion",
           "description": "Endless fun",
           "sku": "ART758379-L",
@@ -3541,6 +3543,11 @@
           "name": {
             "description": "Name of the article",
             "type": "string"
+          },
+          "uuid": {
+            "description": "UUID of the article",
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
