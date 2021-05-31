@@ -3854,6 +3854,10 @@ components:
             - B2C
             - B2B
             - ALL
+        region_code:
+          description: Region where the store is located (ISO 3166-1 alpha-2 country code)
+          type: string
+          pattern: '^[A-Z]{2}$'
       example:
         id: e5fc33df-b2bf-40ec-8d8d-56fc34b495cc
         name: knickknacks

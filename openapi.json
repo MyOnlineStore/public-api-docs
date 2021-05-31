@@ -5845,6 +5845,11 @@
               "B2B",
               "ALL"
             ]
+          },
+          "region_code": {
+            "description": "Region where the store is located (ISO 3166-1 alpha-2 country code)",
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
           }
         },
         "example": {
