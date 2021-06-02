@@ -56,6 +56,9 @@
           },
           {
             "$ref": "#/components/parameters/ids"
+          },
+          {
+            "$ref": "#/components/parameters/uuids"
           }
         ],
         "responses": {
@@ -3053,6 +3056,19 @@
           "type": "array",
           "items": {
             "type": "integer"
+          }
+        }
+      },
+      "uuids": {
+        "name": "uuids",
+        "in": "query",
+        "description": "Only include products with specific UUID's",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       }
