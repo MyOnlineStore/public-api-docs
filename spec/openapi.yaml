@@ -112,6 +112,7 @@ paths:
         - $ref: "#/components/parameters/changed_start_date"
         - $ref: "#/components/parameters/changed_end_date"
         - $ref: "#/components/parameters/ids"
+        - $ref: "#/components/parameters/uuids"
       responses:
         "200":
           description: Article list
@@ -1875,6 +1876,16 @@ components:
         type: array
         items:
           type: integer
+    uuids:
+      name: uuids
+      in: query
+      description: Only include products with specific UUID's
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          format: uuid
   requestBodies:
     postArticleListsLists:
       content:
