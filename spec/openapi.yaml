@@ -187,7 +187,9 @@ paths:
         - Articles
       deprecated: true
       summary: Return a collection of articles
-      description: Returns a listing of articles for the store
+      description: |
+        Returns a listing of articles for the store.
+        This operation is deprecated and will be removed in the future, use getProducts instead.
       operationId: getArticles
       parameters:
         - $ref: "#/components/parameters/version"
@@ -248,7 +250,9 @@ paths:
         - Articles
       deprecated: true
       summary: Return a single article
-      description: Returns a specific article
+      description: |
+        Returns a specific article.
+        This operation is deprecated and will be removed in the future, use getProduct instead.
       operationId: getArticle
       parameters:
         - $ref: "#/components/parameters/version"
@@ -371,7 +375,9 @@ paths:
         - Articles
       deprecated: true
       summary: Return the number of available articles
-      description: Returns the number of available articles
+      description: |
+        Returns the number of available articles.
+        This operation is deprecated and will be removed in the future, use getProductCount instead.
       operationId: getArticleCount
       parameters:
         - $ref: "#/components/parameters/version"
