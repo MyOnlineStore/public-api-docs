@@ -1,10 +1,5 @@
 # Changelog
 
-## [2.3.4] & [1.4.4] 2021-05-31
-* Added __getProducts__, __getProduct__ and __getProductCount__ operations for retrieving products.
-  These deprecate the __getArticles__, __getArticle__ and __getArticleCount__ operations
-  respectively, expect these operations to be removed in the future.
-
 ## [2.3.3] & [1.4.3] 2021-05-25
 * Added `uuid` to __Article__ entity.
 * Added `uuids` query parameter to __getArticles__.
