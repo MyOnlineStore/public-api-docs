@@ -2791,6 +2791,10 @@ components:
           description: Order reference for business sales. Only available if business model is `B2B`
           type: string
           maxLength: 255
+        tax_region:
+          description: The region that has been used for tax calculations
+          type: string
+          maxLength: 2
         tax_strategy:
           description: Which tax strategy (if any) has been applied to this order
           type: string
