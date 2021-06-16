@@ -1604,6 +1604,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StorePaymentGateways"
+  "/v{version}/tax-policy/regions/{code}":
+    get:
+      tags:
+        - TaxPolicyRegion
+      summary: Single
+      description: Retrieve a single tax policy region by given code
+      operationId: getTaxPolicyRegion
+      parameters:
+        -   $ref: "#/components/parameters/version"
+        -   $ref: "#/components/parameters/region_code_path"
+      responses:
+        "200":
+          description: Tax policy region
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: "#/components/schemas/TaxPolicyRegion"
   "/v{version}/shipping/methods":
     get:
       tags:
@@ -1742,6 +1761,14 @@ components:
           - "1"
           - "2-beta"
         default: "1"
+    region_code_path:
+      name: code
+      in: path
+      description: Region code (ISO 3166-1 alpha-2)
+      required: true
+      schema:
+        type: string
+        pattern: '^[A-Z]{2}$'
     language:
       name: language
       in: query
@@ -3504,6 +3531,108 @@ components:
         isocode:
           description: Country iso code
           type: string
+    TaxPolicyRegion:
+      description: Tax policy region
+      example:
+        regionCode: NL
+        taxEnabled: true
+        taxNumber: NL000099998B57
+        taxRate: 0.21
+        shippingTaxMethod: "fixed"
+        shippingTaxRate: 0.21
+        transactionTaxMethod: "proportional"
+        transactionTaxRate: null
+        overrides:
+          - taxRate: 0.06
+            items:
+              - type: product
+                references: [product-1, product-3]
+      properties:
+        regionCode:
+          description: Country code (ISO 3166-1 alpha-2)
+          type: string
+          pattern: '^[A-Z]{2}$'
+        taxEnabled:
+          description: Whether tax is enabled
+          type: boolean
+        taxNumber:
+          description: The tax number/ID, currently only supports EU VAT number
+          type: string
+          format: vat-number
+          nullable: true
+        taxRate:
+          description: The general tax rate
+          type: string
+          format: float
+          minimum: 0
+          maximum: 1
+          nullable: true
+        shippingTaxMethod:
+          description: What method is being used to calculate shipping tax
+          type: string
+          enum:
+            - 'fixed'
+            - 'proportional'
+        shippingTaxRate:
+          description: Shipping tax rate
+          type: string
+          format: float
+          minimum: 0
+          maximum: 1
+          nullable: true
+        transactionTaxMethod:
+          description: What method is being used to calculate transaction tax
+          type: string
+          enum:
+            - 'fixed'
+            - 'proportional'
+        transactionTaxRate:
+          description: Transaction tax rate
+          type: string
+          format: float
+          minimum: 0
+          maximum: 1
+          nullable: true
+        overrides:
+          description: Tax overrides
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxPolicyRegionOverride'
+    TaxPolicyRegionOverride:
+      description: Tax policy region override
+      properties:
+        taxRate:
+          description: Tax rate for override
+          type: string
+          format: float
+          minimum: 0
+          maximum: 1
+        items:
+          description: Override items
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxPolicyOverride'
+      required:
+        - taxRate
+        - items
+    TaxPolicyOverride:
+      description: Tax policy override
+      properties:
+        type:
+          description: What kind of override
+          type: string
+          enum:
+            - 'product'
+            - 'collection'
+        references:
+          description: List of references this override applies to
+          type: array
+          items:
+            description: Identifier of overridden item
+            type: string
+      required:
+        - type
+        - references
     TaxPrice:
       required:
         - rate
