@@ -2792,9 +2792,9 @@ components:
           type: string
           maxLength: 255
         tax_region:
-          description: The region that has been used for tax calculations
+          description: The region that has been used for tax calculations (ISO 3166-1 alpha-2)
           type: string
-          maxLength: 2
+          pattern: '^[A-Z]{2}$'
         tax_strategy:
           description: Which tax strategy (if any) has been applied to this order
           type: string
