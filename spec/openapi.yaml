@@ -1607,7 +1607,7 @@ paths:
   "/v{version}/tax-policy/regions":
     get:
       tags:
-        - TaxPolicyRegionList
+        - TaxPolicyRegion
       summary: Listing
       description: Retrieve a list of all configured tax policy regions
       operationId: TaxPolicyRegionList
@@ -1615,7 +1615,7 @@ paths:
         -   $ref: "#/components/parameters/version"
       responses:
         "200":
-          description: Tax policy regions list
+          description: Tax policy regions
           content:
             application/json:
               schema:
