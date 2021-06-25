@@ -1604,6 +1604,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StorePaymentGateways"
+  "/v{version}/tax-policy/regions":
+    get:
+      tags:
+        - TaxPolicyRegion
+      summary: Listing
+      description: Retrieve a list of all configured tax policy regions
+      operationId: TaxPolicyRegionList
+      parameters:
+        -   $ref: "#/components/parameters/version"
+      responses:
+        "200":
+          description: Tax policy regions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TaxPolicyRegion"
   "/v{version}/tax-policy/regions/{code}":
     get:
       tags:
