@@ -2240,7 +2240,7 @@ components:
           type: string
           deprecated: true
         taxable:
-          description: Whether tax is charged when the product is sold
+          description: Whether tax is charged when the article is sold
           type: boolean
         price:
           $ref: "#/components/schemas/ArticlePrice"
