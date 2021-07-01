@@ -2,6 +2,7 @@
 
 ## [2.3.4] & [1.4.4] 2021-07-01
 * Added `taxable` to __Article__ entity.
+* Added `is_main` to __getCategoryArticles__ endpoint.
 
 ## [2.3.3] & [1.4.3] 2021-05-25
 * Added `uuid` to __Article__ entity.
