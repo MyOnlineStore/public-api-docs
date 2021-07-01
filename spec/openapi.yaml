@@ -2270,6 +2270,9 @@ components:
           description: UUID of the article
           type: string
           format: uuid
+        is_main:
+          description: Whether this is the primary category linked to the article
+          type: boolean
     ArticleExtraFieldSet:
       properties:
         visible:
