@@ -2005,6 +2005,7 @@ components:
         sku: ART758379-L
         badge_text: van - voor
         tax: 21
+        taxable: true
         price:
           default: 12.5
           action: 9.95
@@ -2105,6 +2106,7 @@ components:
         sku: ART758379-L
         badge_text: van - voor
         tax: 21
+        taxable: true
         price:
           default: 12.5
           action: 9.95
@@ -2158,6 +2160,7 @@ components:
         sku: ART758379-L
         badge_text: van - voor
         tax: 21
+        taxable: true
         price:
           default: 12.5
           action: 9.95
@@ -2236,6 +2239,9 @@ components:
           description: Vat percentage
           type: string
           deprecated: true
+        taxable:
+          description: Whether tax is charged when the product is sold
+          type: boolean
         price:
           $ref: "#/components/schemas/ArticlePrice"
         stock:
