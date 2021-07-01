@@ -3242,6 +3242,7 @@
           "sku": "ART758379-L",
           "badge_text": "van - voor",
           "tax": 21,
+          "taxable": true,
           "price": {
             "default": 12.5,
             "action": 9.95
@@ -3388,6 +3389,7 @@
           "sku": "ART758379-L",
           "badge_text": "van - voor",
           "tax": 21,
+          "taxable": true,
           "price": {
             "default": 12.5,
             "action": 9.95
@@ -3476,6 +3478,7 @@
           "sku": "ART758379-L",
           "badge_text": "van - voor",
           "tax": 21,
+          "taxable": true,
           "price": {
             "default": 12.5,
             "action": 9.95
@@ -3600,6 +3603,10 @@
             "type": "string",
             "deprecated": true
           },
+          "taxable": {
+            "description": "Whether tax is charged when the article is sold",
+            "type": "boolean"
+          },
           "price": {
             "$ref": "#/components/schemas/ArticlePrice"
           },
@@ -3638,6 +3645,10 @@
             "description": "UUID of the article",
             "type": "string",
             "format": "uuid"
+          },
+          "is_main": {
+            "description": "Whether this is the primary category linked to the article",
+            "type": "boolean"
           }
         }
       },
