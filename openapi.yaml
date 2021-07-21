@@ -2024,6 +2024,7 @@ components:
             barcode: "8712345678906"
           visible:
             Fart power (Beaufort): "5"
+        url: https://myonline.store/a-245/the-best-balloon-animals-for-your-party/funny-cushion
         categories:
           - category_id: 748020
             article_url_id: 245
@@ -2052,9 +2053,9 @@ components:
           - position: 2
             id: 7e2009bf-f4a6-4f6d-9874-14ed1341229b
             urls:
-              full: http://asset.myonlinestore.com/winkel/winkelnaam/images/full/b1787d2f15742a7d9c869f186b948ddbc2faecb87
-              article: http://asset.myonlinestore.com/winkel/winkelnaam/images/article/b1787d2f15742a7d9c869f186b948ddbc2faecb87
-              thumb: http://asset.myonlinestore.com/winkel/winkelnaam/images/thumb/b1787d2f15742a7d9c869f186b948ddbc2faecb87
+              full: https://asset.myonlinestore.com/winkel/winkelnaam/images/full/b1787d2f15742a7d9c869f186b948ddbc2faecb87
+              article: https://asset.myonlinestore.com/winkel/winkelnaam/images/article/b1787d2f15742a7d9c869f186b948ddbc2faecb87
+              thumb: https://asset.myonlinestore.com/winkel/winkelnaam/images/thumb/b1787d2f15742a7d9c869f186b948ddbc2faecb87
       allOf:
         - $ref: "#/components/schemas/BaseArticle"
         - properties:
