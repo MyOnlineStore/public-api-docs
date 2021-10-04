@@ -829,6 +829,13 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: disable_shipping
+          in: query
+          description: Disable the shipping costs calculation of the order
+          required: false
+          schema:
+            type: boolean
+            default: false
       requestBody:
         content:
           application/json:
