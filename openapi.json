@@ -4527,6 +4527,15 @@
               "reverse_charged_vat"
             ]
           },
+          "partner": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Partner name",
+                "type": "string"
+              }
+            }
+          },
           "payment_status": {
             "type": "string",
             "description": "Current payment status (`new` |`pending` | `authorized` | `captured` | `voided` | `refunded` | `failed` | `incomplete` | `unknown`)"
