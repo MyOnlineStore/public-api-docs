@@ -772,6 +772,7 @@ paths:
         - $ref: "#/components/parameters/status_id"
         - $ref: "#/components/parameters/status_changed_start_date"
         - $ref: "#/components/parameters/status_changed_end_date"
+        - $ref: "#/components/parameters/debtor_email"
         - name: ordering
           in: query
           description: Ordering (by ordernumber)
@@ -1857,6 +1858,13 @@ components:
       schema:
         type: string
         format: date-time
+    debtor_email:
+      name: debtor_email
+      in: query
+      description: "Filter results on the e-mail address of the debtor"
+      required: false
+      schema:
+        type: string
     store:
       name: store
       in: path
