@@ -3296,6 +3296,10 @@ components:
     OrderDebtor:
       description: Order debitor details
       properties:
+        id:
+          description: "ID of the corresponding customer, if any"
+          type: string
+          format: uuid
         gender:
           description: "Gender description (deprecated: use [Invoice]Address.gender)"
           type: string
