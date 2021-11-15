@@ -628,6 +628,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiProblem"
+    post:
+      tags:
+        - Customers
+      summary: Create
+      description: Create a new customer.
+      operationId: createCustomer
+      parameters:
+        - $ref: "#/components/parameters/version"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  description: Email address
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema:
+                properties:
+                  customer:
+                    $ref: "#/components/schemas/Customer"
     delete:
       tags:
         - Customers
