@@ -597,6 +597,14 @@ paths:
                   description: Email address
                   type: string
                   format: email
+                firstName:
+                  description: First name
+                  type: string
+                  nullable: true
+                lastName:
+                  description: Last name
+                  type: string
+                  nullable: true
       responses:
         "200":
           description: Customer
