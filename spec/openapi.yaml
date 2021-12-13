@@ -600,11 +600,9 @@ paths:
                 firstName:
                   description: First name
                   type: string
-                  nullable: true
                 lastName:
                   description: Last name
                   type: string
-                  nullable: true
       responses:
         "200":
           description: Customer
