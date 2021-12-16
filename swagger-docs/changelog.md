@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.3.5] & [1.4.5] 2021-12-16
+* Added `trial_end_date` to __Store__ entity.
+
 ## [2.3.4] & [1.4.4] 2021-07-01
 * Added `taxable` to __Article__ entity.
 * Added `is_main` to __getCategoryArticles__ endpoint.
