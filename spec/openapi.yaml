@@ -2051,7 +2051,6 @@ components:
         description: Endless fun
         sku: ART758379-L
         badge_text: van - voor
-        tax: 21
         taxable: true
         price:
           default: 12.5
@@ -2153,7 +2152,6 @@ components:
         description: Endless fun
         sku: ART758379-L
         badge_text: van - voor
-        tax: 21
         taxable: true
         price:
           default: 12.5
@@ -2207,7 +2205,6 @@ components:
         description: Endless fun
         sku: ART758379-L
         badge_text: van - voor
-        tax: 21
         taxable: true
         price:
           default: 12.5
@@ -2283,10 +2280,6 @@ components:
         badge_text:
           description: Additional text shown as badge
           type: string
-        tax:
-          description: Vat percentage
-          type: string
-          deprecated: true
         taxable:
           description: Whether tax is charged when the article is sold
           type: boolean
