@@ -2055,6 +2055,7 @@ components:
         price:
           default: 12.5
           action: 9.95
+          purchase: 8.95
         created_date: "2016-07-04"
         created_time: "09:11:25"
         updated_date: "2016-07-25"
@@ -2156,6 +2157,7 @@ components:
         price:
           default: 12.5
           action: 9.95
+          purchase: 8.95
         stock: 15
         delivery_days: 5
         meta_title: "Funny shop: Funny Cushion"
@@ -2209,6 +2211,7 @@ components:
         price:
           default: 12.5
           action: 9.95
+          purchase: 8.95
         stock: 15
         delivery_days: 5
         meta_title: "Funny shop: Funny Cushion"
@@ -2446,6 +2449,9 @@ components:
           type: string
         action:
           description: Action price
+          type: string
+        purchase:
+          description: Purchase price
           type: string
     ArticleVariant:
       properties:
