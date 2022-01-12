@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.4.1] & [1.5.1] 2021-12-27
+* Added `price.purchase` to __Article__ entity.
+
 ## [2.4] & [1.5] 2021-12-27
 * Removed __Article__._tax_ rate that was deprecated in [2.3.1] and [1.4.1].
  This field has been replaced by a boolean __Article__.__taxable__ respectively.
