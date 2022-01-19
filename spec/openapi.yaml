@@ -4222,6 +4222,8 @@ components:
         properties:
           description: Transaction properties
           type: array
+          items:
+            type: string
     PaymentMutation:
       example:
         id: "1"
