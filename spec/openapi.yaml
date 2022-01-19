@@ -995,6 +995,33 @@ paths:
             text/xml:
               schema:
                 $ref: "#/components/schemas/Order"
+  "/v{version}/orders/{order_number}/payments":
+    get:
+      tags:
+        - Orders
+      summary: Return all related payments for specified order
+      description: Return all related payments for specified order
+      operationId: getOrderPayments
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/format"
+        - name: order_number
+          in: path
+          description: Order number
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order payments details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payments"
+            text/xml:
+              schema:
+                $ref: "#/components/schemas/Payments"
   "/v{version}/categories/{category_id}":
     get:
       tags:
@@ -3410,55 +3437,9 @@ components:
       description: Order payment details (available/required if Order.price.total <> 0.00)
       properties:
         gateway_name:
-          enum:
-            - "afterpay"
-            - "basic"
-            - "igenco"
-            - "izettle"
-            - "klarna_checkout"
-            - "mollie"
-            - "mollieOld"
-            - "multisafepay"
-            - "paynl"
-            - "paypal"
-            - "paytor"
-            - "sisow"
-            - "sumup"
-          description: Payment gateway name
-          type: string
+          $ref: "#/components/schemas/PaymentGatewayList"
         method_name:
-          enum:
-            - "advance"
-            - "afterpay"
-            - "apple_pay"
-            - "bancontact"
-            - "belfius"
-            - "bitcoin"
-            - "card"
-            - "cash"
-            - "creditcard"
-            - "directdebit"
-            - "external"
-            - "giropay"
-            - "ideal"
-            - "invoice"
-            - "in_arrears"
-            - "kbccbc"
-            - "klarna_checkout"
-            - "klarna_paylater"
-            - "maestro"
-            - "mastercard"
-            - "paypal"
-            - "paysafecard"
-            - "pickup"
-            - "podium_giftcard"
-            - "rembours"
-            - "singledebit"
-            - "sofortbanking"
-            - "visa"
-            - "webshop_giftcard"
-          description: Payment method name
-          type: string
+          $ref: "#/components/schemas/PaymentMethodList"
         status:
           $ref: "#/components/schemas/OrderPaymentStatus"
     OrderPaymentStatus:
@@ -3541,6 +3522,56 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PaymentMethod"
+    PaymentGatewayList:
+      description: Payment gateway name
+      type: string
+      enum:
+        - "afterpay"
+        - "basic"
+        - "igenco"
+        - "izettle"
+        - "klarna_checkout"
+        - "mollie"
+        - "mollieOld"
+        - "multisafepay"
+        - "paynl"
+        - "paypal"
+        - "paytor"
+        - "sisow"
+        - "sumup"
+    PaymentMethodList:
+      description: Payment method name
+      type: string
+      enum:
+        - "advance"
+        - "afterpay"
+        - "apple_pay"
+        - "bancontact"
+        - "belfius"
+        - "bitcoin"
+        - "card"
+        - "cash"
+        - "creditcard"
+        - "directdebit"
+        - "external"
+        - "giropay"
+        - "ideal"
+        - "invoice"
+        - "in_arrears"
+        - "kbccbc"
+        - "klarna_checkout"
+        - "klarna_paylater"
+        - "maestro"
+        - "mastercard"
+        - "paypal"
+        - "paysafecard"
+        - "pickup"
+        - "podium_giftcard"
+        - "rembours"
+        - "singledebit"
+        - "sofortbanking"
+        - "visa"
+        - "webshop_giftcard"
     PaymentMethod:
       description: Payment method
       properties:
@@ -3950,6 +3981,293 @@ components:
         email: support@mijnwebwinkel.nl
         note: Open from 09:00 till 17:00
         deleted: false
+    Payments:
+      example:
+        id: "8c1ed7ea-c19a-4137-8517-7d3f580b3b97"
+        gateway: "basic"
+        method: "pickup"
+        gatewayReference: "8c1ed7ea-c19a-4137-8517-7d3f580b3b97"
+        price: "4.99"
+        currency: "EUR"
+        storeId: "494c24a3-2243-484a-a81e-b3098d4dc870"
+        reference: "33eea580-2381-44bf-b355-d99a13d4f770"
+        isTest: true
+        createdAt: "2021-06-29T14:41:26+02:00"
+        updatedAt: "2021-06-29T14:41:26+02:00"
+      properties:
+        id:
+          description: Unique identifier
+          type: string
+          format: uuid
+        gateway:
+          $ref: "#/components/schemas/PaymentGatewayList"
+        method:
+          description: Payment method
+          type: string
+        gatewayReference:
+          description: Gateway reference
+          type: string
+        price:
+          description: Price (in decimal notation)
+          type: string
+        currency:
+          description: Currency (ISO 4217 code)
+          type: string
+        storeId:
+          description: Store unique identifier
+          type: string
+          format: uuid
+        reference:
+          description: Unique reference
+          type: string
+          format: uuid
+        isTest:
+          description: Is a test transaction
+          type: boolean
+        createdAt:
+          description: Creation date of transaction
+          type: string
+          format: date-time
+        expiresAt:
+          description: Expiration date of transaction
+          type: string
+          format: date-time
+          nullable: true
+        mutations:
+          description: Transaction mutations
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMutation'
+        order:
+          description: Transaction order details
+          type: object
+          properties:
+            id:
+              description: Unique identifier
+              type: string
+              format: uuid
+            referrerUrl:
+              description: The URL where the transaction is started from
+              type: string
+            reference:
+              description: The order number
+              type: string
+            price:
+              description: Price (in decimal notation)
+              type: string
+            tax:
+              description: Tax price (in cents)
+              type: number
+            locale:
+              description: Chosen currency format locale (ISO 3166-1 alpha-2 code)
+              type: string
+            deliveryType:
+              description: Delivery type
+              type: string
+              enum:
+                - "pickup"
+                - "delivery"
+            lines:
+              type: array
+              items:
+                properties:
+                  id:
+                    description: Unique identifier
+                    type: string
+                    format: uuid
+                  type:
+                    description: Line type
+                    type: string
+                  name:
+                    description: Name
+                    type: string
+                  description:
+                    description: Description
+                    type: string
+                  quantity:
+                    description: Quantity
+                    type: string
+                  price:
+                    description: Price (in decimal notation)
+                    type: string
+                  tax:
+                    description: Tax price (in cents)
+                    type: number
+                  taxRate:
+                    description: Tax rate (in decimals)
+                    type: string
+            customer:
+              description: Customer details
+              type: object
+              properties:
+                id:
+                  description: Customer identifier
+                  type: string
+                  format: uuid
+                email:
+                  description: Email address
+                  type: string
+                  format: email
+                birthDate:
+                  description: Date of birth (yyyy-mm-dd)
+                  type: string
+                  nullable: true
+                  format: date
+                iban:
+                  description: International Bank Account Number
+                  type: string
+                  format: iban
+                  nullable: true
+                ip:
+                  description: IP address
+                  type: string
+                billingAddress:
+                  description: Billing address of the customer
+                  type: object
+                  properties:
+                    id:
+                      description: Address identifier
+                      type: string
+                      format: uuid
+                    firstName:
+                      description: First name
+                      type: string
+                    lastName:
+                      description: Last name
+                      type: string
+                    company:
+                      description: Company name
+                      type: string
+                      nullable: true
+                    streetName:
+                      description: Street name
+                      type: string
+                    streetNumber:
+                      description: Street number
+                      type: string
+                    streetSuffix:
+                      description: Street number suffix
+                      type: string
+                      nullable: true
+                    zipCode:
+                      description: Zip code
+                      type: string
+                    city:
+                      description: City
+                      type: string
+                    countryCode:
+                      description: ISO 3166-1 alpha-2 country code
+                      type: string
+                      pattern: '^[A-Z]{2}$'
+                    phone:
+                      description: Phone number
+                      type: string
+                      nullable: true
+                    gender:
+                      description: Gender
+                      type: string
+                      nullable: true
+                      enum:
+                        - F
+                        - M
+                invoiceAddress:
+                  description: Invoice address of the customer
+                  type: object
+                  properties:
+                    id:
+                      description: Address identifier
+                      type: string
+                      format: uuid
+                    firstName:
+                      description: First name
+                      type: string
+                    lastName:
+                      description: Last name
+                      type: string
+                    company:
+                      description: Company name
+                      type: string
+                      nullable: true
+                    streetName:
+                      description: Street name
+                      type: string
+                    streetNumber:
+                      description: Street number
+                      type: string
+                    streetSuffix:
+                      description: Street number suffix
+                      type: string
+                      nullable: true
+                    zipCode:
+                      description: Zip code
+                      type: string
+                    city:
+                      description: City
+                      type: string
+                    countryCode:
+                      description: ISO 3166-1 alpha-2 country code
+                      type: string
+                      pattern: '^[A-Z]{2}$'
+                    phone:
+                      description: Phone number
+                      type: string
+                      nullable: true
+                    gender:
+                      description: Gender
+                      type: string
+                      nullable: true
+                      enum:
+                        - F
+                        - M
+        properties:
+          description: Transaction properties
+          type: array
+    PaymentMutation:
+      example:
+        id: "1"
+        type: "authorize"
+        reference: null
+        price: "499"
+        description: null
+        createdAt: "2021-06-29T14:41:26+02:00"
+        expiresAt: null
+      properties:
+        id:
+          description: Mutation ID
+          type: number
+        type:
+          description: Mutation type
+          type: string
+          enum:
+            - "authorize"
+            - "capture"
+            - "complete_authorize"
+            - "complete_purchase"
+            - "fail"
+            - "notify"
+            - "purchase"
+            - "refund"
+            - "void"
+        reference:
+          description: Optional mutation reference
+          type: string
+          nullable: true
+        price:
+          description: Price (in cents)
+          type: number
+        description:
+          description: Optional mutation description
+          type: string
+          nullable: true
+        createdAt:
+          description: Mutation creation date
+          type: string
+          format: date-time
+        expiresAt:
+          description: Mutation expiration date
+          type: string
+          format: date-time
+          nullable: true
     CreditOrderPostable:
       required:
         - credited_order_number
