@@ -2445,10 +2445,10 @@ components:
     ArticlePrice:
       properties:
         default:
-          description: The default price for which the product is offered (incl. tax depending on the value of store.prices_include_tax)
+          description: The default price for which the product is offered (incl. tax depending on the value of [`store.prices_include_tax`](#tag/Store-information))
           type: string
         action:
-          description: The discounted price; overrides the default offer (incl. tax depending on the value of store.prices_include_tax)
+          description: The discounted price; overrides the default offer (incl. tax depending on the value of [`store.prices_include_tax`](#tag/Store-information))
           type: string
         purchase:
           description: The purchase price (excl. tax)
