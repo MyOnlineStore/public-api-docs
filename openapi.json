@@ -3916,15 +3916,15 @@
       "ArticlePrice": {
         "properties": {
           "default": {
-            "description": "Default price",
+            "description": "The default price for which the product is offered (incl. tax depending on the value of store.prices_include_tax)",
             "type": "string"
           },
           "action": {
-            "description": "Action price",
+            "description": "The discounted price; overrides the default offer (incl. tax depending on the value of store.prices_include_tax)",
             "type": "string"
           },
           "purchase": {
-            "description": "Purchase price",
+            "description": "The purchase price (excl. tax)",
             "type": "string"
           }
         }
