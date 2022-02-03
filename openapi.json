@@ -6183,12 +6183,6 @@
             "description": "Region where the store is located (ISO 3166-1 alpha-2 country code)",
             "type": "string",
             "pattern": "^[A-Z]{2}$"
-          },
-          "trial_end_date": {
-            "description": "Date at which the trial expires (format: yyyy-mm-dd hh:mm:ss)",
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
           }
         },
         "example": {
@@ -6208,8 +6202,7 @@
             "de_DE"
           ],
           "currency_format_locale": "nl_NL",
-          "available_business_models": "B2C",
-          "trial_end_date": "2021-01-02 03:04:05"
+          "available_business_models": "B2C"
         }
       },
       "ApiProblem": {
