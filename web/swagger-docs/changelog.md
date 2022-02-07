@@ -1,85 +1,3 @@
-# Introduction
-An online store should be within everyone’s reach. That’s why creating the best online platform is our mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the opportunity to follow their dream. Today is the day!
-
-* Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)
-* A [sandbox UI](swagger-docs) is available to test your requests
-* The [changelog](swagger-docs/changelog.md) can be found [here](swagger-docs/changelog.md)
-
-# Environments
-A single (live) environment is available:
-* api.myonlinestore.com - EMEA area
-
-# Versions
-Currently available are versions **1** and **2-beta**.
-Both are stable, but backwards incompatible changes may be applied to v**-beta**
-and deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed
-between **1** and **2-beta**, though contents are the same
-
-# Guides
-## Business models
-For our purposes a business model reflects the type of sale made in an order. We currently distinguish "business to customer" (`B2C`) and
-"business to business" (`B2B`) models. Each order is assigned a model, with B2C being the default. The merchant can specify which model(s)
-may be used for new orders (pending package/version limitations)
-
-For an order to qualify for the `B2B` model, the following requirements apply:
-
-* The merchant must have allowed this model to be used (__Store__._available_business_models_ must be `ALL` or `B2B`)
-* __OrderDebtor__._address_._invoice_._company_ must not be empty
-* The selected payment method must allow `B2B` sales. Notably: `Klarna Checkout`, `Klarna Pay Later` and `Afterpay` do not support this model
-
-If the B2B model applies to an order, some additional options are available:
-
-* __Order__._reference_ may be set to an arbritary string
-* __OrderDebtor__._address_._invoice_._taxnumber_ may be set to a valid VAT number
-  (this is not required, but recommended to allow the merchant to verify tax rule applicability)
-* Vat reverse charging becomes available as a valid tax strategy (see Tax rules section)
-
-## Tax rules
-Depending on the type of sale, country of origin and destination country, some special tax rules may apply to an order. This is reflected in a "tax strategy"
-
-We currently distinguish the following cases:
-* Sales within the domestic borders (origin and destination country are the same): regular tax applies
-* Sales wholly outside EU borders (both origin and destination country not part of the EU): regular tax applies
-* Sales crossing the EU border (origin country part of the EU and destination country not part of the EU, or vice versa): 0% tax is applied
-* B2B Sales crossing domestic borders, but not the EU border (both origin and destination country are part of the EU, but not the same):
-  VAT is reverse charged, 0% tax is applied
-
-The tax strategy is derived based on order and store information and cannot be specified as input
-
-## Payment information
-MyOnlineStore orders may be paid using a number of payment methods, through various gateways.
-A payment choice is uniquely specified by the combination of gateway_name and method_name.
-MyOnlineStore also offers one internal gateway (`basic`) which may be used for manually verifiable payments
-(for example: cash or card at the counter)
-
-Orders may follow one of two payment flows:
-
-1. The order has zero or more transactions. At this time the transaction amount will always equal the
-full order amount (including tax), but partial payments may be added in the future. To be considered finished,
-at least one transaction must have reached pending, authorized or captured status.
-
-2. The order has a directly linked singular payment. This option will be deprecated soon,
-but may still be reflected in historical data and orders created through the API endpoint
-
-Each order has a payment status (`payment_status`), which is derived from either the transactions from option 1
-or the singular payment from option 2. This will be one of the following:
-
-* `new`: The attached transaction has been created, but has not yet been confirmed by the gateway
-* `pending`: The attached transaction has been updated with a reference to the corresponding transaction at the gateway
-* `authorized`: The full order amount amount has been confirmed and reserved at the customer's account
-* `captured`: The full order amount has been transferred to the merchant's account
-* `incomplete`: This is an external gateway status which may occur if we fetch the status upstream, may be considered as `new`
-* 'failed': The attached transaction has failed to complete
-* `refunded`: The full order amount has been refunded
-* `voided`: The full order amount was reserved (authorized) but this reservation was subsequently cancelled
-* `unknown`: No payment status can be derived
-
-### Special cases
-* Orders with a total price of 0.00: These do not require any payment information. They may be assigned a method,
-but will never have any transactions attached.
-* Credit orders: These do not have any direct payment information attached.
-For an up-to-date status, transactions and mutations, the original order should be requested.
-
 # Changelog
 
 ## [2.4.1] & [1.5.1] 2021-12-27
@@ -114,11 +32,13 @@ For an up-to-date status, transactions and mutations, the original order should 
 * __Article__._lists_._options_ are now required.
 
 ## [2.2.4] & [1.3.4] 2020-11-16
+
 ### Added
 * Added `created_time` to __Article__ entity.
 * Added `updated_time` to __Article__ entity.
 
 ## [2.2.3] & [1.3.3] 2020-11-11
+
 ### Changed
 * all __Article__ and __Category__ will accept dateTime formatted time strings for the fields
  _created_start_date_, _created_end_date_, _changed_start_date_ and _changed_end_date_, date formatted strings are
@@ -127,6 +47,7 @@ For an up-to-date status, transactions and mutations, the original order should 
 
 
 ## [2.2.2] & [1.3.2] 2020-10-27
+
 ### Added
 * Added __getGateways__ and __getStoreGateways__ operations for retrieving available payment
  gateways and methods. These deprecate the __getPayTypes__ and __getPayTypesPerStore__ operations
@@ -138,17 +59,20 @@ For an up-to-date status, transactions and mutations, the original order should 
  ._gateway_name_ and __OrderPayment__._method_name_ respectively.  
 
 ## [2.2.1] & [1.3.1] 2019-11-27
+
 ### Changed
 * __Store__._avatar_url_ is now deprecated. Expect this property
   to be removed in the future.
 
 ## [2.2.0] & [1.3.0] 2019-11-08
+    
 ### Changed
 * For orders with no costs (__Order__._price_._total_ = '0.00') 
 __Order__._payment_ is no longer guaranteed to be available, 
 nor is __OrderPostable__._payment_ a required parameter     
 
 ## [2.1.1] & [1.2.1] 2019-09-19
+
 ### Added 
 * __Order__._payment_status_: Indication of the payment status of the order, derived
 from related payment transaction(s).
@@ -157,6 +81,7 @@ from related payment transaction(s).
 * __Order__._payment_._status_ is now deprecated. Expect this property to be removed in the future.     
 
 ## [2.1.0] & [1.2.0] 2019-09-11
+
 ### Added 
 * __Store__._available_business_models_: specifies which business models are available for orders
 * __Order__._business_model_: specifies which business model has been applied to the order. 
@@ -173,10 +98,12 @@ new __Guides__ section
 * __OrderDebtor__._address_._invoice_._company_ is no longer available as input for orders if __Store__._version_ equals `GO`   
     
 ## [2.0.17] & [1.1.27]
+
 ### Added
 * (2019-09-03) __Store__._id_ as a unique store identification (name is subject to change)
     
 ## [2.0.16] & [1.1.26]
+
 ### Added
 * (2019-07-19) The purchase price of an ordered article has been added to the output. This may be an empty
 string if the merchant has not specified a purchase price, or it was not available at the time of order placement
@@ -185,6 +112,7 @@ string if the merchant has not specified a purchase price, or it was not availab
 * (2019-07-17) Corrected CORS headers to allow API requests from any domain 
 
 ## [2.0.15] & [1.1.25]
+
 ### Added
 * (2019-07-01) The list options attached to an article may now be a subset of the options available
 in the __ArticleList__ entity. Each attached option can also specify a specific price to override the default.
@@ -205,6 +133,7 @@ option feature release (2019-04-17). Specified options will now be attached
 This issue affected requests since 2019-05-03.
 
 ## [2.0.14] & [1.1.24] 2019-05-10
+
 ### Fixed 
 * (2019-05-08) For discount details, __OrderDetail__._price_ would be a single object and have an empty value
  for _rate_. This has been corrected: because VAT for discount details is calculated by ratio 
@@ -225,6 +154,7 @@ that the order was placed. Cannot be specified in POST, since it follows the cur
 barcode field was not enabled by default. This is now possible again. 
 
 ## [2.0.13] & [1.1.23] 2019-04-12
+
 ### Added
 * __TaxPrice__._amount_including_tax_ is now also available in the output of OrderDetail object. 
 This will allow you to read the exact pre-calculated price including tax, rather than having to
@@ -234,23 +164,27 @@ apply a client side calculation and rounding
 Cannot be specified in POST, where it follows the current Store setting
 
 ## [2.0.12] & [1.1.23] 2019-02-07
+
 ### Fixed
 * Repaired an issue where _Order.price.tax_ reported incorrect data (double the actual tax amount). 
  This issue affected orders placed from 2019-01-23 in stores where Paypal and/or Afterpay 
  was available as payment provider (even if another payment method was used for the order itself).
 
 ## [2.0.11] & [1.1.22] 2018-12-12
+
 ### Added
 * Optional property _amount_including_tax_ was added to the __TaxPrice__ object. 
 This may be used for an __OrderDetailPostable__ object with _type = custom_, to specify
 the _unit_price_ including tax. At least one of _amount_ or _amount_including_tax_ is required.    
 
 ## [2.0.10] & [1.1.21] 2018-11-28
+
 ### Added
 * It is now possible to use an address ID from a registered customer when placing an order, instead of providing the
   complete address. The customers email _must_ match the email provided with the order.
 
 ## [2.0.9] & [1.1.20] 2018-11-28
+
 ### Added
 * It is now possible to specify a price for an orderline with type "article". 
 This will allow deviation from the article's "regular" price (as specified in the store). 
@@ -258,14 +192,17 @@ This functionality requires additional rights as partner.
 It can be used by specifying __OrderDetailPostable.price_override__. Note that this __must include VAT__ 
 
 ## [2.0.8] & [1.1.19] 2018-11-27
+
 ### Added
 * Added `debtor.link_to_account` which allows to link an account to an order.
 
 ## [2.0.7] 2018-09-20
+
 ### Fixed
 * Added correct validation error for invalid address specification in v2-beta
 
 ## [2.0.6] & [1.1.18] 2018-09-10
+
 ### Added
 * It is now possible to attach images to a `ArticleConfiguratorListOption` when updating or creating an article.
   To add an image to an `ArticleConfiguratorListOption` add an `ArticleConfiguratorListPostable` object to `lists`.
@@ -281,18 +218,22 @@ It can be used by specifying __OrderDetailPostable.price_override__. Note that t
 will be removed in version 2
 
 ## [2.0.5] & [1.1.17] 2018-09-07
+
 ### Fixed
 * Since v1.1.14 __Article.lists.options.id__ was returned as string instead of the specified int.
 
 ## [2.0.4] & [1.1.16] 2018-09-06
+
 ### Fixed
 * Since v1.1.14 __Article.lists.id__ was returned as string instead of the specified int. 
 
 ## [2.0.3] & [1.1.15] 2018-09-04
+
 ### Fixed
 * Since v1.1.14 __Article.lists__ could be indexed incorrectly (not starting at 0). 
 
 ## [2.0.2] & [1.1.14] 2018-08-30
+
 ### Added
 It is now possible in the backend to attach article images to a list option.
 
@@ -302,6 +243,7 @@ It is now possible in the backend to attach article images to a list option.
 * Added has_images to __Article.lists__
 
 ## [2.0.1] & [1.1.13] 2018-08-23
+
 ### Added
 * It is possible to add custom items, which are not available in the article catalog,
 to be added to an order. To add a custom article to an order, add an orderline with
@@ -322,10 +264,12 @@ Note that `type` must be `custom`, no `articles` field is needed, the price fiel
 is called `unit_price` and the weight must be given via `unit_weight`.
 
 ## [2.0.0] 2018-07-10
+
 ### Added
 * Released documentation for version 2-beta. Note that this version is still subject to change. 
 
 ## [1.1.12] 2018-06-22
+
 ### Fixed
 * Fixed an issue where __Order.debtor.delivery.country_code__ 
  would be displayed incorrectly for some orders. This could occur in 
@@ -334,12 +278,14 @@ is called `unit_price` and the weight must be given via `unit_weight`.
  This country_code is now displayed correctly again. 
 
 ## [1.1.11] 2018-06-20
+
 ### Changed
 * Improved resolving of country codes for addresses which
  do not have an explicit country code (version 1.0.6 and earlier).
  This process is now based on the order locale instead of the request locale.
 
 ## [1.1.10] 2018-06-06
+
 ### Added
 * Added an `override_minimum` to the **postOrder** operation.
  This will allow you to ignore minimum order price limitations when creating and completing an order.
@@ -347,21 +293,25 @@ is called `unit_price` and the weight must be given via `unit_weight`.
  Note: This option requires additional rights per partner.
 
 ## [1.1.9] 2018-06-06
+
 ### Added
 * __CreditOrderPostable.offline_location_id__ has been added
 
 ## [1.1.8] 2018-06-06
+
 ### Fixed
 * Fixed an issue where order-numbers would be assigned before validation.
 Since an invalid order is never actually created, 
 this would result in a non-sequential set of order-numbers. 
 
 ## [1.1.7] 2018-06-06
+
 ### Changed
 * Changed type of __Order.credited_order_number__ and __Order.credit_order_numbers__
 from string to integer, for consistency with __Order.number__ 
 
 ## [1.1.6] 2018-06-05
+
 ### Added
 * The following fields have been added: 
   __Order.credited_order_number__, __Order.credit_order_numbers__
@@ -370,6 +320,7 @@ from string to integer, for consistency with __Order.number__
 * Performance of the __getOrders__ operation has been improved for larger limits.
 
 ## [1.1.5] 2018-06-01
+
 ### Fixed
 * Values for __CreditOrderPostable.payment_costs__ 
 and __CreditOrderPostable.shipping_costs__ were not processed,
@@ -377,6 +328,7 @@ resulting in the full payment costs and shipping costs to be credited.
 This is now working as described again.
 
 ## [1.1.4] 2018-05-18
+
 ### Added
 * It is now possible to attach images when creating or updating an article. To add
 an image to an article, add an `images` object. The `images` object must be an array,
@@ -384,10 +336,12 @@ that for each image contains an `url` field: a string with the location of the d
 image; and a `position` field: an integer (1 - 15) marking the position of each image.
 
 ## [1.1.3] 2018-05-15
+
 ### Changed
 * Phone number of offline locations is now returned in E164 format
 
 ## [1.1.2] 2018-05-14
+
 ### Fixed
 * Fixed an issue where in some cases __Article.extra__ did not contain the
 complete set of field values. This specifically concerned custom select fields
@@ -396,6 +350,7 @@ removed from the field as an available option, it will now fallback to the
 default or first available value 
 
 ## [1.1.1] 2018-05-04
+
 ### Added
 * Added sorting information for categories. A category now contains a `sorting` object.
 The sorting object contains:
@@ -414,6 +369,7 @@ The `sorting` object may contain one of:
 It may contain any of the __postCategory__ operation fields.
 
 ## [1.1.0] 2018-03-21
+
 ### Fixed
 * Incomplete orders (carts) are no longer available through any of the __Order__ operations.  
 * The `finished` attribute has been removed from the __OrderPostable__ and __OrderPatchable__ 
@@ -421,11 +377,13 @@ objects, since it is overwritten during order processing anyway.
 * The `finished` attribute has been deprecated on the __Order__ object and will be removed in version 2.
 
 ## [1.0.8] 2018-02-26
+
 ### Fixed
 * Fixed an issue were the ratelimit was not applied to partner AND store context,
 but to partner context only. This was broken since 2018-02-12.
 
 ## [1.0.7] 2018-01-31
+
 ### Changed
 * Added a `credit_order` property to the __OrderStatus__ object.
 This specifies whether the status is allowed for (and signifies) a credit order. 
@@ -440,6 +398,7 @@ These must be a (sub)set of the orderlines of the original order.
 Stock mutation for credit orders is optional, and may be controlled by the `mutate_stock` parameter  
 
 ## [1.0.6] 2018-01-03
+ 
 ### Changed
 * The following properties of __OrderDebtor__ have been deprecated and will be removed in version 2.
   The corresponding properties of __Address__ or __InvoiceAddress__ should be used instead.  
@@ -460,6 +419,7 @@ Stock mutation for credit orders is optional, and may be controlled by the `muta
   if no `shipping_method_id` is specified
 
 ### Added
+
 * A listing of available shipping methods has been added at `/v{version}/shipping/methods`
 
 * Added an `override_stock` to **postOrder** and **patchOrder** operations.
@@ -468,11 +428,13 @@ Stock mutation for credit orders is optional, and may be controlled by the `muta
  Additional access is required for this option.
 
 ## [1.0.5] 2017-11-01
+
 ### Added
 * Added `default_language` to Store Model.
 * Added `active_languages` to Store Model.
 
 ## [1.0.4] 2017-09-07
+ 
 ### Changed
 * The format for NewsletterSubscriber parameters `created_start_date`, `created_end_date`, `changed_start_date` and
  `changed_end_date` has been changed to `yyyy-mm-dd hh:mm:ss` to allow filtering by time. 
@@ -482,20 +444,24 @@ Stock mutation for credit orders is optional, and may be controlled by the `muta
   - `created_time` and `changed_time` values have been added to the NewsletterSubscriber object. These will be merged into `created_date` and `changed_date` in version 2.   
 
 ## [1.0.3] 2017-09-04
+ 
 ### Fixed
 * Fixed an issue where PATCH or POST article actions which specified a barcode would produce an error    
 * Fixed an issue where any article DELETE operation would produce an error
 
 ## [1.0.2] 2017-09-01
+ 
 ### Fixed
 * Fixed an issue where article stock could no longer be set to unlimited. 
 This is now also possible for variant stock. 
 
-## [1.0.1] 2017-08-25
+## [1.0.1] 2017-08-25 
+ 
 ### Fixed
 * Fixed an issue where shipping costs would be applied for orders from an offline location
 
-## [1.0.0] 2017-07-20
+## [1.0.0] 2017-07-20 
+ 
 ### Fixed
 * Fixed a bug where extra __articlefields__ were matched by their (translated) name only.
 This would lead to mismatches with the default __weight__, __width__, __height__ and __length__ fields

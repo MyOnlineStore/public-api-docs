@@ -4,8 +4,88 @@ info:
   contact:
     name: MyOnlineStore
   version: '1'
-  description:
-    $ref: /swagger-docs/changelog.md
+  description: |
+    # Introduction
+    An online store should be within everyone’s reach. That’s why creating the best online platform is our mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the opportunity to follow their dream. Today is the day!
+
+    * Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)
+    * A [sandbox UI](swagger-docs) is available to test your requests
+    * The [changelog](swagger-docs/changelog.md) can be found [here](swagger/docs-changelog.md)
+
+    # Environments
+    A single (live) environment is available:
+    * api.myonlinestore.com - EMEA area
+
+    # Versions
+    Currently available are versions **1** and **2-beta**.
+    Both are stable, but backwards incompatible changes may be applied to v**-beta**
+    and deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed
+    between **1** and **2-beta**, though contents are the same
+
+    # Guides
+    ## Business models
+    For our purposes a business model reflects the type of sale made in an order. We currently distinguish "business to customer" (`B2C`) and
+    "business to business" (`B2B`) models. Each order is assigned a model, with B2C being the default. The merchant can specify which model(s)
+    may be used for new orders (pending package/version limitations)
+
+    For an order to qualify for the `B2B` model, the following requirements apply:
+
+    * The merchant must have allowed this model to be used (__Store__._available_business_models_ must be `ALL` or `B2B`)
+    * __OrderDebtor__._address_._invoice_._company_ must not be empty
+    * The selected payment method must allow `B2B` sales. Notably: `Klarna Checkout`, `Klarna Pay Later` and `Afterpay` do not support this model
+
+    If the B2B model applies to an order, some additional options are available:
+
+    * __Order__._reference_ may be set to an arbritary string
+    * __OrderDebtor__._address_._invoice_._taxnumber_ may be set to a valid VAT number
+      (this is not required, but recommended to allow the merchant to verify tax rule applicability)
+    * Vat reverse charging becomes available as a valid tax strategy (see Tax rules section)
+
+    ## Tax rules
+    Depending on the type of sale, country of origin and destination country, some special tax rules may apply to an order. This is reflected in a "tax strategy"
+
+    We currently distinguish the following cases:
+    * Sales within the domestic borders (origin and destination country are the same): regular tax applies
+    * Sales wholly outside EU borders (both origin and destination country not part of the EU): regular tax applies
+    * Sales crossing the EU border (origin country part of the EU and destination country not part of the EU, or vice versa): 0% tax is applied
+    * B2B Sales crossing domestic borders, but not the EU border (both origin and destination country are part of the EU, but not the same):
+      VAT is reverse charged, 0% tax is applied
+
+    The tax strategy is derived based on order and store information and cannot be specified as input
+
+    ## Payment information
+    MyOnlineStore orders may be paid using a number of payment methods, through various gateways.
+    A payment choice is uniquely specified by the combination of gateway_name and method_name.
+    MyOnlineStore also offers one internal gateway (`basic`) which may be used for manually verifiable payments
+    (for example: cash or card at the counter)
+
+    Orders may follow one of two payment flows:
+
+    1. The order has zero or more transactions. At this time the transaction amount will always equal the
+    full order amount (including tax), but partial payments may be added in the future. To be considered finished,
+    at least one transaction must have reached pending, authorized or captured status.
+
+    2. The order has a directly linked singular payment. This option will be deprecated soon,
+    but may still be reflected in historical data and orders created through the API endpoint
+
+    Each order has a payment status (`payment_status`), which is derived from either the transactions from option 1
+    or the singular payment from option 2. This will be one of the following:
+
+    * `new`: The attached transaction has been created, but has not yet been confirmed by the gateway
+    * `pending`: The attached transaction has been updated with a reference to the corresponding transaction at the gateway
+    * `authorized`: The full order amount amount has been confirmed and reserved at the customer's account
+    * `captured`: The full order amount has been transferred to the merchant's account
+    * `incomplete`: This is an external gateway status which may occur if we fetch the status upstream, may be considered as `new`
+    * 'failed': The attached transaction has failed to complete
+    * `refunded`: The full order amount has been refunded
+    * `voided`: The full order amount was reserved (authorized) but this reservation was subsequently cancelled
+    * `unknown`: No payment status can be derived
+
+    ### Special cases
+    * Orders with a total price of 0.00: These do not require any payment information. They may be assigned a method,
+    but will never have any transactions attached.
+    * Credit orders: These do not have any direct payment information attached.
+    For an up-to-date status, transactions and mutations, the original order should be requested.
   x-logo:
     url: images/mos-connect-logo.png
 security:
