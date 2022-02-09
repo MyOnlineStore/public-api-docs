@@ -10,7 +10,7 @@ info:
 
     * Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)
     * A [sandbox UI](swagger-docs) is available to test your requests
-    * The changelog can be found [here](swagger-docs/changelog.md)
+    * The changelog can be found [here](swagger-docs/changelog.html)
 
     # Environments
     A single (live) environment is available:
