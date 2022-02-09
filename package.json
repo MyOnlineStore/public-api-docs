@@ -4,7 +4,7 @@
   "dependencies": {
     "jquery": "^3.6.0",
     "npm": "^7.9.0",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.8.5",
     "swagger-repo": "^2.0.0-rc.15",
     "swagger-ui-dist": "^3.46.0",
     "ws": "^7.4.6",
