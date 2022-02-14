@@ -13,7 +13,9 @@
 ### Setup
 * Install [Docker](https://docs.docker.com/install/)
   * Alternative: install npm
+* Run `cp docker-compose.dist.yml docker-compose.yml`
 * Run `make initialize`
+* Run `make run build-dev`
 
 ### Usage
 
