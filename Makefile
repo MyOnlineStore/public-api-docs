@@ -8,10 +8,10 @@ else
 	echo "APP_VOLUME=.:/usr/app" > .env
 endif
 
-initialize: generate-env pull start
+initialize: generate-env pull install start
 
 install:
-	docker-compose exec connect-documentation npm install ${ARGS}
+	docker-compose run connect-documentation npm install ${ARGS}
 
 npm:
 	docker-compose exec connect-documentation npm ${ARGS}
