@@ -1012,6 +1012,22 @@ paths:
           required: true
           schema:
             type: integer
+        - name: embed
+          in: query
+          description: Either one or multiple (comma separatered) of "properties", "mutations", or "order"
+          required: false
+          schema:
+            type: string
+          examples:
+            order:
+              description: Include the order details of the payment
+              value: order
+            mutations:
+              description: Include the mutations of the payment
+              value: mutations
+            properties:
+              description: Include the properties of the payment
+              value: properties
       responses:
         "200":
           description: Order payments details
@@ -4129,26 +4145,30 @@ components:
                       description: Address identifier
                       type: string
                       format: uuid
-                    firstName:
-                      description: First name
-                      type: string
-                    lastName:
-                      description: Last name
-                      type: string
+                    name:
+                      properties:
+                        first:
+                          description: First name
+                          type: string
+                        last:
+                          description: Last name
+                          type: string
                     company:
                       description: Company name
                       type: string
                       nullable: true
-                    streetName:
-                      description: Street name
-                      type: string
-                    streetNumber:
-                      description: Street number
-                      type: string
-                    streetSuffix:
-                      description: Street number suffix
-                      type: string
-                      nullable: true
+                    street:
+                      properties:
+                        name:
+                          description: Street name
+                          type: string
+                        number:
+                          description: Street number
+                          type: string
+                        suffix:
+                          description: Street number suffix
+                          type: string
+                          nullable: true
                     zipCode:
                       description: Zip code
                       type: string
