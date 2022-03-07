@@ -999,8 +999,8 @@ paths:
     get:
       tags:
         - Orders
-      summary: Return all related payments for specified order
-      description: Return all related payments for specified order
+      summary: Return payments of single order
+      description: Return payments of single order
       operationId: getOrderPayments
       parameters:
         - $ref: "#/components/parameters/version"
@@ -4024,8 +4024,8 @@ components:
           description: Gateway reference
           type: string
         price:
-          description: Price (in decimal notation)
-          type: string
+          description: Price in minor units
+          type: integer
         currency:
           description: Currency (ISO 4217 code)
           type: string
@@ -4037,43 +4037,43 @@ components:
           description: Unique reference
           type: string
           format: uuid
+        referrerUrl:
+          description: The URL where the payment is started from
+          type: string
         isTest:
-          description: Is a test transaction
+          description: Is a test payment
           type: boolean
         createdAt:
-          description: Creation date of transaction
+          description: Creation date of payment
           type: string
           format: date-time
-        expiresAt:
-          description: Expiration date of transaction
+        updatedAt:
+          description: last updated date of payment
           type: string
           format: date-time
           nullable: true
         mutations:
-          description: Transaction mutations
+          description: Payment mutations
           type: array
           items:
             $ref: '#/components/schemas/PaymentMutation'
         order:
-          description: Transaction order details
+          description: Payment order details
           type: object
           properties:
             id:
               description: Unique identifier
               type: string
               format: uuid
-            referrerUrl:
-              description: The URL where the transaction is started from
-              type: string
             reference:
               description: The order number
               type: string
             price:
-              description: Price (in decimal notation)
-              type: string
+              description: Price  minor units
+              type: integer
             tax:
-              description: Tax price (in cents)
-              type: number
+              description: Tax price in minor units
+              type: integer
             locale:
               description: Chosen currency format locale (ISO 3166-1 alpha-2 code)
               type: string
@@ -4104,11 +4104,11 @@ components:
                     description: Quantity
                     type: string
                   price:
-                    description: Price (in decimal notation)
-                    type: string
+                    description: Price in minor units
+                    type: integer
                   tax:
-                    description: Tax price (in cents)
-                    type: number
+                    description: Tax price in minor units
+                    type: integer
                   taxRate:
                     description: Tax rate (in decimals)
                     type: string
@@ -4208,15 +4208,18 @@ components:
                       description: Company name
                       type: string
                       nullable: true
-                    streetName:
-                      description: Street name
-                      type: string
-                    streetNumber:
-                      description: Street number
-                      type: string
-                    streetSuffix:
-                      description: Street number suffix
-                      type: string
+                    street:
+                      properties:
+                        name:
+                          description: Street name
+                          type: string
+                        number:
+                          description: Street number
+                          type: string
+                        suffix:
+                          description: Street number suffix
+                          type: string
+                          nullable: true
                       nullable: true
                     zipCode:
                       description: Zip code
@@ -4240,7 +4243,7 @@ components:
                         - F
                         - M
         properties:
-          description: Transaction properties
+          description: Payment properties
           type: array
           items:
             type: string
@@ -4267,14 +4270,14 @@ components:
             - "refund"
             - "void"
         reference:
-          description: Optional mutation reference
+          description: Mutation reference
           type: string
           nullable: true
         price:
           description: Price (in cents)
           type: number
         description:
-          description: Optional mutation description
+          description: Mutation description
           type: string
           nullable: true
         createdAt:
