@@ -4263,11 +4263,7 @@ components:
           enum:
             - "authorize"
             - "capture"
-            - "complete_authorize"
-            - "complete_purchase"
-            - "fail"
-            - "notify"
-            - "purchase"
+            - "failed"
             - "refund"
             - "void"
         reference:
