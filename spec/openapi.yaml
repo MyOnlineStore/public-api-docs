@@ -4244,9 +4244,8 @@ components:
                         - M
         properties:
           description: Payment properties
-          type: array
-          items:
-            type: string
+          type: object
+          additionalProperties: {}
     PaymentMutation:
       example:
         id: "1"
