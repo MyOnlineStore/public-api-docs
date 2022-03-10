@@ -4273,7 +4273,7 @@ components:
           type: string
           nullable: true
         price:
-          description: Price (in cents)
+          description: Price in minor units
           type: number
         description:
           description: Mutation description
