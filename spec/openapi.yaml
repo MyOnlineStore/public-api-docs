@@ -4048,7 +4048,7 @@ components:
           type: string
           format: date-time
         updatedAt:
-          description: last updated date of payment
+          description: Payment last updated date
           type: string
           format: date-time
           nullable: true
