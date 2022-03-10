@@ -4075,7 +4075,7 @@ components:
               description: Tax price in minor units
               type: integer
             locale:
-              description: Chosen currency format locale (ISO 3166-1 alpha-2 code)
+              description: Language of the order contents (ISO 3166-1 alpha-2 code)
               type: string
             deliveryType:
               description: Delivery type
