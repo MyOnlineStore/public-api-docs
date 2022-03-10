@@ -995,6 +995,49 @@ paths:
             text/xml:
               schema:
                 $ref: "#/components/schemas/Order"
+  "/v{version}/orders/{order_number}/payments":
+    get:
+      tags:
+        - Orders
+      summary: Return payments of single order
+      description: Return payments of single order
+      operationId: getOrderPayments
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/language"
+        - $ref: "#/components/parameters/format"
+        - name: order_number
+          in: path
+          description: Order number
+          required: true
+          schema:
+            type: integer
+        - name: embed
+          in: query
+          description: Either one or multiple (comma separatered) of "properties", "mutations", or "order"
+          required: false
+          schema:
+            type: string
+          examples:
+            order:
+              description: Include the order details of the payment
+              value: order
+            mutations:
+              description: Include the mutations of the payment
+              value: mutations
+            properties:
+              description: Include the properties of the payment
+              value: properties
+      responses:
+        "200":
+          description: Order payments details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payments"
+            text/xml:
+              schema:
+                $ref: "#/components/schemas/Payments"
   "/v{version}/categories/{category_id}":
     get:
       tags:
@@ -3409,55 +3452,9 @@ components:
       description: Order payment details (available/required if Order.price.total <> 0.00)
       properties:
         gateway_name:
-          enum:
-            - "afterpay"
-            - "basic"
-            - "igenco"
-            - "izettle"
-            - "klarna_checkout"
-            - "mollie"
-            - "mollieOld"
-            - "multisafepay"
-            - "paynl"
-            - "paypal"
-            - "paytor"
-            - "sisow"
-            - "sumup"
-          description: Payment gateway name
-          type: string
+          $ref: "#/components/schemas/PaymentGatewayList"
         method_name:
-          enum:
-            - "advance"
-            - "afterpay"
-            - "apple_pay"
-            - "bancontact"
-            - "belfius"
-            - "bitcoin"
-            - "card"
-            - "cash"
-            - "creditcard"
-            - "directdebit"
-            - "external"
-            - "giropay"
-            - "ideal"
-            - "invoice"
-            - "in_arrears"
-            - "kbccbc"
-            - "klarna_checkout"
-            - "klarna_paylater"
-            - "maestro"
-            - "mastercard"
-            - "paypal"
-            - "paysafecard"
-            - "pickup"
-            - "podium_giftcard"
-            - "rembours"
-            - "singledebit"
-            - "sofortbanking"
-            - "visa"
-            - "webshop_giftcard"
-          description: Payment method name
-          type: string
+          $ref: "#/components/schemas/PaymentMethodList"
         status:
           $ref: "#/components/schemas/OrderPaymentStatus"
     OrderPaymentStatus:
@@ -3540,6 +3537,56 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PaymentMethod"
+    PaymentGatewayList:
+      description: Payment gateway name
+      type: string
+      enum:
+        - "afterpay"
+        - "basic"
+        - "igenco"
+        - "izettle"
+        - "klarna_checkout"
+        - "mollie"
+        - "mollieOld"
+        - "multisafepay"
+        - "paynl"
+        - "paypal"
+        - "paytor"
+        - "sisow"
+        - "sumup"
+    PaymentMethodList:
+      description: Payment method name
+      type: string
+      enum:
+        - "advance"
+        - "afterpay"
+        - "apple_pay"
+        - "bancontact"
+        - "belfius"
+        - "bitcoin"
+        - "card"
+        - "cash"
+        - "creditcard"
+        - "directdebit"
+        - "external"
+        - "giropay"
+        - "ideal"
+        - "invoice"
+        - "in_arrears"
+        - "kbccbc"
+        - "klarna_checkout"
+        - "klarna_paylater"
+        - "maestro"
+        - "mastercard"
+        - "paypal"
+        - "paysafecard"
+        - "pickup"
+        - "podium_giftcard"
+        - "rembours"
+        - "singledebit"
+        - "sofortbanking"
+        - "visa"
+        - "webshop_giftcard"
     PaymentMethod:
       description: Payment method
       properties:
@@ -3949,6 +3996,402 @@ components:
         email: support@mijnwebwinkel.nl
         note: Open from 09:00 till 17:00
         deleted: false
+    Payments:
+      example:
+        id: 8c1ed7ea-c19a-4137-8517-7d3f580b3b97
+        gateway: mollie
+        method: ideal:ideal_INGBNL2A
+        gatewayReference: ord_8yalb
+        price: 5339
+        currency: EUR
+        storeId: 494c24a3-2243-484a-a81e-b3098d4dc870
+        reference: 33eea580-2381-44bf-b355-d99a13d4f770
+        isTest: false
+        createdAt: 2021-06-29T14:41:26+02:00
+        updatedAt: 2021-06-29T14:41:26+02:00
+        mutations: [
+          {
+            id: 196,
+            type: authorize,
+            reference: null,
+            price: 5339,
+            description: null,
+            createdAt: 2022-01-18T12:35:27+01:00,
+            expiresAt: null
+          },
+          {
+            id: 198,
+            type: capture,
+            reference: null,
+            price: 5339,
+            description: null,
+            createdAt: 2022-01-18T12:35:27+01:00,
+            expiresAt: null
+          }
+        ]
+        order:
+          id: c5ef58b5-3cd7-4fcc-9d73-9c4c8b39dc31
+          reference: 2342
+          price: 5339
+          tax: 927
+          locale: nl_NL
+          deliveryType: delivery
+          lines: [
+            {
+              id: 7a6a2405-d8fe-40e0-809f-6b3a8a48e3de,
+              type: physical,
+              name: Fusce eget turpis,
+              description: Aliquam sed eros non massa malesuada condimentum in sit amet eros.,
+              quantity: 1,
+              price: 4839,
+              tax: 840,
+              taxRate: "0.2100"
+            },
+            {
+              id: f5acaf51-33ab-47b8-b853-6560ee4b8ec9,
+              type: shipping_fee,
+              name: Shipping costs,
+              description: Shipping costs,
+              quantity: 1,
+              price: 500,
+              tax: 87,
+              taxRate: "0.2107"
+            }
+          ]
+          customer:
+            id: ded42190-7f99-4439-b94d-e04c12efcaff
+            email: foo@example.org
+            birthDate: null
+            iban: null
+            ip: 192.168.16.1
+            billingAddress:
+              id: 932c7e56-9de8-4cde-bc79-5d3e78bc6897
+              name:
+                first: John
+                last: Doe
+              company: MyOnlineStore B.V.
+              street:
+                name: Molenstraat
+                number: 56
+                suffix: null
+              zipCode: 5341 GE
+              city: Oss
+              country: NL
+              phone: "+31412668011"
+              gender: null
+            shippingAddress:
+              id: ded42190-7f99-4439-b94d-e04c12efcaff
+              email: foo@example.org
+              birthDate: null
+              iban: null
+              ip: 192.168.16.1
+              billingAddress:
+                id: f1bc2de0-cb7b-4e25-a278-db8a00c157ae
+                name:
+                  first: John
+                  last: Doe
+                company: MyOnlineStore B.V.
+                street:
+                  name: Molenstraat
+                  number: 56
+                  suffix: null
+                zipCode: 5341 GE
+                city: Oss
+                country: NL
+                phone: "+31412668011"
+                gender: null
+        properties:
+          minimum_age: 18
+          shipping_region: NL
+          validation_callback_url: https://www.example.org/checkout/api/v1/orders/adbac24c-0f4b-4dbf-8aac-beecbfc3ee30/validate
+      properties:
+        id:
+          description: Unique identifier
+          type: string
+          format: uuid
+        gateway:
+          $ref: "#/components/schemas/PaymentGatewayList"
+        method:
+          description: Payment method
+          type: string
+        gatewayReference:
+          description: Gateway reference
+          type: string
+        price:
+          description: Price in minor units
+          type: integer
+        currency:
+          description: Currency (ISO 4217 code)
+          type: string
+        storeId:
+          description: Store unique identifier
+          type: string
+          format: uuid
+        reference:
+          description: Unique reference
+          type: string
+          format: uuid
+        referrerUrl:
+          description: The URL where the payment is started from
+          type: string
+        isTest:
+          description: Is a test payment
+          type: boolean
+        createdAt:
+          description: Payment creation date
+          type: string
+          format: date-time
+        updatedAt:
+          description: Payment last updated date
+          type: string
+          format: date-time
+          nullable: true
+        mutations:
+          description: Payment mutations
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMutation'
+        order:
+          description: Payment order details
+          type: object
+          properties:
+            id:
+              description: Unique identifier
+              type: string
+              format: uuid
+            reference:
+              description: The order number
+              type: string
+            price:
+              description: Price in minor units
+              type: integer
+            tax:
+              description: Tax price in minor units
+              type: integer
+            locale:
+              description: Language of the order contents (ISO 3166-1 alpha-2 code)
+              type: string
+            deliveryType:
+              description: Delivery type
+              type: string
+              enum:
+                - "pickup"
+                - "delivery"
+            lines:
+              type: array
+              items:
+                properties:
+                  id:
+                    description: Unique identifier
+                    type: string
+                    format: uuid
+                  type:
+                    description: Line type
+                    type: string
+                    enum:
+                      - "digital"
+                      - "discount"
+                      - "gift_card"
+                      - "payment_fee"
+                      - "physical"
+                      - "sales_tax"
+                      - "shipping_fee"
+                      - "store_credit"
+                      - "surcharge"
+                  name:
+                    description: Name
+                    type: string
+                  description:
+                    description: Description
+                    type: string
+                  quantity:
+                    description: Quantity
+                    type: string
+                  price:
+                    description: Price in minor units
+                    type: integer
+                  tax:
+                    description: Tax price in minor units
+                    type: integer
+                  taxRate:
+                    description: Tax rate (in decimals)
+                    type: string
+            customer:
+              description: Customer details
+              type: object
+              properties:
+                id:
+                  description: Customer identifier
+                  type: string
+                  format: uuid
+                email:
+                  description: Email address
+                  type: string
+                  format: email
+                birthDate:
+                  description: Date of birth (yyyy-mm-dd)
+                  type: string
+                  nullable: true
+                  format: date
+                iban:
+                  description: International Bank Account Number
+                  type: string
+                  format: iban
+                  nullable: true
+                ip:
+                  description: IP address
+                  type: string
+                billingAddress:
+                  description: Billing address of the customer
+                  type: object
+                  properties:
+                    id:
+                      description: Address identifier
+                      type: string
+                      format: uuid
+                    name:
+                      properties:
+                        first:
+                          description: First name
+                          type: string
+                        last:
+                          description: Last name
+                          type: string
+                    company:
+                      description: Company name
+                      type: string
+                      nullable: true
+                    street:
+                      properties:
+                        name:
+                          description: Street name
+                          type: string
+                        number:
+                          description: Street number
+                          type: string
+                        suffix:
+                          description: Street number suffix
+                          type: string
+                          nullable: true
+                    zipCode:
+                      description: Zip code
+                      type: string
+                    city:
+                      description: City
+                      type: string
+                    country:
+                      description: ISO 3166-1 alpha-2 country code
+                      type: string
+                      pattern: '^[A-Z]{2}$'
+                    phone:
+                      description: Phone number
+                      type: string
+                      nullable: true
+                    gender:
+                      description: Gender
+                      type: string
+                      nullable: true
+                      enum:
+                        - F
+                        - M
+                invoiceAddress:
+                  description: Invoice address of the customer
+                  type: object
+                  properties:
+                    id:
+                      description: Address identifier
+                      type: string
+                      format: uuid
+                    firstName:
+                      description: First name
+                      type: string
+                    lastName:
+                      description: Last name
+                      type: string
+                    company:
+                      description: Company name
+                      type: string
+                      nullable: true
+                    street:
+                      properties:
+                        name:
+                          description: Street name
+                          type: string
+                        number:
+                          description: Street number
+                          type: string
+                        suffix:
+                          description: Street number suffix
+                          type: string
+                          nullable: true
+                      nullable: true
+                    zipCode:
+                      description: Zip code
+                      type: string
+                    city:
+                      description: City
+                      type: string
+                    country:
+                      description: ISO 3166-1 alpha-2 country code
+                      type: string
+                      pattern: '^[A-Z]{2}$'
+                    phone:
+                      description: Phone number
+                      type: string
+                      nullable: true
+                    gender:
+                      description: Gender
+                      type: string
+                      nullable: true
+                      enum:
+                        - F
+                        - M
+        properties:
+          description: Payment properties
+          type: object
+          additionalProperties: {}
+    PaymentMutation:
+      example:
+        id: "1"
+        type: "authorize"
+        reference: null
+        price: "499"
+        description: null
+        createdAt: "2021-06-29T14:41:26+02:00"
+        expiresAt: null
+      properties:
+        id:
+          description: Mutation ID
+          type: number
+        type:
+          description: Mutation type
+          type: string
+          enum:
+            - "authorize"
+            - "capture"
+            - "failed"
+            - "refund"
+            - "void"
+        reference:
+          description: Mutation reference
+          type: string
+          nullable: true
+        price:
+          description: Price in minor units
+          type: number
+        description:
+          description: Mutation description
+          type: string
+          nullable: true
+        createdAt:
+          description: Mutation creation date
+          type: string
+          format: date-time
+        expiresAt:
+          description: Mutation expiration date
+          type: string
+          format: date-time
+          nullable: true
     CreditOrderPostable:
       required:
         - credited_order_number
