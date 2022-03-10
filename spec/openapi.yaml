@@ -4044,7 +4044,7 @@ components:
           description: Is a test payment
           type: boolean
         createdAt:
-          description: Creation date of payment
+          description: Payment creation date
           type: string
           format: date-time
         updatedAt:
