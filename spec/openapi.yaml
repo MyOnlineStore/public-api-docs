@@ -4069,7 +4069,7 @@ components:
               description: The order number
               type: string
             price:
-              description: Price  minor units
+              description: Price in minor units
               type: integer
             tax:
               description: Tax price in minor units
