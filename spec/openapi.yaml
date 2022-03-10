@@ -3999,17 +3999,112 @@ components:
         deleted: false
     Payments:
       example:
-        id: "8c1ed7ea-c19a-4137-8517-7d3f580b3b97"
-        gateway: "basic"
-        method: "pickup"
-        gatewayReference: "8c1ed7ea-c19a-4137-8517-7d3f580b3b97"
-        price: "4.99"
-        currency: "EUR"
-        storeId: "494c24a3-2243-484a-a81e-b3098d4dc870"
-        reference: "33eea580-2381-44bf-b355-d99a13d4f770"
-        isTest: true
-        createdAt: "2021-06-29T14:41:26+02:00"
-        updatedAt: "2021-06-29T14:41:26+02:00"
+        id: 8c1ed7ea-c19a-4137-8517-7d3f580b3b97
+        gateway: mollie
+        method: ideal:ideal_INGBNL2A
+        gatewayReference: ord_8yalb
+        price: 5339
+        currency: EUR
+        storeId: 494c24a3-2243-484a-a81e-b3098d4dc870
+        reference: 33eea580-2381-44bf-b355-d99a13d4f770
+        isTest: false
+        createdAt: 2021-06-29T14:41:26+02:00
+        updatedAt: 2021-06-29T14:41:26+02:00
+        mutations: [
+          {
+            id: 196,
+            type: authorize,
+            reference: null,
+            price: 5339,
+            description: null,
+            createdAt: 2022-01-18T12:35:27+01:00,
+            expiresAt: null
+          },
+          {
+            id: 198,
+            type: capture,
+            reference: null,
+            price: 5339,
+            description: null,
+            createdAt: 2022-01-18T12:35:27+01:00,
+            expiresAt: null
+          }
+        ]
+        order:
+          id: c5ef58b5-3cd7-4fcc-9d73-9c4c8b39dc31
+          reference: 2342
+          price: 5339
+          tax: 927
+          locale: nl_NL
+          deliveryType: delivery
+          lines: [
+            {
+              id: 7a6a2405-d8fe-40e0-809f-6b3a8a48e3de,
+              type: physical,
+              name: Fusce eget turpis,
+              description: Aliquam sed eros non massa malesuada condimentum in sit amet eros.,
+              quantity: 1,
+              price: 4839,
+              tax: 840,
+              taxRate: "0.2100"
+            },
+            {
+              id: f5acaf51-33ab-47b8-b853-6560ee4b8ec9,
+              type: shipping_fee,
+              name: Shipping costs,
+              description: Shipping costs,
+              quantity: 1,
+              price: 500,
+              tax: 87,
+              taxRate: "0.2107"
+            }
+          ]
+          customer:
+            id: ded42190-7f99-4439-b94d-e04c12efcaff
+            email: foo@example.org
+            birthDate: null
+            iban: null
+            ip: 192.168.16.1
+            billingAddress:
+              id: 932c7e56-9de8-4cde-bc79-5d3e78bc6897
+              name:
+                first: John
+                last: Doe
+              company: MyOnlineStore B.V.
+              street:
+                name: Molenstraat
+                number: 56
+                suffix: null
+              zipCode: 5341 GE
+              city: Oss
+              country: NL
+              phone: "+31412668011"
+              gender: null
+            shippingAddress:
+              id: ded42190-7f99-4439-b94d-e04c12efcaff
+              email: foo@example.org
+              birthDate: null
+              iban: null
+              ip: 192.168.16.1
+              billingAddress:
+                id: f1bc2de0-cb7b-4e25-a278-db8a00c157ae
+                name:
+                  first: John
+                  last: Doe
+                company: MyOnlineStore B.V.
+                street:
+                  name: Molenstraat
+                  number: 56
+                  suffix: null
+                zipCode: 5341 GE
+                city: Oss
+                country: NL
+                phone: "+31412668011"
+                gender: null
+        properties:
+          minimum_age: 18
+          shipping_region: NL
+          validation_callback_url: https://www.example.org/checkout/api/v1/orders/adbac24c-0f4b-4dbf-8aac-beecbfc3ee30/validate
       properties:
         id:
           description: Unique identifier
@@ -4094,6 +4189,16 @@ components:
                   type:
                     description: Line type
                     type: string
+                    enum:
+                      - "digital"
+                      - "discount"
+                      - "gift_card"
+                      - "payment_fee"
+                      - "physical"
+                      - "sales_tax"
+                      - "shipping_fee"
+                      - "store_credit"
+                      - "surcharge"
                   name:
                     description: Name
                     type: string
@@ -4175,7 +4280,7 @@ components:
                     city:
                       description: City
                       type: string
-                    countryCode:
+                    country:
                       description: ISO 3166-1 alpha-2 country code
                       type: string
                       pattern: '^[A-Z]{2}$'
@@ -4227,7 +4332,7 @@ components:
                     city:
                       description: City
                       type: string
-                    countryCode:
+                    country:
                       description: ISO 3166-1 alpha-2 country code
                       type: string
                       pattern: '^[A-Z]{2}$'
