@@ -789,7 +789,7 @@ paths:
     get:
       tags:
         - Orders
-      summary: Return a collection of orders
+      summary: Listing
       description: Returns a listing of orders for the store
       operationId: getOrders
       parameters:
@@ -832,7 +832,7 @@ paths:
     post:
       tags:
         - Orders
-      summary: Create a new order
+      summary: Create
       description: Create a new order
       operationId: postOrder
       parameters:
@@ -890,7 +890,7 @@ paths:
     get:
       tags:
         - Orders
-      summary: Return the number of available orders
+      summary: Count
       description: Returns the number of available orders
       operationId: getOrderCount
       parameters:
@@ -917,19 +917,14 @@ paths:
     get:
       tags:
         - Orders
-      summary: Return a single order
+      summary: Single
       description: Returns a specific order
       operationId: getOrder
       parameters:
         - $ref: "#/components/parameters/version"
         - $ref: "#/components/parameters/language"
         - $ref: "#/components/parameters/format"
-        - name: order_number
-          in: path
-          description: Order number
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/order_number_path"
       responses:
         "200":
           description: Order details
@@ -943,19 +938,14 @@ paths:
     patch:
       tags:
         - Orders
-      summary: Change a single order
+      summary: Update
       description: Change a specific order
       operationId: patchOrder
       parameters:
         - $ref: "#/components/parameters/version"
         - $ref: "#/components/parameters/language"
         - $ref: "#/components/parameters/format"
-        - name: order_number
-          in: path
-          description: Order number
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/order_number_path"
         - name: override_minimum
           in: query
           description: Ignore minimum order total limitations (special access required)
@@ -995,49 +985,6 @@ paths:
             text/xml:
               schema:
                 $ref: "#/components/schemas/Order"
-  "/v{version}/orders/{order_number}/payments":
-    get:
-      tags:
-        - Orders
-      summary: Return payments of single order
-      description: Return payments of single order
-      operationId: getOrderPayments
-      parameters:
-        - $ref: "#/components/parameters/version"
-        - $ref: "#/components/parameters/language"
-        - $ref: "#/components/parameters/format"
-        - name: order_number
-          in: path
-          description: Order number
-          required: true
-          schema:
-            type: integer
-        - name: embed
-          in: query
-          description: Either one or multiple (comma separatered) of "properties", "mutations", or "order"
-          required: false
-          schema:
-            type: string
-          examples:
-            order:
-              description: Include the order details of the payment
-              value: order
-            mutations:
-              description: Include the mutations of the payment
-              value: mutations
-            properties:
-              description: Include the properties of the payment
-              value: properties
-      responses:
-        "200":
-          description: Order payments details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Payments"
-            text/xml:
-              schema:
-                $ref: "#/components/schemas/Payments"
   "/v{version}/categories/{category_id}":
     get:
       tags:
@@ -1591,6 +1538,7 @@ paths:
     post:
       tags:
         - Orders
+      summary: Credit Create
       description: Create a credit order for an existing order
       operationId: postCreditOrder
       parameters:
@@ -1622,6 +1570,108 @@ paths:
             text/xml:
               schema:
                 $ref: "#/components/schemas/Order"
+  "/v{version}/orders/{order_number}/payments":
+    get:
+      tags:
+        - Orders
+        - Payments
+      summary: Payment Listing
+      description: Return a listing of payments for the given order.
+      operationId: getOrderPayments
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/order_number_path"
+        - $ref: "#/components/parameters/payment_embed"
+      responses:
+        "200":
+          description: Order payments details
+          content:
+            application/json:
+              schema:
+                properties:
+                  payments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Payment"
+    post:
+      tags:
+        - Orders
+        - Payments
+      summary: Payment Create
+      description: Add a new payment for the given order.
+      operationId: postOrderPayment
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/order_number_path"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderPaymentPostable"
+      responses:
+        "201":
+          description: Order payment details
+          content:
+            application/json:
+              schema:
+                properties:
+                  payment:
+                    $ref: "#/components/schemas/Payment"
+                  url:
+                    description: URL for starting the payment
+                    type: string
+        "422":
+          description: Invalid Payload (RFC7807 Problem Details)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
+  "/v{version}/orders/{order_number}/payments/{paymentId}":
+    patch:
+      tags:
+        - Orders
+        - Payments
+      summary: Payment Update
+      description: Update a specific payment by its identifier.
+      operationId: patchOrderPayment
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/order_number_path"
+        - $ref: "#/components/parameters/payment_id_path"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderPaymentPatchable"
+      responses:
+        "200":
+          description: Order payment details
+          content:
+            application/json:
+              schema:
+                properties:
+                  payment:
+                    $ref: "#/components/schemas/Payment"
+        "422":
+          description: Invalid Payload (RFC7807 Problem Details)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiProblem"
+    delete:
+      tags:
+        - Orders
+        - Payments
+      summary: Payment Remove
+      description: Remove a specific payment by its identifier.
+      operationId: deleteOrderPayment
+      parameters:
+        - $ref: "#/components/parameters/version"
+        - $ref: "#/components/parameters/order_number_path"
+        - $ref: "#/components/parameters/payment_id_path"
+      responses:
+        "204":
+          description: Empty Response
   "/v{version}/orderstatuses":
     get:
       tags:
@@ -1820,6 +1870,38 @@ components:
       schema:
         type: string
         format: uuid
+    order_number_path:
+      name: order_number
+      in: path
+      description: Order number
+      required: true
+      schema:
+        type: integer
+    payment_id_path:
+      name: paymentId
+      in: path
+      description: Payment Identifier
+      required: true
+      schema:
+        type: string
+        format: uuid
+    payment_embed:
+      name: embed
+      in: query
+      description: Either one or multiple (comma-separated) of "properties", "mutations", or "order"
+      required: false
+      schema:
+        type: string
+      examples:
+        order:
+          description: Include the order details of the payment
+          value: order
+        mutations:
+          description: Include the mutations of the payment
+          value: mutations
+        properties:
+          description: Include the properties of the payment
+          value: properties
     limit:
       name: limit
       in: query
@@ -3011,7 +3093,7 @@ components:
             `authorized` | `captured` | `voided` | `refunded` |
             `failed` | `incomplete` | `unknown`)
         payment:
-          $ref: "#/components/schemas/OrderPayment"
+          $ref: "#/components/schemas/OrderPaymentSummary"
         debtor:
           $ref: "#/components/schemas/OrderDebtor"
         price:
@@ -3275,7 +3357,7 @@ components:
             debtor:
               $ref: "#/components/schemas/OrderDebtor"
             payment:
-              $ref: "#/components/schemas/OrderPayment"
+              $ref: "#/components/schemas/OrderPaymentSummary"
             orderlines:
               type: array
               items:
@@ -3423,6 +3505,10 @@ components:
         - type
         - quantity
       properties:
+        id:
+          description: Unique identifier
+          type: string
+          format: uuid
         type:
           description: |-
             OrderDetail type, one of:
@@ -3448,7 +3534,60 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/OrderArticlePostable"
-    OrderPayment:
+    OrderPaymentPatchable:
+      description: Order payment
+      required:
+        - method
+      properties:
+        method:
+          $ref: "#/components/schemas/PaymentMethodList"
+        referrerUrl:
+          $ref: "#/components/schemas/PaymentReferrerUrl"
+        orderLines:
+          $ref: "#/components/schemas/OrderPaymentLinePortions"
+    OrderPaymentPostable:
+      description: Order payment
+      required:
+        - gateway
+        - method
+      properties:
+        gateway:
+          $ref: "#/components/schemas/PaymentGatewayList"
+        method:
+          $ref: "#/components/schemas/PaymentMethodList"
+        referrerUrl:
+          $ref: "#/components/schemas/PaymentReferrerUrl"
+        orderLines:
+          $ref: "#/components/schemas/OrderPaymentLinePortions"
+    OrderPaymentLinePortions:
+      description: Order lines to include in the payment (all lines by default)
+      example:
+        -
+          id: "5ddd8613-9254-4877-a752-fe97e8fcf26a"
+          quantity: 3
+        -
+          id: "71df5adb-81f4-4136-b11b-cef3815a5bff"
+        -
+          id: "ce51bbf9-f4dc-43f5-88d2-9a1b6948b97b"
+          quantity: 2
+          price: 599
+        -
+          id: "63506cb5-c53a-4fda-a81c-914b1a190293"
+          price: 1099
+      type: array
+      items:
+        properties:
+          id:
+            description: Unique identifier
+            type: string
+            format: uuid
+          quantity:
+            description: Override amount of items
+            type: integer
+          price:
+            description: Override price in minor currency units (eg cents)
+            type: integer
+    OrderPaymentSummary:
       description: Order payment details (available/required if Order.price.total <> 0.00)
       properties:
         gateway_name:
@@ -3996,7 +4135,7 @@ components:
         email: support@mijnwebwinkel.nl
         note: Open from 09:00 till 17:00
         deleted: false
-    Payments:
+    Payment:
       example:
         id: 8c1ed7ea-c19a-4137-8517-7d3f580b3b97
         gateway: mollie
@@ -4132,8 +4271,7 @@ components:
           type: string
           format: uuid
         referrerUrl:
-          description: The URL where the payment is started from
-          type: string
+          $ref: "#/components/schemas/PaymentReferrerUrl"
         isTest:
           description: Is a test payment
           type: boolean
@@ -4392,6 +4530,9 @@ components:
           type: string
           format: date-time
           nullable: true
+    PaymentReferrerUrl:
+      description: Return URL (store landing page by default)
+      type: string
     CreditOrderPostable:
       required:
         - credited_order_number
