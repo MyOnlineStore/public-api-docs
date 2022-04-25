@@ -3164,7 +3164,8 @@ components:
               rate: 21.00
           total: 47.450000
         orderlines:
-          - type: article
+          - id: 8140cf8f-0ef1-4e71-aed0-dc3efc1b46b3
+            type: article
             quantity: 1
             weight: 0
             description: Article A
@@ -3183,7 +3184,8 @@ components:
                     price:
                       amount: -12.396694
                       rate: 21.00
-          - type: article
+          - id: 19bc3d68-eea1-41ac-9743-3b1ba58aa5ac
+            type: article
             quantity: 2
             weight: 0
             description: Article B
@@ -3202,7 +3204,8 @@ components:
                     price:
                       amount: -3.305785
                       rate: 21.00
-          - type: article
+          - id: 07d24f67-0f98-414d-9dba-61814a09964d
+            type: article
             quantity: 3
             weight: 0
             description: Article C
@@ -3216,7 +3219,8 @@ components:
                   price:
                     amount: 1.611570
                     rate: 21.00
-          - type: article
+          - id: 155a7fae-6f09-4444-9bdb-87cf03a7fa1d
+            type: article
             quantity: 5
             weight: 0
             description: Article D
@@ -3230,7 +3234,8 @@ components:
                 price:
                   amount: 1.788990
                   rate: 9.00
-          - type: payment
+          - id: d2f57281-7c24-4fd8-b000-caeb3da639db
+            type: payment
             quantity: 1
             price:
               - amount: 0.192571
@@ -3239,7 +3244,8 @@ components:
               - amount: 0.652972
                 rate: 21.00
                 amount_including_tax: 0.79
-          - type: shipping
+          - id: 2fed4cd8-4ad1-440c-9d27-6fb32d2e0eba
+            type: payment
             quantity: 1
             price:
               amount: 4.917355
