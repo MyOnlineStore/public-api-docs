@@ -3688,8 +3688,7 @@ components:
       enum:
         - "afterpay"
         - "basic"
-        - "igenco"
-        - "izettle"
+        - "ingenico"
         - "klarna_checkout"
         - "mollie"
         - "mollieOld"
@@ -3699,6 +3698,7 @@ components:
         - "paytor"
         - "sisow"
         - "sumup"
+        - "zettle"
     PaymentMethodList:
       description: Payment method name
       type: string
@@ -3707,6 +3707,7 @@ components:
         - "afterpay"
         - "apple_pay"
         - "bancontact"
+        - "bank_transfer"
         - "belfius"
         - "bitcoin"
         - "card"
@@ -3716,11 +3717,14 @@ components:
         - "external"
         - "giropay"
         - "ideal"
+        - "ideal:issuer"
         - "invoice"
         - "in_arrears"
         - "kbccbc"
         - "klarna_checkout"
         - "klarna_paylater"
+        - "klarna_paynow"
+        - "klarna_sliceit"
         - "maestro"
         - "mastercard"
         - "paypal"
