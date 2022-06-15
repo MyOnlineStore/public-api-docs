@@ -4,6 +4,9 @@
 * Added `uuid` field to the __Order__ object.
 * Added `debtor_id` query parameter to the __getOrders__ endpoint.
 
+## 2022-06-15
+* Added deprecation flags to __Order__._payment_status_ and __Order__.__OrderPaymentSummary__ entity.
+
 ## [2.4.1] & [1.5.1] 2021-12-27
 * Added `price.purchase` to __Article__ entity.
 
