@@ -1618,7 +1618,7 @@ paths:
                   payment:
                     $ref: "#/components/schemas/Payment"
                   url:
-                    description: URL for starting the payment
+                    description: URL contains either the referrer url, or the url for starting the payment
                     type: string
         "422":
           description: Invalid Payload (RFC7807 Problem Details)
