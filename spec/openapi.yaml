@@ -1226,7 +1226,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Discountcode"
+              $ref: "#/components/schemas/DiscountcodePostable"
         description: Discountcode with attributes to set
         required: true
       responses:
@@ -1251,7 +1251,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Discountcode"
+              $ref: "#/components/schemas/DiscountcodePatchable"
         description: Discountcode with attributes to change
         required: true
       responses:
@@ -3994,6 +3994,42 @@ components:
           description: Extended error information
           type: string
     Discountcode:
+      allOf:
+        - properties:
+            id:
+              description: Discountcode identifier
+              type: string
+            customer_id:
+              description: Identifier of the customer the discountcode is valid for
+              nullable: true
+              type: string
+              format: uuid
+        - $ref: '#/components/schemas/DiscountcodePostable'
+      example:
+        id: 'ac941823-9b4a-492a-9157-4c7124419fa1'
+        code: 'christmas-sale-1337'
+        customer_id: 'f7ec4a49-3e8a-436d-9b32-5f3cf6a8ac3a'
+        description: 'Christmas 2017'
+        percentage_discount: '10.00'
+        fixed_discount: '2.50'
+        minimum_order_price: '100.00'
+        minimum_products: 3
+        applies_to_shipping: false
+        free_shipping: false
+        applies_to_action_prices: false
+        single_use: false
+        active: true
+        valid_from: '2017-12-01'
+        valid_until: '2017-12-26'
+        valid_products:
+          -
+            product_id: '7494373'
+          -
+            product_id: '3760904'
+            max_quantity: 3
+    DiscountcodePatchable:
+      $ref: '#/components/schemas/DiscountcodePostable'
+    DiscountcodePostable:
       properties:
         code:
           description: Unique identifying code for the discountcode
@@ -4040,30 +4076,62 @@ components:
           type: string
           format: date
         valid_article_ids:
-          description: Specific article ids the discountcode is valid for
+          deprecated: true
+          description: 'Specific article identifiers the discountcode is valid for (deprecated: use valid_products)'
+          type: array
+          items:
+            type: string
+        valid_product_ids:
+          description: Specific products the discountcode is valid for
+          type: array
+          items:
+            properties:
+              product_id:
+                description: Identifier of the product the discountcode is valid for
+                type: string
+              max_quantity:
+                description: Maximum number of times the discountcode is valid for this product
+                type: integer
         invalid_article_ids:
-          description: Specific article ids the discountcode is not valid for
+          deprecated: true
+          description: 'Specific article identifiers the discountcode is not valid for (deprecated: use invalid_product_ids)'
+          type: array
+          items:
+            type: string
+        invalid_product_ids:
+          description: Specific product identifiers the discountcode is not valid for
+          type: array
+          items:
+            type: string
         valid_category_ids:
-          description: Specific category ids the discountcode is valid for
+          description: Specific category identifiers the discountcode is valid for
+          type: array
+          items:
+            type: string
         invalid_category_ids:
-          description: Specific category ids the discountcode is not valid for
+          description: Specific category identifiers the discountcode is not valid for
+          type: array
+          items:
+            type: string
       example:
-        code: christmas-sale-1337
-        description: Christmas 2017
-        percentage_discount: "10.00"
-        fixed_discount: "2.50"
-        minimum_order_price: "100.00"
+        description: 'Christmas 2017'
+        percentage_discount: '10.00'
+        fixed_discount: '2.50'
+        minimum_order_price: '100.00'
         minimum_products: 3
         applies_to_shipping: false
         free_shipping: false
         applies_to_action_prices: false
         single_use: false
         active: true
-        valid_from: "2017-12-01"
-        valid_until: "2017-12-26"
-        valid_article_ids:
-          - "7494373"
-          - "3760904"
+        valid_from: '2017-12-01'
+        valid_until: '2017-12-26'
+        valid_products:
+          -
+            product_id: '7494373'
+          -
+            product_id: '3760904'
+            max_quantity: 3
     NewsletterSubscriber:
       example:
         email: alberto@studio100.be
