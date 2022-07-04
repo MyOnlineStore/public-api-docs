@@ -2686,7 +2686,7 @@
                       "$ref": "#/components/schemas/Payment"
                     },
                     "url": {
-                      "description": "URL for starting the payment",
+                      "description": "URL contains either the referrer url, or the url for starting the payment",
                       "type": "string"
                     }
                   }
