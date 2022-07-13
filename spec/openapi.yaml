@@ -3999,6 +3999,7 @@ components:
             id:
               description: Discountcode identifier
               type: string
+              format: uuid
             customer_id:
               description: Identifier of the customer the discountcode is valid for
               nullable: true
