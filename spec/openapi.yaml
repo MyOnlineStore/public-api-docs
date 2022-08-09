@@ -805,6 +805,7 @@ paths:
         - $ref: "#/components/parameters/status_changed_start_date"
         - $ref: "#/components/parameters/status_changed_end_date"
         - $ref: "#/components/parameters/debtor_email"
+        - $ref: "#/components/parameters/debtor_id"
         - name: ordering
           in: query
           description: Ordering (by ordernumber)
@@ -2018,10 +2019,22 @@ components:
     debtor_email:
       name: debtor_email
       in: query
-      description: "Filter results on the e-mail address of the debtor"
+      description: |
+        Filter results on the e-mail address of the debtor. Uses an `OR` condition when
+        combined with `debtor_id`.
       required: false
       schema:
         type: string
+    debtor_id:
+      name: debtor_id
+      in: query
+      description: |
+        Filter results on the ID of the debtor. Uses an `OR` condition when
+        combined with `debtor_email`.
+      required: false
+      schema:
+        type: string
+        format: uuid
     store:
       name: store
       in: path
@@ -3003,6 +3016,7 @@ components:
     Order:
       required:
         - number
+        - uuid
         - date
         - time
         - status
@@ -3011,6 +3025,10 @@ components:
         number:
           description: Ordernumber
           type: integer
+        uuid:
+          description: Order UUID
+          type: string
+          format: uuid
         date:
           description: Order date
           type: string
@@ -3119,6 +3137,7 @@ components:
             $ref: "#/components/schemas/OrderShipping"
       example:
         number: 27
+        uuid: "af88e19b-a57b-4aae-a92b-f7078454d1e3"
         date: "2015-11-03"
         time: "13:37:12"
         status: 1
