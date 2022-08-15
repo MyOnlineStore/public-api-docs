@@ -1,5 +1,9 @@
 # Changelog
 
+## 2022-08-09
+* Added `uuid` field to the __Order__ object.
+* Added `debtor_id` query parameter to the __getOrders__ endpoint.
+
 ## [2.4.1] & [1.5.1] 2021-12-27
 * Added `price.purchase` to __Article__ entity.
 
