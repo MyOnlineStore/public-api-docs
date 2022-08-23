@@ -3517,7 +3517,8 @@
             "type": "string"
           },
           "country": {
-            "description": "(Localized) country name (deprecated)",
+            "deprecated": true,
+            "description": "(Localized) country name",
             "type": "string"
           },
           "country_code": {
@@ -3961,7 +3962,7 @@
             "format": "uuid"
           },
           "url": {
-            "description": "deprecated",
+            "deprecated": true,
             "type": "string"
           },
           "urls": {
@@ -4759,6 +4760,7 @@
             "type": "boolean"
           },
           "finished": {
+            "deprecated": true,
             "description": "Finished status (deprecated: always true)",
             "type": "boolean"
           },
@@ -4830,7 +4832,8 @@
           },
           "payment_status": {
             "type": "string",
-            "description": "Current payment status (`new` |`pending` | `authorized` | `captured` | `voided` | `refunded` | `failed` | `incomplete` | `unknown`)"
+            "deprecated": true,
+            "description": "Current payment status (`new` |`pending` | `authorized` | `captured` | `voided` | `refunded` | `failed` | `incomplete` | `unknown`) (deprecated in favor of the order payment listing endpoint)"
           },
           "payment": {
             "$ref": "#/components/schemas/OrderPaymentSummary"
@@ -5397,14 +5400,17 @@
             "format": "uuid"
           },
           "gender": {
+            "deprecated": true,
             "description": "Gender description (deprecated: use [Invoice]Address.gender)",
             "type": "string"
           },
           "name": {
+            "deprecated": true,
             "description": "Full name (deprecated: use [Invoice]Address.name)",
             "type": "string"
           },
           "company": {
+            "deprecated": true,
             "description": "Company name (deprecated: use [Invoice]Address.company)",
             "type": "string"
           },
@@ -5413,10 +5419,12 @@
             "type": "string"
           },
           "phone": {
+            "deprecated": true,
             "description": "Phone number (deprecated: use [Invoice]Address.phone)",
             "type": "string"
           },
           "bankaccount": {
+            "deprecated": true,
             "description": "Bankaccount number (deprecated: use InvoiceAddress.bankaccount)",
             "type": "string"
           },
@@ -5595,6 +5603,7 @@
         }
       },
       "OrderPaymentSummary": {
+        "deprecated": true,
         "description": "Order payment details (available/required if Order.price.total <> 0.00)",
         "properties": {
           "gateway_name": {
@@ -5609,10 +5618,11 @@
         }
       },
       "OrderPaymentStatus": {
-        "description": "Deprecated - Order payment status details",
+        "deprecated": true,
+        "description": "Order payment status details",
         "properties": {
           "id": {
-            "description": "\n0: Status unknown\n1: Successful\n2: Cancelled\n3: Failed\n4: Expired\n5: Pending\n6: Refused\n7: Refunded",
+            "description": "0: Status unknown\n1: Successful\n2: Cancelled\n3: Failed\n4: Expired\n5: Pending\n6: Refused\n7: Refunded",
             "type": "integer"
           },
           "text": {
@@ -5716,6 +5726,7 @@
         }
       },
       "PaymentGatewayList": {
+        "deprecated": true,
         "description": "Payment gateway name",
         "type": "string",
         "enum": [
@@ -5750,6 +5761,7 @@
         ]
       },
       "PaymentMethodList": {
+        "deprecated": true,
         "description": "Payment method name",
         "type": "string",
         "enum": [
