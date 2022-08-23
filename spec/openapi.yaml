@@ -2173,7 +2173,8 @@ components:
         city:
           type: string
         country:
-          description: (Localized) country name (deprecated)
+          deprecated: true
+          description: (Localized) country name
           type: string
         country_code:
           description: ISO 3166-1 alpha-2 country code
@@ -2469,7 +2470,7 @@ components:
           type: string
           format: uuid
         url:
-          description: deprecated
+          deprecated: true
           type: string
         urls:
           description: image url's for all formats
@@ -3053,6 +3054,7 @@ components:
           description: Archived status
           type: boolean
         finished:
+          deprecated: true
           description: "Finished status (deprecated: always true)"
           type: boolean
         taxed:
@@ -3107,9 +3109,11 @@ components:
               type: string
         payment_status:
           type: string
+          deprecated: true
           description: Current payment status (`new` |`pending` |
             `authorized` | `captured` | `voided` | `refunded` |
             `failed` | `incomplete` | `unknown`)
+            (deprecated in favor of the order payment listing endpoint)
         payment:
           $ref: "#/components/schemas/OrderPaymentSummary"
         debtor:
@@ -3482,21 +3486,26 @@ components:
           type: string
           format: uuid
         gender:
+          deprecated: true
           description: "Gender description (deprecated: use [Invoice]Address.gender)"
           type: string
         name:
+          deprecated: true
           description: "Full name (deprecated: use [Invoice]Address.name)"
           type: string
         company:
+          deprecated: true
           description: "Company name (deprecated: use [Invoice]Address.company)"
           type: string
         email:
           description: Email address
           type: string
         phone:
+          deprecated: true
           description: "Phone number (deprecated: use [Invoice]Address.phone)"
           type: string
         bankaccount:
+          deprecated: true
           description: "Bankaccount number (deprecated: use InvoiceAddress.bankaccount)"
           type: string
         link_to_account:
@@ -3613,6 +3622,7 @@ components:
             description: Override price in minor currency units (eg cents)
             type: integer
     OrderPaymentSummary:
+      deprecated: true
       description: Order payment details (available/required if Order.price.total <> 0.00)
       properties:
         gateway_name:
@@ -3622,11 +3632,11 @@ components:
         status:
           $ref: "#/components/schemas/OrderPaymentStatus"
     OrderPaymentStatus:
-      description: Deprecated - Order payment status details
+      deprecated: true
+      description: Order payment status details
       properties:
         id:
           description: |-
-
             0: Status unknown
             1: Successful
             2: Cancelled
@@ -3702,6 +3712,7 @@ components:
           items:
             $ref: "#/components/schemas/PaymentMethod"
     PaymentGatewayList:
+      deprecated: true
       description: Payment gateway name
       type: string
       enum:
@@ -3732,6 +3743,7 @@ components:
         - "sumup"
         - "zettle"
     PaymentMethodList:
+      deprecated: true
       description: Payment method name
       type: string
       enum:
