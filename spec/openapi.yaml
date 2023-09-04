@@ -3394,6 +3394,18 @@ components:
             shipping_method_id:
               description: Shipping method reference
               type: string
+            shipping_type:
+              description: This defines the order type.
+              type: integer
+              enum:
+                - "1 - delivery_none"
+                - "2 - delivery_by_weight"
+                - "3 - delivery_by_weight_and_country"
+                - "5 - pickup_at_location"
+                - "6 - pickup_at_store"
+                - "7 - delivery_moment"
+                - "8 - delivery_no_costs"
+              default: "1"
     OrderAddress:
       required:
         - invoice
