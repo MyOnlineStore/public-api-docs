@@ -3623,8 +3623,12 @@
           {
             "properties": {
               "id": {
-                "description": "Internal article id",
-                "type": "integer"
+                "description": "Internal article ID (deprecated: use `uuid` instead)",
+                "type": "integer",
+                "deprecated": true
+              },
+              "uuid": {
+                "description": "Article UUID"
               },
               "created_date": {
                 "description": "Creation date",
