@@ -19,5 +19,5 @@ services:
 
 networks:
   default:
-    external:
-      name: gateway
+    name: gateway
+    external: true
