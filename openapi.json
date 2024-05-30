@@ -4222,7 +4222,7 @@
             "type": "string"
           },
           "article_order": {
-            "description": "Order in which products are shown on this page:\n1: price, ascending\n2: name, ascending\n3: last edited date, descending\n4: created date, descending\n5: manually defined",
+            "description": "Order in which products are shown on this page:\n1: price, ascending\n2: name, ascending\n3: last edited date, descending\n4: created date, descending\n5: manually defined, new products added at the bottom\n6: manually defined, new products added at the top",
             "type": "integer"
           },
           "leafs": {
@@ -4271,7 +4271,7 @@
           "content": "Balloon animals are great, don't you think?",
           "meta_title": "Balloon animals",
           "meta_description": "The best balloon animals for your party",
-          "article_order": 5,
+          "article_order": 6,
           "sorting": {
             "before": 78908
           }

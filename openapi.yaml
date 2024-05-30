@@ -2647,7 +2647,8 @@ components:
             2: name, ascending
             3: last edited date, descending
             4: created date, descending
-            5: manually defined
+            5: manually defined, new products added at the bottom
+            6: manually defined, new products added at the top
           type: integer
         leafs:
           type: array
@@ -2684,7 +2685,7 @@ components:
         content: Balloon animals are great, don't you think?
         meta_title: Balloon animals
         meta_description: The best balloon animals for your party
-        article_order: 5
+        article_order: 6
         sorting:
           before: 78908
       allOf:
