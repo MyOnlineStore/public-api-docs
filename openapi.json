@@ -5295,6 +5295,10 @@
                 "description": "Article description",
                 "type": "string"
               },
+              "sku": {
+                "description": "Article SKU",
+                "type": "string"
+              },
               "price": {
                 "type": "object",
                 "properties": {
