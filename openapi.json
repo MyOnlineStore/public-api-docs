@@ -345,6 +345,41 @@
         }
       }
     },
+    "/v{version}/deleteImage/{image_id}": {
+      "post": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "Delete image for article",
+        "description": "This will remove an image",
+        "operationId": "deleteImage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/language"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          },
+          {
+            "name": "image_id",
+            "in": "path",
+            "description": "Image id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success, empty response"
+          }
+        }
+      }
+    },
     "/v{version}/articles/count": {
       "get": {
         "tags": [
