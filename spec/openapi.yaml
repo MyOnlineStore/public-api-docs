@@ -277,7 +277,7 @@ paths:
               schema:
                 type: string
   "/v{version}/deleteImage/{image_id}":
-    post:
+    delete:
       tags:
         - Articles
       summary: Delete image for article
