@@ -346,7 +346,7 @@
       }
     },
     "/v{version}/deleteImage/{image_id}": {
-      "post": {
+      "delete": {
         "tags": [
           "Articles"
         ],
