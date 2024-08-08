@@ -261,7 +261,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ArticleChangeable"
+                "$ref": "#/components/schemas/ArticlePatchable"
               }
             }
           },
@@ -3564,8 +3564,8 @@
       },
       "Article": {
         "required": [
-          "categories",
-          "name"
+          "name",
+          "categories"
         ],
         "example": {
           "id": 123,
@@ -3720,7 +3720,7 @@
           }
         ]
       },
-      "ArticleChangeable": {
+      "ArticlePatchable": {
         "example": {
           "name": "Funny cushion",
           "description": "Endless fun",
@@ -3750,6 +3750,12 @@
             {
               "category_id": 748020,
               "is_main": true,
+              "is_active": true
+            },
+            {
+              "category_id": 824312,
+              "article_url_id": 4005,
+              "is_main": false,
               "is_active": true
             }
           ],
@@ -3799,6 +3805,12 @@
           },
           {
             "properties": {
+              "categories": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CategoryArticlePatchable"
+                }
+              },
               "variants": {
                 "type": "array",
                 "items": {
@@ -3885,7 +3897,7 @@
               "categories": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/CategoryArticle"
+                  "$ref": "#/components/schemas/CategoryArticlePostable"
                 }
               },
               "lists": {
@@ -4365,16 +4377,38 @@
         }
       },
       "CategoryArticle": {
+        "properties": {
+          "position": {
+            "description": "Relative position of the article on the page",
+            "type": "integer"
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CategoryArticlePatchable"
+          }
+        ]
+      },
+      "CategoryArticlePatchable": {
+        "properties": {
+          "article_url_id": {
+            "description": "Unique ID of the article linked to this page",
+            "type": "integer"
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CategoryArticlePostable"
+          }
+        ]
+      },
+      "CategoryArticlePostable": {
         "required": [
           "category_id"
         ],
         "properties": {
           "category_id": {
             "description": "Internal category id",
-            "type": "integer"
-          },
-          "article_url_id": {
-            "description": "Article page URL Id",
             "type": "integer"
           },
           "is_active": {
@@ -4384,10 +4418,6 @@
           "is_main": {
             "description": "Whether this is the primary category linked to the article",
             "type": "boolean"
-          },
-          "position": {
-            "description": "Relative position of the article on the page",
-            "type": "integer"
           }
         }
       },
