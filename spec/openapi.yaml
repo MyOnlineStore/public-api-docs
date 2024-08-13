@@ -2258,6 +2258,7 @@ components:
         images:
           - position: 2
             id: 7e2009bf-f4a6-4f6d-9874-14ed1341229b
+            original_name: "my_uploaded_image"
             urls:
               full: https://asset.myonlinestore.com/winkel/winkelnaam/images/full/b1787d2f15742a7d9c869f186b948ddbc2faecb87
               article: https://asset.myonlinestore.com/winkel/winkelnaam/images/article/b1787d2f15742a7d9c869f186b948ddbc2faecb87
@@ -2500,6 +2501,9 @@ components:
         id:
           type: string
           format: uuid
+        original_name:
+          description: Basename of the orignally uploaded file
+          type: string
         url:
           deprecated: true
           type: string
