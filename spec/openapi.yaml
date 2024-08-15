@@ -2502,7 +2502,7 @@ components:
           type: string
           format: uuid
         original_name:
-          description: Basename of the orignally uploaded file
+          description: Base name of the originally uploaded file
           type: string
         url:
           deprecated: true
