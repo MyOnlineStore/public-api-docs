@@ -1313,6 +1313,9 @@
             "$ref": "#/components/parameters/debtor_id"
           },
           {
+            "$ref": "#/components/parameters/test"
+          },
+          {
             "name": "ordering",
             "in": "query",
             "description": "Ordering (by ordernumber)",
@@ -3476,6 +3479,16 @@
             "type": "string",
             "format": "uuid"
           }
+        }
+      },
+      "test": {
+        "name": "test",
+        "in": "query",
+        "description": "Include test orders in the response",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false
         }
       }
     },

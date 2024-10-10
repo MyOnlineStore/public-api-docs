@@ -826,6 +826,7 @@ paths:
         - $ref: "#/components/parameters/status_changed_end_date"
         - $ref: "#/components/parameters/debtor_email"
         - $ref: "#/components/parameters/debtor_id"
+        - $ref: "#/components/parameters/test"
         - name: ordering
           in: query
           description: Ordering (by ordernumber)
@@ -2136,6 +2137,14 @@ components:
         items:
           type: string
           format: uuid
+    test:
+      name: test
+      in: query
+      description: Include test orders in the response
+      required: false
+      schema:
+        type: boolean
+        default: false
   requestBodies:
     postArticleListsLists:
       content:
