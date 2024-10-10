@@ -1477,6 +1477,9 @@
           },
           {
             "$ref": "#/components/parameters/status_changed_end_date"
+          },
+          {
+            "$ref": "#/components/parameters/test"
           }
         ],
         "responses": {
