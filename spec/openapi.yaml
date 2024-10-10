@@ -925,6 +925,7 @@ paths:
         - $ref: "#/components/parameters/status_id"
         - $ref: "#/components/parameters/status_changed_start_date"
         - $ref: "#/components/parameters/status_changed_end_date"
+        - $ref: "#/components/parameters/test"
       responses:
         "200":
           description: number of available orders
