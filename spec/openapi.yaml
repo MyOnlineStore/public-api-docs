@@ -36,7 +36,7 @@ info:
         
         If the B2B model applies to an order, some additional options are available:
         
-        * __Order__._reference_ may be set to an arbritary string
+        * __Order__._reference_ may be set to an arbitrary string
         * __OrderDebtor__._address_._invoice_._taxnumber_ may be set to a valid VAT number
           (this is not required, but recommended to allow the merchant to verify tax rule applicability)
         * Vat reverse charging becomes available as a valid tax strategy (see Tax rules section)
@@ -341,7 +341,7 @@ paths:
                         type: integer
                 -   name: visible
                     in: query
-                    description: Whether this field should be visibile or invisble to shop visitors
+                    description: Whether this field should be visible or invisible to shop visitors
                     required: true
                     schema:
                         type: boolean
@@ -386,7 +386,7 @@ paths:
                         type: integer
                 -   name: visible
                     in: query
-                    description: Whether this field should be visibile or invisble to shop visitors
+                    description: Whether this field should be visible or invisible to shop visitors
                     required: true
                     schema:
                         type: boolean
@@ -583,7 +583,7 @@ paths:
                         type: string
                 -   name: embed
                     in: query
-                    description: Comma separated list of additonal fields to embed
+                    description: Comma separated list of additional fields to embed
                     required: false
                     schema:
                         type: string
@@ -1437,7 +1437,7 @@ paths:
                         type: string
             responses:
                 "200":
-                    description: Newsletter subscriber succesfully deleted
+                    description: Newsletter subscriber successfully deleted
                     content:
                         application/json:
                             schema:
@@ -3548,7 +3548,7 @@ components:
                     description: Comment as added by merchant
                     type: string
         OrderDebtor:
-            description: Order debitor details
+            description: Order debtor details
             properties:
                 id:
                     description: "ID of the corresponding customer, if any"
@@ -3578,7 +3578,7 @@ components:
                     description: "Bankaccount number (deprecated: use InvoiceAddress.bankaccount)"
                     type: string
                 link_to_account:
-                    description: Link to debitor account
+                    description: Link to debtor account
                     type: boolean
                 address:
                     $ref: "#/components/schemas/OrderAddress"
@@ -3939,14 +3939,14 @@ components:
                     properties:
                         cost:
                             description: Charge per transaction for the given method, can be
-                                a combination of fixed and percentual
+                                a combination of fixed and percentage
                             type: object
                             properties:
                                 amount:
                                     description: Fixed charge per transaction
                                     type: string
                                 percentage:
-                                    description: Percentual charge per transaction
+                                    description: Percentage charge per transaction
                                     type: string
         OrderShippingCountry:
             description: Order shipping country settings
