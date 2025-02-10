@@ -103,7 +103,7 @@ paths:
             operationId: getArticles
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/limit"
                 -   $ref: "#/components/parameters/offset"
@@ -135,7 +135,7 @@ paths:
             operationId: postArticle
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
             requestBody:
                 content:
@@ -163,7 +163,7 @@ paths:
             operationId: getArticle
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/use_url_id"
                 -   name: article_id
@@ -190,7 +190,7 @@ paths:
             operationId: deleteArticle
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/use_url_id"
                 -   name: article_id
                     in: path
@@ -216,7 +216,7 @@ paths:
             operationId: patchArticle
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/use_url_id"
                 -   name: article_id
@@ -251,7 +251,7 @@ paths:
             operationId: postUploadImage
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: article_id
                     in: path
@@ -285,7 +285,7 @@ paths:
             operationId: deleteImage
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: image_id
                     in: path
@@ -305,7 +305,7 @@ paths:
             operationId: getArticleCount
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/created_start_date"
                 -   $ref: "#/components/parameters/created_end_date"
@@ -330,7 +330,7 @@ paths:
             operationId: postArticleFields
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/use_url_id"
                 -   name: article_id
@@ -375,7 +375,7 @@ paths:
             operationId: deleteArticleFields
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/use_url_id"
                 -   name: article_id
@@ -419,7 +419,7 @@ paths:
             operationId: postArticleListOptions
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: articlelist_id
                     in: path
@@ -454,7 +454,7 @@ paths:
             operationId: deleteArticleListOptions
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: articlelist_id
                     in: path
@@ -490,7 +490,7 @@ paths:
             operationId: getArticleList
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: id
                     in: path
@@ -516,7 +516,7 @@ paths:
             operationId: postArticleLists
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/use_url_id"
                 -   name: id
@@ -545,7 +545,7 @@ paths:
             operationId: deleteArticleLists
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/use_url_id"
                 -   name: id
@@ -814,7 +814,7 @@ paths:
             operationId: getOrders
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/limit"
                 -   $ref: "#/components/parameters/offset"
                 -   $ref: "#/components/parameters/start_date"
@@ -860,7 +860,7 @@ paths:
             parameters:
                 -   $ref: "#/components/parameters/version"
                 -   $ref: "#/components/parameters/format"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   name: send_customer_notification
                     in: query
                     description: Send an order confirmation to the customer
@@ -917,7 +917,7 @@ paths:
             operationId: getOrderCount
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/start_date"
                 -   $ref: "#/components/parameters/end_date"
                 -   $ref: "#/components/parameters/format"
@@ -945,7 +945,7 @@ paths:
             operationId: getOrder
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/order_number_path"
             responses:
@@ -966,7 +966,7 @@ paths:
             operationId: patchOrder
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/order_number_path"
                 -   name: override_minimum
@@ -1016,7 +1016,7 @@ paths:
             operationId: getCategory
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: category_id
                     in: path
@@ -1041,7 +1041,7 @@ paths:
             operationId: patchCategory
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: category_id
                     in: path
@@ -1074,7 +1074,7 @@ paths:
             operationId: getCategories
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/limit"
                 -   $ref: "#/components/parameters/offset"
                 -   $ref: "#/components/parameters/format"
@@ -1119,7 +1119,7 @@ paths:
             operationId: postCategory
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
             requestBody:
                 content:
@@ -1146,7 +1146,7 @@ paths:
             operationId: getCategoryArticles
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/limit"
                 -   $ref: "#/components/parameters/offset"
@@ -1174,7 +1174,7 @@ paths:
             operationId: getCategoryCount
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/created_start_date"
                 -   $ref: "#/components/parameters/created_end_date"
@@ -1190,6 +1190,36 @@ paths:
                         text/xml:
                             schema:
                                 $ref: "#/components/schemas/CountResponse"
+    "/v{version}/categories/{category_id}/sections/{language}":
+        get:
+            tags:
+                - Page Sections
+            description: Returns all sections related to a page.
+            operationId: getPageSections
+            parameters:
+                -   $ref: "#/components/parameters/version"
+                -   name: category_id
+                    in: path
+                    description: The page's unique ID.
+                    required: true
+                    schema:
+                        type: integer
+                -   $ref: "#/components/parameters/language-path"
+                -   $ref: "#/components/parameters/format"
+            responses:
+                "200":
+                    description: A list of page sections.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/PageSection"
+                        text/xml:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/PageSection"
     "/v{version}/discountcodes":
         get:
             tags:
@@ -1344,7 +1374,7 @@ paths:
             operationId: getNewsletterSubscribers
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/limit"
                 -   $ref: "#/components/parameters/offset"
@@ -1374,7 +1404,7 @@ paths:
             operationId: postNewsletterSubscriber
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/activate"
             requestBody:
@@ -1402,7 +1432,7 @@ paths:
             operationId: getNewsletterSubscriber
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: email
                     in: path
@@ -1427,7 +1457,7 @@ paths:
             operationId: deleteNewsletterSubscriber
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   name: email
                     in: path
@@ -1452,7 +1482,7 @@ paths:
             operationId: patchNewsletterSubscriber
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/activate"
                 -   name: email
@@ -1486,7 +1516,7 @@ paths:
             operationId: countNewsletterSubscribers
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
                 -   $ref: "#/components/parameters/activated"
                 -   $ref: "#/components/parameters/created_start_date"
@@ -1567,7 +1597,7 @@ paths:
             parameters:
                 -   $ref: "#/components/parameters/version"
                 -   $ref: "#/components/parameters/format"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   name: mutate_stock
                     in: query
                     description: Perform stock mutations, reverting (specified) mutations of the
@@ -1706,7 +1736,7 @@ paths:
                       [ ]
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
             responses:
                 "200":
@@ -1733,7 +1763,7 @@ paths:
                       [ ]
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
             responses:
                 "200":
@@ -1751,7 +1781,7 @@ paths:
             parameters:
                 -   $ref: "#/components/parameters/version"
                 -   $ref: "#/components/parameters/store"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
             responses:
                 "200":
@@ -1828,7 +1858,7 @@ paths:
             operationId: getStore
             parameters:
                 -   $ref: "#/components/parameters/version"
-                -   $ref: "#/components/parameters/language"
+                -   $ref: "#/components/parameters/language-query"
                 -   $ref: "#/components/parameters/format"
             responses:
                 "200":
@@ -1859,6 +1889,8 @@ tags:
         description: Subscriber details for the store's newsletter
     -   name: Categories (Pages)
         description: Page details
+    -   name: Page Sections
+        description: The building blocks that make up a page's content.
     -   name: Customers
         description: |
             Store customer accounts.
@@ -1975,11 +2007,33 @@ components:
             schema:
                 type: string
                 pattern: '^[A-Z]{2}$'
-        language:
+        language-query:
             name: language
             in: query
-            description: Shop language to return content for
+            description: Store language to return content for.
             required: false
+            schema:
+                type: string
+                enum:
+                    - nl_NL
+                    - en_GB
+                    - de_DE
+                    - fr_FR
+                    - es_ES
+                    - en_US
+                    - pt_PT
+                    - it_IT
+                    - da_DK
+                    - sv_SE
+                    - no_NO
+                    - tr_TR
+                    - pl_PL
+                default: nl_NL
+        language-path:
+            name: language
+            in: path
+            description: Store language to return content for.
+            required: true
             schema:
                 type: string
                 enum:
@@ -3759,6 +3813,76 @@ components:
                         methods:
                             -   name: ideal
                                 displayName: iDEAL
+        PageSection:
+            properties:
+                id:
+                    description: The page section's unique identifier.
+                    type: string
+                    format: uuid
+                type:
+                    description: The type of page section.
+                    type: string
+                    enum:
+                        - banner
+                position:
+                    description: The position of this page section in the page's section order.
+                    type: integer
+                isEnabled:
+                    description: Determines whether the page section is shown on the storefront.
+                    type: boolean
+                content:
+                    anyOf:
+                        -   type: array
+                            items:
+                                $ref: "#/components/schemas/PageSectionBanner"
+            example:
+                id: 09bf1b84-645e-4f5f-ba68-407f3ee11411
+                type: banner
+                position: 1
+                isEnabled: true
+                content:
+                    -   heading: Roger Bannister
+                        text: Just because they say it's impossible doesn't mean you can't do it.
+                        buttonText: Run
+                        buttonUrl: https://en.wikipedia.org/wiki/Roger_Bannister
+                        imageId: 3594
+                        images:
+                            -   url: https://cdn.myonlinestore.com/
+                                width: 1280
+                                height: 720
+        PageSectionBanner:
+            properties:
+                heading:
+                    description: The banner's title.
+                    type: string
+                text:
+                    description: The banner's text.
+                    type: string
+                buttonText:
+                    description: The text in the banner button.
+                    type: string
+                buttonUrl:
+                    description: The target web address of the banner button.
+                    type: string
+                imageId:
+                    description: The unique identifier for the banner background image.
+                    type: string
+                images:
+                    description: A list of images associated with the banner.
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/PageSectionImage"
+        PageSectionImage:
+            properties:
+                url:
+                    description: The URL to the image.
+                    type: string
+                width:
+                    description: The width of the image in pixels.
+                    type: integer
+                height:
+                    description: The height of the image in pixels.
+                    type: integer
         PaymentGateway:
             description: Payment Gateway
             properties:
