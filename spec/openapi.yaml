@@ -1215,7 +1215,7 @@ paths:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/PageSection"
-                        text/xml:
+                        application/xml:
                             schema:
                                 type: array
                                 items:
@@ -1255,7 +1255,7 @@ paths:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/PageSection"
-                        text/xml:
+                        application/xml:
                             schema:
                                 type: array
                                 items:
@@ -1279,7 +1279,7 @@ paths:
                                     type: string
                                     format: binary
             responses:
-                "200":
+                200:
                     description: The uploaded image's ID.
                     content:
                         application/json:
@@ -1291,7 +1291,7 @@ paths:
                                         description: The unique identifier of the uploaded image.
                                 example:
                                     imageId: 3594
-                        text/xml:
+                        application/xml:
                             schema:
                                 type: object
                                 properties:
