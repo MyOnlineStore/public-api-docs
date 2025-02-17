@@ -6,7 +6,7 @@
       "name": "MyOnlineStore"
     },
     "version": "1",
-    "description": "# Introduction\nAn online store should be within everyone’s reach. That’s why creating the best online platform is our mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the opportunity to follow their dream. Today is the day!\n\n* Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)\n* A [sandbox UI](swagger-docs) is available to test your requests\n* The changelog can be found [here](swagger-docs/changelog.html)\n\n# Environments\nA single (live) environment is available:\n* api.myonlinestore.com - EMEA area\n\n# Versions\nCurrently available are versions **1** and **2-beta**.\nBoth are stable, but backwards incompatible changes may be applied to v**-beta**\nand deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed\nbetween **1** and **2-beta**, though contents are the same\n\n# Guides\n## Business models\nFor our purposes a business model reflects the type of sale made in an order. We currently distinguish \"business to customer\" (`B2C`) and\n\"business to business\" (`B2B`) models. Each order is assigned a model, with B2C being the default. The merchant can specify which model(s)\nmay be used for new orders (pending package/version limitations)\n\nFor an order to qualify for the `B2B` model, the following requirements apply:\n\n* The merchant must have allowed this model to be used (__Store__._available_business_models_ must be `ALL` or `B2B`)\n* __OrderDebtor__._address_._invoice_._company_ must not be empty\n* The selected payment method must allow `B2B` sales. Notably: `Klarna Checkout`, `Klarna Pay Later` and `Afterpay` do not support this model\n\nIf the B2B model applies to an order, some additional options are available:\n\n* __Order__._reference_ may be set to an arbritary string\n* __OrderDebtor__._address_._invoice_._taxnumber_ may be set to a valid VAT number\n  (this is not required, but recommended to allow the merchant to verify tax rule applicability)\n* Vat reverse charging becomes available as a valid tax strategy (see Tax rules section)\n\n## Tax rules\nDepending on the type of sale, country of origin and destination country, some special tax rules may apply to an order. This is reflected in a \"tax strategy\"\n\nWe currently distinguish the following cases:\n* Sales within the domestic borders (origin and destination country are the same): regular tax applies\n* Sales wholly outside EU borders (both origin and destination country not part of the EU): regular tax applies\n* Sales crossing the EU border (origin country part of the EU and destination country not part of the EU, or vice versa): 0% tax is applied\n* B2B Sales crossing domestic borders, but not the EU border (both origin and destination country are part of the EU, but not the same):\n  VAT is reverse charged, 0% tax is applied\n\nThe tax strategy is derived based on order and store information and cannot be specified as input\n\n## Payment information\nMyOnlineStore orders may be paid using a number of payment methods, through various gateways.\nA payment choice is uniquely specified by the combination of gateway_name and method_name.\nMyOnlineStore also offers one internal gateway (`basic`) which may be used for manually verifiable payments\n(for example: cash or card at the counter)\n\nOrders may follow one of two payment flows:\n\n1. The order has zero or more transactions. At this time the transaction amount will always equal the\nfull order amount (including tax), but partial payments may be added in the future. To be considered finished,\nat least one transaction must have reached pending, authorized or captured status.\n\n2. The order has a directly linked singular payment. This option will be deprecated soon,\nbut may still be reflected in historical data and orders created through the API endpoint\n\nEach order has a payment status (`payment_status`), which is derived from either the transactions from option 1\nor the singular payment from option 2. This will be one of the following:\n\n* `new`: The attached transaction has been created, but has not yet been confirmed by the gateway\n* `pending`: The attached transaction has been updated with a reference to the corresponding transaction at the gateway\n* `authorized`: The full order amount amount has been confirmed and reserved at the customer's account\n* `captured`: The full order amount has been transferred to the merchant's account\n* `incomplete`: This is an external gateway status which may occur if we fetch the status upstream, may be considered as `new`\n* 'failed': The attached transaction has failed to complete\n* `refunded`: The full order amount has been refunded\n* `voided`: The full order amount was reserved (authorized) but this reservation was subsequently cancelled\n* `unknown`: No payment status can be derived\n\n### Special cases\n* Orders with a total price of 0.00: These do not require any payment information. They may be assigned a method,\nbut will never have any transactions attached.\n* Credit orders: These do not have any direct payment information attached.\nFor an up-to-date status, transactions and mutations, the original order should be requested.\n",
+    "description": "# Introduction\nAn online store should be within everyone’s reach. That’s why creating the best online platform is our mission. And we don’t do that just by ourselves. Let's join forces and offer our 39.000+ customers the opportunity to follow their dream. Today is the day!\n\n* Curious about a collaboration with us? Check our [partner page](https://www.mijnwebwinkel.nl/partners) or [contact us](https://www.mijnwebwinkel.nl/contact)\n* A [sandbox UI](swagger-docs) is available to test your requests\n* The changelog can be found [here](swagger-docs/changelog.html)\n\n# Environments\nA single (live) environment is available:\n* api.myonlinestore.com - EMEA area\n\n# Versions\nCurrently available are versions **1** and **2-beta**.\nBoth are stable, but backwards incompatible changes may be applied to v**-beta**\nand deprecated options from **1** are removed in **2-beta**. The XML format has also slightly changed\nbetween **1** and **2-beta**, though contents are the same\n\n# Guides\n## Business models\nFor our purposes a business model reflects the type of sale made in an order. We currently distinguish \"business to customer\" (`B2C`) and\n\"business to business\" (`B2B`) models. Each order is assigned a model, with B2C being the default. The merchant can specify which model(s)\nmay be used for new orders (pending package/version limitations)\n\nFor an order to qualify for the `B2B` model, the following requirements apply:\n\n* The merchant must have allowed this model to be used (__Store__._available_business_models_ must be `ALL` or `B2B`)\n* __OrderDebtor__._address_._invoice_._company_ must not be empty\n* The selected payment method must allow `B2B` sales. Notably: `Klarna Checkout`, `Klarna Pay Later` and `Afterpay` do not support this model\n\nIf the B2B model applies to an order, some additional options are available:\n\n* __Order__._reference_ may be set to an arbitrary string\n* __OrderDebtor__._address_._invoice_._taxnumber_ may be set to a valid VAT number\n  (this is not required, but recommended to allow the merchant to verify tax rule applicability)\n* Vat reverse charging becomes available as a valid tax strategy (see Tax rules section)\n\n## Tax rules\nDepending on the type of sale, country of origin and destination country, some special tax rules may apply to an order. This is reflected in a \"tax strategy\"\n\nWe currently distinguish the following cases:\n* Sales within the domestic borders (origin and destination country are the same): regular tax applies\n* Sales wholly outside EU borders (both origin and destination country not part of the EU): regular tax applies\n* Sales crossing the EU border (origin country part of the EU and destination country not part of the EU, or vice versa): 0% tax is applied\n* B2B Sales crossing domestic borders, but not the EU border (both origin and destination country are part of the EU, but not the same):\n  VAT is reverse charged, 0% tax is applied\n\nThe tax strategy is derived based on order and store information and cannot be specified as input\n\n## Payment information\nMyOnlineStore orders may be paid using a number of payment methods, through various gateways.\nA payment choice is uniquely specified by the combination of gateway_name and method_name.\nMyOnlineStore also offers one internal gateway (`basic`) which may be used for manually verifiable payments\n(for example: cash or card at the counter)\n\nOrders may follow one of two payment flows:\n\n1. The order has zero or more transactions. At this time the transaction amount will always equal the\nfull order amount (including tax), but partial payments may be added in the future. To be considered finished,\nat least one transaction must have reached pending, authorized or captured status.\n\n2. The order has a directly linked singular payment. This option will be deprecated soon,\nbut may still be reflected in historical data and orders created through the API endpoint\n\nEach order has a payment status (`payment_status`), which is derived from either the transactions from option 1\nor the singular payment from option 2. This will be one of the following:\n\n* `new`: The attached transaction has been created, but has not yet been confirmed by the gateway\n* `pending`: The attached transaction has been updated with a reference to the corresponding transaction at the gateway\n* `authorized`: The full order amount amount has been confirmed and reserved at the customer's account\n* `captured`: The full order amount has been transferred to the merchant's account\n* `incomplete`: This is an external gateway status which may occur if we fetch the status upstream, may be considered as `new`\n* 'failed': The attached transaction has failed to complete\n* `refunded`: The full order amount has been refunded\n* `voided`: The full order amount was reserved (authorized) but this reservation was subsequently cancelled\n* `unknown`: No payment status can be derived\n\n### Special cases\n* Orders with a total price of 0.00: These do not require any payment information. They may be assigned a method,\nbut will never have any transactions attached.\n* Credit orders: These do not have any direct payment information attached.\nFor an up-to-date status, transactions and mutations, the original order should be requested.\n",
     "x-logo": {
       "url": "images/mos-connect-logo.png"
     }
@@ -31,7 +31,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -97,7 +97,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -146,7 +146,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -194,7 +194,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/use_url_id"
@@ -239,7 +239,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -300,7 +300,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -358,7 +358,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -393,7 +393,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -443,7 +443,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -463,7 +463,7 @@
           {
             "name": "visible",
             "in": "query",
-            "description": "Whether this field should be visibile or invisble to shop visitors",
+            "description": "Whether this field should be visible or invisible to shop visitors",
             "required": true,
             "schema": {
               "type": "boolean",
@@ -518,7 +518,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -538,7 +538,7 @@
           {
             "name": "visible",
             "in": "query",
-            "description": "Whether this field should be visibile or invisble to shop visitors",
+            "description": "Whether this field should be visible or invisible to shop visitors",
             "required": true,
             "schema": {
               "type": "boolean",
@@ -592,7 +592,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -651,7 +651,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -712,7 +712,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -757,7 +757,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -808,7 +808,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -872,7 +872,7 @@
           {
             "name": "embed",
             "in": "query",
-            "description": "Comma separated list of additonal fields to embed",
+            "description": "Comma separated list of additional fields to embed",
             "required": false,
             "schema": {
               "type": "string",
@@ -1277,7 +1277,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -1369,7 +1369,7 @@
             "$ref": "#/components/parameters/format"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "name": "send_customer_notification",
@@ -1455,7 +1455,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/start_date"
@@ -1514,7 +1514,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -1553,7 +1553,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -1634,7 +1634,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -1678,7 +1678,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -1735,7 +1735,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -1814,7 +1814,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -1862,7 +1862,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -1914,7 +1914,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -1944,6 +1944,191 @@
               "text/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/categories/{category_id}/sections/{language}": {
+      "get": {
+        "tags": [
+          "Page Sections"
+        ],
+        "description": "Returns all sections related to a page.",
+        "operationId": "getPageSections",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "name": "category_id",
+            "in": "path",
+            "description": "The page's unique ID.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/language-path"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of page sections.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PageSection"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PageSection"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Page Sections"
+        ],
+        "description": "Saves the content and order of page sections for a single page.\n\nBe careful, as the data provided will overwrite existing page section data.\n",
+        "operationId": "savePageSections",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "name": "category_id",
+            "in": "path",
+            "description": "The page's unique ID.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/language-path"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BannerSectionRequest"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A list of page sections.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PageSection"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PageSection"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v{version}/categories/sections/image": {
+      "post": {
+        "tags": [
+          "Page Sections"
+        ],
+        "description": "Uploads an image to be used in a page section.",
+        "operationId": "uploadPageSectionImage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/version"
+          },
+          {
+            "$ref": "#/components/parameters/format"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The uploaded image's ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imageId": {
+                      "type": "integer",
+                      "description": "The unique identifier of the uploaded image."
+                    }
+                  },
+                  "example": {
+                    "imageId": 3594
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imageId": {
+                      "type": "integer",
+                      "description": "The unique identifier of the uploaded image."
+                    }
+                  },
+                  "example": {
+                    "imageId": 3594
+                  }
                 }
               }
             }
@@ -2202,7 +2387,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2264,7 +2449,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2315,7 +2500,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2359,7 +2544,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2376,7 +2561,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Newsletter subscriber succesfully deleted",
+            "description": "Newsletter subscriber successfully deleted",
             "content": {
               "application/json": {
                 "schema": {
@@ -2403,7 +2588,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2463,7 +2648,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2611,7 +2796,7 @@
             "$ref": "#/components/parameters/format"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "name": "mutate_stock",
@@ -2850,7 +3035,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2898,7 +3083,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -2933,7 +3118,7 @@
             "$ref": "#/components/parameters/store"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -3069,7 +3254,7 @@
             "$ref": "#/components/parameters/version"
           },
           {
-            "$ref": "#/components/parameters/language"
+            "$ref": "#/components/parameters/language-query"
           },
           {
             "$ref": "#/components/parameters/format"
@@ -3131,6 +3316,10 @@
     {
       "name": "Categories (Pages)",
       "description": "Page details"
+    },
+    {
+      "name": "Page Sections",
+      "description": "The building blocks that make up a page's content."
     },
     {
       "name": "Customers",
@@ -3285,11 +3474,36 @@
           "pattern": "^[A-Z]{2}$"
         }
       },
-      "language": {
+      "language-query": {
         "name": "language",
         "in": "query",
-        "description": "Shop language to return content for",
+        "description": "Store language to return content for.",
         "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "nl_NL",
+            "en_GB",
+            "de_DE",
+            "fr_FR",
+            "es_ES",
+            "en_US",
+            "pt_PT",
+            "it_IT",
+            "da_DK",
+            "sv_SE",
+            "no_NO",
+            "tr_TR",
+            "pl_PL"
+          ],
+          "default": "nl_NL"
+        }
+      },
+      "language-path": {
+        "name": "language",
+        "in": "path",
+        "description": "Store language to return content for.",
+        "required": true,
         "schema": {
           "type": "string",
           "enum": [
@@ -5500,7 +5714,7 @@
         }
       },
       "OrderDebtor": {
-        "description": "Order debitor details",
+        "description": "Order debtor details",
         "properties": {
           "id": {
             "description": "ID of the corresponding customer, if any",
@@ -5537,7 +5751,7 @@
             "type": "string"
           },
           "link_to_account": {
-            "description": "Link to debitor account",
+            "description": "Link to debtor account",
             "type": "boolean"
           },
           "address": {
@@ -5809,6 +6023,155 @@
           ]
         }
       },
+      "PageSection": {
+        "properties": {
+          "id": {
+            "description": "The page section's unique identifier.",
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "description": "The type of page section.",
+            "type": "string",
+            "enum": [
+              "banner"
+            ]
+          },
+          "position": {
+            "description": "The position of this page section in the page's section order.",
+            "type": "integer"
+          },
+          "isEnabled": {
+            "description": "Determines whether the page section is shown on the storefront.",
+            "type": "boolean"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BannerSectionResponse"
+                }
+              }
+            ]
+          }
+        },
+        "example": {
+          "id": "09bf1b84-645e-4f5f-ba68-407f3ee11411",
+          "type": "banner",
+          "position": 1,
+          "isEnabled": true,
+          "content": [
+            {
+              "heading": "Roger Bannister",
+              "text": "Just because they say it's impossible doesn't mean you can't do it.",
+              "buttonText": "Run",
+              "buttonUrl": "https://en.wikipedia.org/wiki/Roger_Bannister",
+              "imageId": 3594,
+              "images": [
+                {
+                  "url": "https://cdn.myonlinestore.com/",
+                  "width": 1280,
+                  "height": 720
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "PageSectionImage": {
+        "properties": {
+          "url": {
+            "description": "The URL to the image.",
+            "type": "string"
+          },
+          "width": {
+            "description": "The width of the image in pixels.",
+            "type": "integer"
+          },
+          "height": {
+            "description": "The height of the image in pixels.",
+            "type": "integer"
+          }
+        }
+      },
+      "BannerSectionRequest": {
+        "properties": {
+          "type": {
+            "description": "The type of page section.",
+            "type": "string"
+          },
+          "position": {
+            "description": "The position of this page section in the page's section order.",
+            "type": "integer"
+          },
+          "isEnabled": {
+            "description": "Determines whether the page section is shown on the storefront.",
+            "type": "boolean"
+          },
+          "heading": {
+            "description": "The banner's title.",
+            "type": "string"
+          },
+          "text": {
+            "description": "The banner's text.",
+            "type": "string"
+          },
+          "buttonText": {
+            "description": "The text in the banner button.",
+            "type": "string"
+          },
+          "buttonUrl": {
+            "description": "The target web address of the banner button.",
+            "type": "string"
+          },
+          "imageId": {
+            "description": "The unique identifier for the banner background image.",
+            "type": "integer"
+          }
+        },
+        "example": {
+          "type": "banner",
+          "position": 1,
+          "isEnabled": true,
+          "heading": "Roger Bannister",
+          "text": "Just because they say it's impossible doesn't mean you can't do it.",
+          "buttonText": "Run",
+          "buttonUrl": "https://en.wikipedia.org/wiki/Roger_Bannister",
+          "imageId": 3594
+        }
+      },
+      "BannerSectionResponse": {
+        "properties": {
+          "heading": {
+            "description": "The banner's title.",
+            "type": "string"
+          },
+          "text": {
+            "description": "The banner's text.",
+            "type": "string"
+          },
+          "buttonText": {
+            "description": "The text in the banner button.",
+            "type": "string"
+          },
+          "buttonUrl": {
+            "description": "The target web address of the banner button.",
+            "type": "string"
+          },
+          "imageId": {
+            "description": "The unique identifier for the banner background image.",
+            "type": "integer"
+          },
+          "images": {
+            "description": "A list of images associated with the banner.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PageSectionImage"
+            }
+          }
+        }
+      },
       "PaymentGateway": {
         "description": "Payment Gateway",
         "properties": {
@@ -6028,7 +6391,7 @@
             "type": "object",
             "properties": {
               "cost": {
-                "description": "Charge per transaction for the given method, can be a combination of fixed and percentual",
+                "description": "Charge per transaction for the given method, can be a combination of fixed and percentage",
                 "type": "object",
                 "properties": {
                   "amount": {
@@ -6036,7 +6399,7 @@
                     "type": "string"
                   },
                   "percentage": {
-                    "description": "Percentual charge per transaction",
+                    "description": "Percentage charge per transaction",
                     "type": "string"
                   }
                 }
