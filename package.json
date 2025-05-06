@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "jquery": "^3.6.0",
-    "npm": "^7.9.0",
+    "npm": "^8.11.0",
     "shelljs": "^0.8.5",
     "swagger-repo": "^2.0.0-rc.15",
     "swagger-ui-dist": "^4.1.3",
